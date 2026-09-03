@@ -72,4 +72,9 @@ public class NpcScript : MonoBehaviour
         int rng = UnityEngine.Random.Range(0, _treePosition.Length);
         agent.SetDestination(_treePosition[rng]);
     }
+
+    void OnDestroy()
+    {
+        OnWoodCollected -= HandleWoodCollected;
+    }
 }
