@@ -3,9 +3,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NpcScript : MonoBehaviour
+public class NpcScript : Worker
 {
-    private Vector3[] _treePosition;
+    private Vector3[] _treePositions;
     private Vector3 _hutPosition;
 
     private NavMeshAgent agent;
@@ -48,9 +48,9 @@ public class NpcScript : MonoBehaviour
         }
     }
 
-    public void initializeWoodNpc(Vector3[] treePosition, Vector3 hutPosition)
+    public void initializeWoodNpc(Vector3[] treePositions, Vector3 hutPosition)
     {
-        _treePosition = treePosition;
+        _treePositions = treePositions;
         _hutPosition = hutPosition;
         GoToNextTree();
     }
@@ -69,8 +69,8 @@ public class NpcScript : MonoBehaviour
 
     private void GoToNextTree()
     {
-        int rng = UnityEngine.Random.Range(0, _treePosition.Length);
-        agent.SetDestination(_treePosition[rng]);
+        int rng = UnityEngine.Random.Range(0, _treePositions.Length);
+        agent.SetDestination(_treePositions[rng]);
     }
 
     void OnDestroy()

@@ -1,11 +1,13 @@
 fileFormatVersion: 2
-guid: a9f0ff2479bbbfb4182bcb0eb782f8a6
+guid: 7c21a6bdcf68caf4ab092372af794145
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - npcPrefab: {instanceID: 0}
+  - woodNpcPrefab: {instanceID: 0}
+  - hutPrefab: {instanceID: 0}
   - hutTransform: {instanceID: 0}
+  - workStationUIManager: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
