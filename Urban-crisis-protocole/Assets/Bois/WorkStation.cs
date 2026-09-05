@@ -4,33 +4,43 @@ using UnityEngine;
 
 public abstract class WorkStation : MonoBehaviour
 {
-    protected GameObject npcPrefab;
+    /* This class is the parent class of all buildings with workers. */
+
+    protected virtual GameObject NpcPrefab { get; set; }
+    protected virtual List<Worker> WorkerList { get; } = new List<Worker>();
+
     protected int workers = 0;
     public int Workers => workers;
     protected int buildingCapacity = 5;
     public int BuildingCapacity => buildingCapacity;
 
-    protected virtual List<Worker> WorkerList { get; } = new List<Worker>();
-    public event Action<int> OnNpcAssigned;
-    
+    public virtual void InitializeBuilding(Vector3 position, int workerCount, GameObject prefab)
+    {
+        transform.position = position;
+        NpcPrefab = prefab;
+        AssignNpcs(workerCount);
+    }
+
+    public void DestroyBuilding()
+    {
+        RemoveNpcs(workers);
+        Destroy(gameObject);
+    }
+
     public virtual void AssignNpcs(int number)
     {
         workers += number;
-        OnNpcAssigned?.Invoke(number);
+        CreateNpcs(number);
 
     }
-    public virtual void RemoveNpcs(int number)
+
+    protected virtual Worker CreateSingleNpc(Vector3 position)
     {
-        if(workers > number)
-        {
-        workers -= number;
-        } else
-        {
-            workers = 0;
-        }
+        return Instantiate(NpcPrefab, position, Quaternion.identity)
+            .GetComponent<Worker>();
     }
 
-    public virtual void CreateNpcs(int number)
+    protected virtual void CreateNpcs(int number)
     {
         for (int i = 0; i < number; i++)
         {
@@ -38,34 +48,32 @@ public abstract class WorkStation : MonoBehaviour
                 transform.position.x + i,
                 transform.position.y,
                 transform.position.z);
-            Worker worker = Instantiate(npcPrefab, offsetPosition, Quaternion.identity)
-            .GetComponent<Worker>();
+            Worker worker = CreateSingleNpc(offsetPosition);
             WorkerList.Add(worker);
         }
-    }
-    public virtual void InitializeBuilding(Vector3 position, int workerCount, GameObject prefab)
-    {
-        transform.position = position;
-        workers = workerCount;
-        npcPrefab = prefab;
-        CreateNpcs(workerCount);
-    }
-    public virtual void InitializeBuildingNoWorkers(Vector3 position)
-    {
-        transform.position = position;
+        
     }
 
-    public virtual void Update()
+     public virtual void RemoveNpcs(int number)
     {
-        if(WorkerList.Count != workers)
+        if(workers > number)
         {
-            if(workers > WorkerList.Count)
-            {
-                CreateNpcs(1);
-            } else
-            {
-                WorkerList[0].Delete();
-            }
+        DeleteNpcs(number);
+        workers -= number;
+        } else
+        {
+            DeleteNpcs(workers);
+            workers = 0;
+        }
+    }
+
+    protected void DeleteNpcs(int number)
+    {
+        for(int i = 0; i < number; i++)
+        {
+            Worker _worker = WorkerList[0];
+            _worker.Delete();
+            WorkerList.RemoveAt(0);
         }
     }
 }

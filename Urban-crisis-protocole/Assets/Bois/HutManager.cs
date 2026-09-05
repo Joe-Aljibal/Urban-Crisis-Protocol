@@ -1,21 +1,28 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class HutManager : MonoBehaviour
 {
+    /* This class manages all huts in the scene */
+
     [SerializeField] GameObject woodNpcPrefab;
 
     [SerializeField] GameObject hutPrefab;
 
-    private List<GameObject> hutStations = new List<GameObject>();
+    private readonly List<GameObject> hutStations = new();
 
     [SerializeField] Transform hutTransform;
     [SerializeField] Transform[] treeTransforms;
     [SerializeField] WorkStationUIManager workStationUIManager;
+
     void Awake()
     {
-         workStationUIManager.OnAddHutStation += HandleHutCreated;
+        workStationUIManager.OnAddHutStation += HandleHutCreated;
+        workStationUIManager.OnAddNpc += HandleWoodNpcAssigned;
+        workStationUIManager.OnDeleteHutStation += HandleHutDeleted;
+        workStationUIManager.OnDeleteWoodNpc += HandleWoodNpcDeleted;
     }
 
     private void HandleHutCreated(Vector3 position, int huts, int npcCount)
@@ -23,37 +30,80 @@ public class HutManager : MonoBehaviour
         for (int i = 0; i < huts; i++)
         {
             int offset = i * 3;
-             Vector3 offsetPosition = new Vector3(
-                position.x + offset,
-                position.y,
-                position.z);
+            Vector3 offsetPosition = new(
+               position.x + offset,
+               position.y,
+               position.z);
 
-        GameObject hut = Instantiate(hutPrefab, offsetPosition, Quaternion.identity);
-        HutStation hutScript = hut.GetComponent<HutStation>();
+            GameObject hut = Instantiate(hutPrefab, offsetPosition, Quaternion.identity);
+            HutStation hutScript = hut.GetComponent<HutStation>();
 
-        Vector3[] treePositions = new Vector3[treeTransforms.Length];
-            for(int a = 0; a < treeTransforms.Length; a++)
+            Vector3[] treePositions = new Vector3[treeTransforms.Length];
+            for (int a = 0; a < treeTransforms.Length; a++)
             {
                 treePositions[a] = treeTransforms[a].position;
             }
-        hutScript.SetTreePositions(treePositions);
+            hutScript.SetTreePositions(treeTransforms);
 
-        hutScript.InitializeBuilding(offsetPosition, npcCount, woodNpcPrefab);
+            hutScript.InitializeBuilding(offsetPosition, npcCount, woodNpcPrefab);
 
-        hutStations.Add(hut);
+            hutStations.Add(hut);
         }
     }
 
-    private void HandleWoodNpcAssigned(int number, Vector3 position)
+    private void HandleWoodNpcAssigned(Vector3 position, int number)
     {
-        GameObject npc = Instantiate(woodNpcPrefab, hutTransform.position, Quaternion.identity);
-        NpcScript npcScript = npc.GetComponent<NpcScript>();
+        float radius = 2f;
 
-        Vector3[] treePositions = new Vector3[treeTransforms.Length];
-            for(int i = 0; i < treeTransforms.Length; i++)
+        Collider[] hits = Physics.OverlapSphere(position, radius);
+
+        foreach (var col in hits)
+        {
+            if (col.TryGetComponent<WorkStation>(out var hut))
             {
-                treePositions[i] = treeTransforms[i].position;
+                hut.AssignNpcs(number);
             }
-        npcScript.initializeWoodNpc(treePositions, hutTransform.position);
+        }
     }
+
+    private void HandleHutDeleted(Vector3 position)
+    {
+        float radius = 2f;
+
+        Collider[] hits = Physics.OverlapSphere(position, radius);
+
+        foreach(var col in hits)
+        {
+            if(col.TryGetComponent<WorkStation>(out var hut))
+            {
+                hut.DestroyBuilding();
+            }
+        }
+    }
+
+    private void HandleWoodNpcDeleted(Vector3 position, int number)
+    {
+        float radius = 2f;
+
+        Collider[] hits = Physics.OverlapSphere(position, radius);
+
+        foreach(var col in hits)
+        {
+            
+            if(col.TryGetComponent<WorkStation>(out var hut))
+            {
+                hut.RemoveNpcs(number);
+            }
+        }
+    }
+
+    void OnDestroy()
+    {
+        workStationUIManager.OnAddHutStation -= HandleHutCreated;
+        workStationUIManager.OnAddNpc -= HandleWoodNpcAssigned;
+        workStationUIManager.OnDeleteHutStation -= HandleHutDeleted;
+        workStationUIManager.OnDeleteWoodNpc -= HandleWoodNpcDeleted;
+    }
+
+
 }

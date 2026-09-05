@@ -2,41 +2,36 @@ using UnityEngine;
 
 public class HutStation : WorkStation
 {
-    private GameObject woodNpcPrefab;
-    private Vector3[] _treePositions;
+    protected override GameObject NpcPrefab { 
+     get => base.NpcPrefab;
+     set => base.NpcPrefab = value; }
+
+    private Transform[] _treeTransforms;
     void Awake()
     {
         buildingCapacity = 5;
     }
 
+    // Override to use wood npc prefab
     public override void InitializeBuilding(Vector3 position, int workerCount, GameObject prefab)
     {
-        woodNpcPrefab = prefab;
+        NpcPrefab = prefab;
         base.InitializeBuilding(position, workerCount, prefab);
     }
 
-    public void SetTreePositions(Vector3[] treePositions)
+    public void SetTreePositions(Transform[] treeTransforms)
     {
-        _treePositions = treePositions;
+        _treeTransforms = treeTransforms;
     }
 
-    public override void AssignNpcs(int number)
+    // Override to initialize the wood npcs
+    protected override Worker CreateSingleNpc(Vector3 position)
     {
-        base.AssignNpcs(number);
-        CreateNpcs(number);
-    }
-    public override void CreateNpcs(int number)
-    {
-        for (int i = 0; i < number; i++)
-        {
-            Vector3 offsetPosition = new Vector3(
-                transform.position.x + i,
-                transform.position.y,
-                transform.position.z);
-            NpcScript woodNpcScript = Instantiate(woodNpcPrefab, offsetPosition, Quaternion.identity)
+        NpcScript npcScript = Instantiate(NpcPrefab, position, Quaternion.identity)
             .GetComponent<NpcScript>();
-            woodNpcScript.initializeWoodNpc(_treePositions, transform.position);
-            WorkerList.Add(woodNpcScript);
-        }
+
+        npcScript.InitializeWoodNpc(_treeTransforms, transform.position);
+
+        return npcScript;
     }
 }
