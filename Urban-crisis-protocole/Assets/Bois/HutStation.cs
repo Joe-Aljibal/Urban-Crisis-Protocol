@@ -6,32 +6,28 @@ public class HutStation : WorkStation
      get => base.NpcPrefab;
      set => base.NpcPrefab = value; }
 
-    private Transform[] _treeTransforms;
-    void Awake()
-    {
-        buildingCapacity = 5;
-    }
-
-    // Override to use wood npc prefab
+    private Transform[] _resourceTransforms;
+    
+    // Override to use resource npc prefab
     public override void InitializeBuilding(Vector3 position, int workerCount, GameObject prefab)
     {
         NpcPrefab = prefab;
         base.InitializeBuilding(position, workerCount, prefab);
     }
 
-    public void SetTreePositions(Transform[] treeTransforms)
+    public void SetResourceTransforms(Transform[] resourceTransforms)
     {
-        _treeTransforms = treeTransforms;
+        _resourceTransforms = resourceTransforms;
     }
 
-    // Override to initialize the wood npcs
-    protected override Worker CreateSingleNpc(Vector3 position)
+    // Override to initialize the resource npcs
+    protected override Worker CreateSingleWorker(Vector3 position)
     {
-        NpcScript npcScript = Instantiate(NpcPrefab, position, Quaternion.identity)
-            .GetComponent<NpcScript>();
+        ResourceWorker resourceWorker = Instantiate(NpcPrefab, position, Quaternion.identity)
+            .GetComponent<ResourceWorker>();
 
-        npcScript.InitializeWoodNpc(_treeTransforms, transform.position);
+        resourceWorker.InitializeResourceWorker(_resourceTransforms, transform.position);
 
-        return npcScript;
+        return resourceWorker;
     }
 }

@@ -142,4 +142,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7187c3b493e37429889a6b90a29798, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  woodNpcPrefab: {fileID: 0}
+  _resourceTransforms:
+  - {fileID: 0}

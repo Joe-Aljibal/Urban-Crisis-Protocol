@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8297342626181533972}
   - component: {fileID: 7282714147904788518}
   - component: {fileID: 6439955093723673159}
-  - component: {fileID: 8939025030450855656}
   - component: {fileID: 6462102185225187595}
   - component: {fileID: 3954112697859179201}
+  - component: {fileID: -2777999238529562052}
   m_Layer: 0
   m_Name: Npc
   m_TagString: Untagged
@@ -115,18 +115,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8939025030450855656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 480734883234153411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff74a390d6d15e745a0ade6b4d751077, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!195 &6462102185225187595
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -176,3 +164,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-2777999238529562052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480734883234153411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11da58687cc876d4088869f143dc95ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceWorker

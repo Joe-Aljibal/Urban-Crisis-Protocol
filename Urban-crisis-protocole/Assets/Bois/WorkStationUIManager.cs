@@ -2,12 +2,14 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// This class will serve as a medium between the UI and the work station management logig.
+/// The methods will be called directly by buttons from the UI. 
+/// (The current inputs wil be replaced by buttons)
+/// </summary>
+
 public class WorkStationUIManager : MonoBehaviour
 {
-    /* This class will serve as a medium between the UI and the work station management logig.
-       The methods will be called directly by buttons from the UI. 
-       (The current inputs wil be replaced by buttons) */
-
     public event Action<Vector3, int> OnAddNpc;
     public event Action<Vector3, int, int> OnAddHutStation;
     public event Action<Vector3> OnDeleteHutStation;

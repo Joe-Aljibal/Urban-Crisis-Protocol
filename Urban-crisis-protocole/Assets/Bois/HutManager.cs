@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// This class manages all huts in the scene
+/// </summary>
+
 public class HutManager : MonoBehaviour
 {
-    /* This class manages all huts in the scene */
-
     [SerializeField] GameObject woodNpcPrefab;
 
     [SerializeField] GameObject hutPrefab;
@@ -43,7 +45,7 @@ public class HutManager : MonoBehaviour
             {
                 treePositions[a] = treeTransforms[a].position;
             }
-            hutScript.SetTreePositions(treeTransforms);
+            hutScript.SetResourceTransforms(treeTransforms);
 
             hutScript.InitializeBuilding(offsetPosition, npcCount, woodNpcPrefab);
 
@@ -61,7 +63,7 @@ public class HutManager : MonoBehaviour
         {
             if (col.TryGetComponent<WorkStation>(out var hut))
             {
-                hut.AssignNpcs(number);
+                hut.AssignWorker(number);
             }
         }
     }
@@ -92,7 +94,7 @@ public class HutManager : MonoBehaviour
             
             if(col.TryGetComponent<WorkStation>(out var hut))
             {
-                hut.RemoveNpcs(number);
+                hut.RemoveWorkers(number);
             }
         }
     }

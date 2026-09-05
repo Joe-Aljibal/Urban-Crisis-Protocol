@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class is the parent class of all buildings with workers. 
+/// </summary>
+
 public abstract class WorkStation : MonoBehaviour
 {
-    /* This class is the parent class of all buildings with workers. */
-
     protected virtual GameObject NpcPrefab { get; set; }
     protected virtual List<Worker> WorkerList { get; } = new List<Worker>();
 
@@ -18,29 +20,29 @@ public abstract class WorkStation : MonoBehaviour
     {
         transform.position = position;
         NpcPrefab = prefab;
-        AssignNpcs(workerCount);
+        AssignWorker(workerCount);
     }
 
     public void DestroyBuilding()
     {
-        RemoveNpcs(workers);
+        RemoveWorkers(workers);
         Destroy(gameObject);
     }
 
-    public virtual void AssignNpcs(int number)
+    public virtual void AssignWorker(int number)
     {
         workers += number;
-        CreateNpcs(number);
+        CreateWorker(number);
 
     }
 
-    protected virtual Worker CreateSingleNpc(Vector3 position)
+    protected virtual Worker CreateSingleWorker(Vector3 position)
     {
         return Instantiate(NpcPrefab, position, Quaternion.identity)
             .GetComponent<Worker>();
     }
 
-    protected virtual void CreateNpcs(int number)
+    protected virtual void CreateWorker(int number)
     {
         for (int i = 0; i < number; i++)
         {
@@ -48,26 +50,26 @@ public abstract class WorkStation : MonoBehaviour
                 transform.position.x + i,
                 transform.position.y,
                 transform.position.z);
-            Worker worker = CreateSingleNpc(offsetPosition);
+            Worker worker = CreateSingleWorker(offsetPosition);
             WorkerList.Add(worker);
         }
         
     }
 
-     public virtual void RemoveNpcs(int number)
+     public virtual void RemoveWorkers(int number)
     {
         if(workers > number)
         {
-        DeleteNpcs(number);
+        DeleteWorkers(number);
         workers -= number;
         } else
         {
-            DeleteNpcs(workers);
+            DeleteWorkers(workers);
             workers = 0;
         }
     }
 
-    protected void DeleteNpcs(int number)
+    protected void DeleteWorkers(int number)
     {
         for(int i = 0; i < number; i++)
         {

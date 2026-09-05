@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7706199992376163276}
   - component: {fileID: 4448703768866760605}
   - component: {fileID: 849569709411574024}
-  - component: {fileID: -2853312983415631999}
+  - component: {fileID: 3982426512624086633}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Untagged
@@ -130,7 +130,7 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &-2853312983415631999
+--- !u!114 &3982426512624086633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,6 +139,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7475860632280787229}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9faec02e9ab0a84ca7782c17c16ac13, type: 3}
+  m_Script: {fileID: 11500000, guid: 74722a1ebdcd49741850034553216201, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::StaticResource
+  respawnTime: 2
