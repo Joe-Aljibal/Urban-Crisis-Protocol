@@ -542,8 +542,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c21a6bdcf68caf4ab092372af794145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HutManagerScript
+  woodHutPrefab: {fileID: 1261739651901052233, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
   woodNpcPrefab: {fileID: 480734883234153411, guid: 5c1b58fbc9ee79f49badf5f11a5e1626, type: 3}
-  hutPrefab: {fileID: 1261739651901052233, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
   hutTransform: {fileID: 3410110002746414910, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
   treeTransforms:
   - {fileID: 1823455831}

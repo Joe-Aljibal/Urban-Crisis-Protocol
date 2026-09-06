@@ -9,9 +9,8 @@ using UnityEngine;
 
 public class HutManager : MonoBehaviour
 {
+    [SerializeField] GameObject woodHutPrefab;
     [SerializeField] GameObject woodNpcPrefab;
-
-    [SerializeField] GameObject hutPrefab;
 
     private readonly List<GameObject> hutStations = new();
 
@@ -22,38 +21,22 @@ public class HutManager : MonoBehaviour
     void Awake()
     {
         workStationUIManager.OnAddHutStation += HandleHutCreated;
-        workStationUIManager.OnAddNpc += HandleWoodNpcAssigned;
+        workStationUIManager.OnAddWorker += HandleWorkerAssigned;
         workStationUIManager.OnDeleteHutStation += HandleHutDeleted;
-        workStationUIManager.OnDeleteWoodNpc += HandleWoodNpcDeleted;
+        workStationUIManager.OnDeleteWorker += HandleWorkerDeleted;
     }
 
-    private void HandleHutCreated(Vector3 position, int huts, int npcCount)
+    private void HandleHutCreated(Vector3 position, HutType hutType, int numberHuts, int numberWorkers)
     {
-        for (int i = 0; i < huts; i++)
-        {
-            int offset = i * 3;
-            Vector3 offsetPosition = new(
-               position.x + offset,
-               position.y,
-               position.z);
-
-            GameObject hut = Instantiate(hutPrefab, offsetPosition, Quaternion.identity);
-            HutStation hutScript = hut.GetComponent<HutStation>();
-
-            Vector3[] treePositions = new Vector3[treeTransforms.Length];
-            for (int a = 0; a < treeTransforms.Length; a++)
+            switch (hutType)
             {
-                treePositions[a] = treeTransforms[a].position;
+                case HutType.Wood:
+                CreateHut(position, numberHuts, numberWorkers, treeTransforms, woodHutPrefab, woodNpcPrefab);
+                    break;
             }
-            hutScript.SetResourceTransforms(treeTransforms);
-
-            hutScript.InitializeBuilding(offsetPosition, npcCount, woodNpcPrefab);
-
-            hutStations.Add(hut);
-        }
     }
 
-    private void HandleWoodNpcAssigned(Vector3 position, int number)
+    private void HandleWorkerAssigned(Vector3 position, int number)
     {
         float radius = 2f;
 
@@ -63,7 +46,7 @@ public class HutManager : MonoBehaviour
         {
             if (col.TryGetComponent<WorkStation>(out var hut))
             {
-                hut.AssignWorker(number);
+                hut.AssignWorkers(number);
             }
         }
     }
@@ -83,7 +66,7 @@ public class HutManager : MonoBehaviour
         }
     }
 
-    private void HandleWoodNpcDeleted(Vector3 position, int number)
+    private void HandleWorkerDeleted(Vector3 position, int number)
     {
         float radius = 2f;
 
@@ -99,12 +82,34 @@ public class HutManager : MonoBehaviour
         }
     }
 
+    private void CreateHut(Vector3 position, int numberHuts, int numberWorkers,
+     Transform[] resourceTransforms, GameObject hutPrefab, GameObject workerPrefab)
+    {
+        for (int i = 0; i < numberHuts; i++)
+        {
+            int offset = i * 3;
+            Vector3 offsetPosition = new(
+               position.x + offset,
+               position.y,
+               position.z);
+
+            GameObject hut = Instantiate(hutPrefab, offsetPosition, Quaternion.identity);
+            HutStation hutScript = hut.GetComponent<HutStation>();
+
+            hutScript.SetResourceTransforms(resourceTransforms);
+
+            hutScript.InitializeBuilding(offsetPosition, numberWorkers, workerPrefab);
+
+            hutStations.Add(hut);
+        }
+    }
+
     void OnDestroy()
     {
         workStationUIManager.OnAddHutStation -= HandleHutCreated;
-        workStationUIManager.OnAddNpc -= HandleWoodNpcAssigned;
+        workStationUIManager.OnAddWorker -= HandleWorkerAssigned;
         workStationUIManager.OnDeleteHutStation -= HandleHutDeleted;
-        workStationUIManager.OnDeleteWoodNpc -= HandleWoodNpcDeleted;
+        workStationUIManager.OnDeleteWorker -= HandleWorkerDeleted;
     }
 
 

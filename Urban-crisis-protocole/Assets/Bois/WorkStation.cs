@@ -20,7 +20,7 @@ public abstract class WorkStation : MonoBehaviour
     {
         transform.position = position;
         NpcPrefab = prefab;
-        AssignWorker(workerCount);
+        AssignWorkers(workerCount);
     }
 
     public void DestroyBuilding()
@@ -29,10 +29,10 @@ public abstract class WorkStation : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public virtual void AssignWorker(int number)
+    public virtual void AssignWorkers(int number)
     {
         workers += number;
-        CreateWorker(number);
+        CreateWorkers(number);
 
     }
 
@@ -42,7 +42,7 @@ public abstract class WorkStation : MonoBehaviour
             .GetComponent<Worker>();
     }
 
-    protected virtual void CreateWorker(int number)
+    private void CreateWorkers(int number)
     {
         for (int i = 0; i < number; i++)
         {
@@ -56,7 +56,7 @@ public abstract class WorkStation : MonoBehaviour
         
     }
 
-     public virtual void RemoveWorkers(int number)
+     public void RemoveWorkers(int number)
     {
         if(workers > number)
         {
@@ -69,7 +69,7 @@ public abstract class WorkStation : MonoBehaviour
         }
     }
 
-    protected void DeleteWorkers(int number)
+    private void DeleteWorkers(int number)
     {
         for(int i = 0; i < number; i++)
         {

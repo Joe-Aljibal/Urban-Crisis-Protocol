@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -8,31 +9,34 @@ using UnityEngine.InputSystem;
 public class ResourceWorker : Worker
 {
     private Transform[] _resourceTransforms;
-    private Transform currentRessource;
-    
+    private Transform currentResource;
+
     private Vector3 _stationPosition;
 
     private NavMeshAgent agent;
     private event Action OnResourceFound;
     private event Action OnResourceBroughtBack; // Reach work station
-    private event Action OnResourceCollected; // Harvested ressource
+    private event Action OnResourceCollected; // Harvested resource
 
-    private float collectionTime = 2f;
-    private bool goingToRessource = true;
+    private readonly float collectionTime = 2f;
+    private bool goingToResource = true;
 
     private bool IsNearOldDestination = false;
 
-    private bool isWorking = false; // Has started moving towards first tree
+    private bool isRetrying = false;
 
+    private bool isWorking = false; // Has started moving towards first tree
+    
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.avoidancePriority = UnityEngine.Random.Range(5, 80);
 
         OnResourceBroughtBack += HandleResourceBroughtBack;
         OnResourceCollected += HandleResourceCollected;
         OnResourceFound += GoToNextResource;
     }
-    
+
     public void InitializeResourceWorker(Transform[] resourceTransforms, Vector3 stationPosition)
     {
         _resourceTransforms = resourceTransforms;
@@ -44,25 +48,27 @@ public class ResourceWorker : Worker
     {
         VerifyDestination();
     }
-    
+
     private void VerifyDestination()
     {
         if (isWorking)
         {
+            if (isRetrying) return;
+
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) // Reach destination
             {
                 if (IsNearOldDestination) return; // Prevent the conditions from firing again while the agent is leaving previous destination
                 IsNearOldDestination = true;
-                if (goingToRessource)
+                if (goingToResource)
                 {
                     // Reached tree, Start collecting wood
-                    goingToRessource = false;
+                    goingToResource = false;
                     StartCoroutine(CollectResourceCoroutine());
                 }
                 else
                 {
                     // Reached Hut, Go back to tree
-                    goingToRessource = true;
+                    goingToResource = true;
                     OnResourceBroughtBack?.Invoke();
                     FindNextResource();
                 }
@@ -85,20 +91,21 @@ public class ResourceWorker : Worker
 
     private void HandleResourceCollected()
     {
+        if (currentResource == null) return;
         GetCurrentResourceScript().Disable();
         GetCurrentResourceScript().IsAvailable = true;
-        currentRessource = null;
+        currentResource = null;
     }
 
     private void HandleResourceBroughtBack()
     {
-        // Add ressource
+        // Add resource
     }
 
     private void GoToNextResource()
     {
         // Go to that resource
-        agent.SetDestination(currentRessource.position);
+        agent.SetDestination(currentResource.position);
 
         isWorking = true;
 
@@ -110,8 +117,17 @@ public class ResourceWorker : Worker
     {
         if (!AttemptFindNextResource())
         {
-            StartCoroutine(RetryDelayCoroutine());
-        } else
+            if (!isRetrying) // Prevent more than one retry coroutines at once
+            {
+                isRetrying = true;
+                StartCoroutine(RetryDelayCoroutine());
+            }
+            else
+            {
+                agent.SetDestination(_stationPosition);
+            }
+        }
+        else
         {
             OnResourceFound?.Invoke();
         }
@@ -122,40 +138,42 @@ public class ResourceWorker : Worker
         bool success;
 
         int rng = UnityEngine.Random.Range(0, _resourceTransforms.Length);
-        currentRessource = _resourceTransforms[rng];
-        
-            if (GetCurrentResourceScript().IsAvailable && GetCurrentResourceScript().IsActiveRessource)
-            {
-                success = true;
-            }
-            else
-            {
-                success = false;
-                currentRessource = null;
-            }
+        currentResource = _resourceTransforms[rng];
+
+        if (GetCurrentResourceScript().IsAvailable && GetCurrentResourceScript().IsActiveResource)
+        {
+            success = true;
+        }
+        else
+        {
+            success = false;
+        }
         return success;
     }
 
     private IEnumerator RetryDelayCoroutine()
     {
         yield return new WaitForSeconds(2.0f);
+
+        isRetrying = false;
         FindNextResource();
     }
 
     private StaticResource GetCurrentResourceScript()
     {
-        if(currentRessource == null) return null;
-
-        return currentRessource.gameObject.GetComponent<StaticResource>();
+        if (currentResource == null)    
+            return null;
+        
+        return currentResource.gameObject.GetComponent<StaticResource>();
     }
 
     public override void Delete()
     {
-        var ressourceScript = GetCurrentResourceScript();
+        var resourceScript = GetCurrentResourceScript();
 
-        if (ressourceScript != null)
+        if (resourceScript != null)
         {
-            ressourceScript.IsAvailable = true;
+            resourceScript.IsAvailable = true;
         }
 
         base.Delete();

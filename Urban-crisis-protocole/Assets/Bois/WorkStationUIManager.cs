@@ -10,49 +10,52 @@ using UnityEngine.InputSystem;
 
 public class WorkStationUIManager : MonoBehaviour
 {
-    public event Action<Vector3, int> OnAddNpc;
-    public event Action<Vector3, int, int> OnAddHutStation;
+    public event Action<Vector3, HutType, int, int> OnAddHutStation;
+    public event Action<Vector3, int> OnAddWorker;
     public event Action<Vector3> OnDeleteHutStation;
-    public event Action<Vector3, int> OnDeleteWoodNpc;
+    public event Action<Vector3, int> OnDeleteWorker;
 
-    public void AddWoodNpc(Vector3 position, int number)
+    public void AddHutStation(Vector3 position, HutType hutType, int number, int workers)
     {
-        OnAddNpc?.Invoke(position, number);
+        OnAddHutStation?.Invoke(position, hutType, number, workers);
     }
-    public void AddHutStation(Vector3 position, int number, int npcs)
+
+    public void AddWorker(Vector3 position, int number)
     {
-        OnAddHutStation?.Invoke(position, number, npcs);
+        OnAddWorker?.Invoke(position, number);
     }
+
     public void DeleteHutStation(Vector3 position)
     {
         OnDeleteHutStation?.Invoke(position);
     }
-    public void DeleteWoodNpc(Vector3 position, int number)
+
+    public void DeleteWorker(Vector3 position, int number)
     {
-        OnDeleteWoodNpc?.Invoke(position, number);
+        OnDeleteWorker?.Invoke(position, number);
     }
 
     void Update()
     {
         if(Keyboard.current.wKey.wasPressedThisFrame)
         {
-            AddHutStation(new Vector3(0,1,0), 1, 1);
+            AddHutStation(new Vector3(0,1,0), 0, 1, 1);
         }
         if(Keyboard.current.aKey.wasPressedThisFrame)
         {
-            AddWoodNpc(new Vector3(0,1,0), 1);
-        }
-        if(Keyboard.current.dKey.wasPressedThisFrame)
-        {
-            DeleteWoodNpc(new Vector3(0,1,0), 1);
+            AddWorker(new Vector3(0,1,0), 1);
         }
         if(Keyboard.current.sKey.wasPressedThisFrame)
         {
             DeleteHutStation(new Vector3(0,1,0));
         }
+        if(Keyboard.current.dKey.wasPressedThisFrame)
+        {
+            DeleteWorker(new Vector3(0,1,0), 1);
+        }
         if (Keyboard.current.tabKey.isPressed)
         {
-            Time.timeScale = 5.0f;
+            Time.timeScale = 100.0f;
         } else
         {
             Time.timeScale = 1.0f;

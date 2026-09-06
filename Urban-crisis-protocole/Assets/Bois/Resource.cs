@@ -5,12 +5,12 @@ using UnityEngine.AI;
 public class StaticResource : MonoBehaviour
 {
     [SerializeField] protected float respawnTime = 2.0f;
-    public bool IsActiveRessource { get; set; } = true;
+    public bool IsActiveResource { get; set; } = true;
     public bool IsAvailable { get; set; } = true;
 
     public void Disable()
     {
-        IsActiveRessource = false;
+        IsActiveResource = false;
         DisableComponents();
         StartCoroutine(RespawnCoroutine());
     }
@@ -26,7 +26,7 @@ public class StaticResource : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().enabled = true;
         gameObject.GetComponent<MeshRenderer>().enabled = true;
         gameObject.GetComponent<NavMeshObstacle>().enabled = true;
-        IsActiveRessource = true;
+        IsActiveResource = true;
     }
 
     private void DisableComponents()
