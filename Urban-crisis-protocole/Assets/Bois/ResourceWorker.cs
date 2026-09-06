@@ -10,6 +10,7 @@ public class ResourceWorker : Worker
 {
     private Transform[] _resourceTransforms;
     private Transform currentResource;
+    private ResourceType cachedResourceType;
 
     private Vector3 _stationPosition;
 
@@ -26,7 +27,7 @@ public class ResourceWorker : Worker
     private bool isRetrying = false;
 
     private bool isWorking = false; // Has started moving towards first tree
-    
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -92,6 +93,7 @@ public class ResourceWorker : Worker
     private void HandleResourceCollected()
     {
         if (currentResource == null) return;
+        cachedResourceType = GetCurrentResourceScript().ResourceType;
         GetCurrentResourceScript().Disable();
         GetCurrentResourceScript().IsAvailable = true;
         currentResource = null;
@@ -99,7 +101,7 @@ public class ResourceWorker : Worker
 
     private void HandleResourceBroughtBack()
     {
-        // Add resource
+        PlayerResources.OnResourceCollected?.Invoke(cachedResourceType);
     }
 
     private void GoToNextResource()
@@ -161,9 +163,9 @@ public class ResourceWorker : Worker
 
     private StaticResource GetCurrentResourceScript()
     {
-        if (currentResource == null)    
+        if (currentResource == null)
             return null;
-        
+
         return currentResource.gameObject.GetComponent<StaticResource>();
     }
 

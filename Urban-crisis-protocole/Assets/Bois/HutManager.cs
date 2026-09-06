@@ -30,7 +30,7 @@ public class HutManager : MonoBehaviour
     {
             switch (hutType)
             {
-                case HutType.Wood:
+                case HutType.WoodHut:
                 CreateHut(position, numberHuts, numberWorkers, treeTransforms, woodHutPrefab, woodNpcPrefab);
                     break;
             }

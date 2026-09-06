@@ -2,5 +2,5 @@ using UnityEngine;
 
 public enum HutType
 {
-    Wood = 0,
+    WoodHut = 0,
 }
