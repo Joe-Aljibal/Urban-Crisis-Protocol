@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Water Silo", menuName = "ScriptableObjects/Water Silo")]
-public class WaterSiloSO : ScriptableObject, IBuildingSO
+public class WaterSO : ScriptableObject, IBuildingSO
 {
     public string type = "Utilities";
     public string ressource = "Water";

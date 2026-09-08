@@ -4,6 +4,8 @@ public class House : MonoBehaviour, IBuilding
 {
     PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] public HousesSO houseSO;
+    bool isActive = true;
+
     void Start()
     {
         playerInfo.addPopulation(houseSO.population);
@@ -21,14 +23,25 @@ public class House : MonoBehaviour, IBuilding
         Destroy(gameObject);
     }
 
-    public IBuildingSO getBuildingSO() => houseSO;
-    public string getType() => houseSO.type;
-    public string getRessource() => houseSO.ressource;
-    public int getPopulation() => houseSO.population;
-    public int getPrice() => houseSO.price;
-    public int getElectricityNeeded() => houseSO.electricityNeeded;
-    public bool canPlace() =>
+    public IBuildingSO GetBuildingSO() => houseSO;
+    public string GetType() => houseSO.type;
+    public string GetRessource() => houseSO.ressource;
+    public int GetPopulation() => houseSO.population;
+    public int GetPrice() => houseSO.price;
+    public int GetElectricityNeeded() => houseSO.electricityNeeded;
+    public bool CanPlace() =>
         playerInfo.getMoney >= houseSO.price &&
         playerInfo.getAvailableElectricity >= houseSO.electricityNeeded &&
         playerInfo.getAvailableWater >= houseSO.waterNeeded;
+
+    public bool IsActive() => isActive;
+    public void SetActive() {
+        isActive = true;
+        playerInfo.addPopulation(houseSO.population);
+    }
+    public void Deactivate()
+    {
+        isActive = false;
+        playerInfo.addPopulation(-houseSO.population);
+    }
 }
