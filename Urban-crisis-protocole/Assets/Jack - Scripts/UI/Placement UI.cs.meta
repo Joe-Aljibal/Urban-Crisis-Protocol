@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: a156b6b796079bb4d9717978a088e1bc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - house1: {instanceID: 0}
+  - house1Ghost: {instanceID: 0}
+  - solarPanel: {instanceID: 0}
+  - solarPanelGhost: {instanceID: 0}
+  - gasStation: {instanceID: 0}
+  - gasStationGhost: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
