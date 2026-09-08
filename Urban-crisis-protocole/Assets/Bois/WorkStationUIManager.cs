@@ -10,14 +10,18 @@ using UnityEngine.InputSystem;
 
 public class WorkStationUIManager : MonoBehaviour
 {
-    public event Action<Vector3, HutType, int, int> OnAddHutStation;
+    [SerializeField] private GameObject hutPrefab;
+    [SerializeField] private GameObject workerPrefab;
+    [SerializeField] private HutData hutData;
+
+    public event Action<Vector3, HutData, int, int> OnAddHutStation;
     public event Action<Vector3, int> OnAddWorker;
     public event Action<Vector3> OnDeleteHutStation;
     public event Action<Vector3, int> OnDeleteWorker;
 
-    public void AddHutStation(Vector3 position, HutType hutType, int number, int workers)
+    public void AddHutStation(Vector3 position, HutData hutData, int number, int workers)
     {
-        OnAddHutStation?.Invoke(position, hutType, number, workers);
+        OnAddHutStation?.Invoke(position, hutData, number, workers);
     }
 
     public void AddWorker(Vector3 position, int number)
@@ -39,7 +43,7 @@ public class WorkStationUIManager : MonoBehaviour
     {
         if(Keyboard.current.wKey.wasPressedThisFrame)
         {
-            AddHutStation(new Vector3(0,1,0), 0, 1, 1);
+            AddHutStation(new Vector3(0,1,0), hutData, 1, 1);
         }
         if(Keyboard.current.aKey.wasPressedThisFrame)
         {
