@@ -66,6 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
-    },
-    "dotnet.defaultSolution": "Urban-crisis-protocole.slnx"
+    }
 }
