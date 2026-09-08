@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7c21a6bdcf68caf4ab092372af794145
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - woodNpcPrefab: {instanceID: 0}
+  - hutPrefab: {instanceID: 0}
+  - hutTransform: {instanceID: 0}
+  - workStationUIManager: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
