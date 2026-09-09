@@ -5,6 +5,7 @@ public static class ResourceManager
 {
     private static readonly Dictionary<ResourceType, List<Transform>> resources = new();
 
+    // Add resource and ResourceType to dictionary
     public static void RegisterResource(ResourceType type, Transform transform)
     {
         if (!resources.ContainsKey(type))

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// This class is the parent class of all buildings with workers. 
+/// This class is the parent class of all buildings with worker npcs. 
 /// </summary>
 
 public abstract class WorkStation : MonoBehaviour
@@ -16,13 +16,6 @@ public abstract class WorkStation : MonoBehaviour
     protected int buildingCapacity = 5;
     public int BuildingCapacity => buildingCapacity;
 
-    public virtual void InitializeBuilding(Vector3 position, int workerCount, GameObject prefab)
-    {
-        transform.position = position;
-        NpcPrefab = prefab;
-        AssignWorkers(workerCount);
-    }
-
     public void DestroyBuilding()
     {
         RemoveWorkers(workers);
@@ -31,6 +24,7 @@ public abstract class WorkStation : MonoBehaviour
 
     public virtual void AssignWorkers(int number)
     {
+        if(workers >= buildingCapacity) return;
         workers += number;
         CreateWorkers(number);
 

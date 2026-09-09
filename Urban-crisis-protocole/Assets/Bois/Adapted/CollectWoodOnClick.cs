@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerResources : MonoBehaviour
+public class CollectWoodOnClick : MonoBehaviour
 {
     PlayerInfo playerInfo = PlayerInfo.Instance;
     private void CollectWood()

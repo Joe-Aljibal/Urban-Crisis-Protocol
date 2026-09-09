@@ -772,11 +772,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1f3519dbd71dc8429539b772f6e7a5f, type: 3}
---- !u!4 &966017930 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1875880665063570040, guid: c1f3519dbd71dc8429539b772f6e7a5f, type: 3}
-  m_PrefabInstance: {fileID: 966017929}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1044724643
 GameObject:
   m_ObjectHideFlags: 0
@@ -924,7 +919,7 @@ GameObject:
   - component: {fileID: 1763255419}
   - component: {fileID: 1763255420}
   m_Layer: 0
-  m_Name: HutManager
+  m_Name: DebugHutStationPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -957,14 +952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c21a6bdcf68caf4ab092372af794145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HutManagerScript
-  woodHutPrefab: {fileID: 1261739651901052233, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
-  woodNpcPrefab: {fileID: 480734883234153411, guid: 5c1b58fbc9ee79f49badf5f11a5e1626, type: 3}
-  hutTransform: {fileID: 3410110002746414910, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
-  treeTransforms:
-  - {fileID: 1823455831}
-  - {fileID: 966017930}
-  - {fileID: 1871484306}
-  workStationUIManager: {fileID: 1044724644}
+  hutData: {fileID: 11400000, guid: b594a3b4f7a5c1a4fa4ee999bfebaa5b, type: 2}
 --- !u!1001 &1823455830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1026,11 +1014,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1f3519dbd71dc8429539b772f6e7a5f, type: 3}
---- !u!4 &1823455831 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1875880665063570040, guid: c1f3519dbd71dc8429539b772f6e7a5f, type: 3}
-  m_PrefabInstance: {fileID: 1823455830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1871484305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1092,11 +1075,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1f3519dbd71dc8429539b772f6e7a5f, type: 3}
---- !u!4 &1871484306 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1875880665063570040, guid: c1f3519dbd71dc8429539b772f6e7a5f, type: 3}
-  m_PrefabInstance: {fileID: 1871484305}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1997382214
 GameObject:
   m_ObjectHideFlags: 0

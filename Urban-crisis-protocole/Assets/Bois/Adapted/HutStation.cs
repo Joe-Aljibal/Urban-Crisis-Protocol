@@ -1,16 +1,10 @@
 using UnityEngine;
 
-public class HutStation : WorkStation, IBuilding
+public class HutStation : MonoBehaviour, IBuilding
 {
     private readonly HutStationsSO woodHutStationSO;
 
     PlayerInfo playerInfo = PlayerInfo.Instance;
-
-    protected override GameObject NpcPrefab { 
-     get => base.NpcPrefab;
-     set => base.NpcPrefab = value; }
-
-    private Transform[] _resourceTransforms;
 
     bool isActive = true;
 
@@ -39,19 +33,4 @@ public class HutStation : WorkStation, IBuilding
     }
 
     public int GetWood => woodHutStationSO.resourceAmount;
-
-    public void SetResourceTransforms(Transform[] resourceTransforms)
-    {
-        _resourceTransforms = resourceTransforms;
-    }
-    
-    protected override Worker CreateSingleWorker(Vector3 position)
-    {
-        ResourceWorker resourceWorker = Instantiate(NpcPrefab, position, Quaternion.identity)
-            .GetComponent<ResourceWorker>();
-
-        resourceWorker.InitializeResourceWorker(_resourceTransforms, transform.position);
-
-        return resourceWorker;
-    }
 }
