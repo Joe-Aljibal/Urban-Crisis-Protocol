@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class ResourceUIManager : MonoBehaviour
 {
-    [SerializeField] private PlayerResources playerResource;
+    PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] private TMP_Text woodText;
 
-    void Awake()
-    {
-       playerResource.OnWoodAdded += UpdateWoodText;
-    }
     private void UpdateWoodText()
     {
-        woodText.text = $"Wood: {playerResource.Wood}";
+        woodText.text = $"Wood: {playerInfo.getWood}";
+    }
+    void Update()
+    {
+        UpdateWoodText();
     }
 }

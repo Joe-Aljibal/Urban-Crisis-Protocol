@@ -4,29 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerResources : MonoBehaviour
 {
-    private int wood = 0;
-    public int Wood => wood;
-
-    public static Action<ResourceType> OnResourceCollected;
-    public event Action OnWoodAdded;
-
-    void Awake()
-    {
-        OnResourceCollected += HandleResourceCollected;
-    }
-
-    private void HandleResourceCollected(ResourceType resourceType)
-    {
-        switch (resourceType)
-        {
-
-            case ResourceType.Wood:
-                wood++;
-                OnWoodAdded?.Invoke();
-                break;
-        }
-    }
-
+    PlayerInfo playerInfo = PlayerInfo.Instance;
     private void CollectWood()
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -38,8 +16,7 @@ public class PlayerResources : MonoBehaviour
             {
                 r.Disable();
                 r.IsAvailable = false;
-                wood++;
-                OnWoodAdded?.Invoke();
+                playerInfo.addWood(1);
             }
         }
     }

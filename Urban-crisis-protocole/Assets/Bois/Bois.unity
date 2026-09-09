@@ -335,54 +335,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309792049}
   m_CullTransparentMesh: 1
---- !u!1 &354087397
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 354087399}
-  - component: {fileID: 354087398}
-  m_Layer: 0
-  m_Name: RessourceManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &354087398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 354087397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f86e110e90beae7428bdd4b7f3f65087, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  treeTransforms:
-  - {fileID: 1823455831}
-  - {fileID: 966017930}
-  - {fileID: 1871484306}
---- !u!4 &354087399
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 354087397}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.1, y: 2, z: 10.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &397019994
 GameObject:
   m_ObjectHideFlags: 0
@@ -945,7 +897,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3bf380e19cfe6841bec3f7a3b79ef15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceUIManager
-  playerResource: {fileID: 1088874964}
   woodText: {fileID: 309792051}
 --- !u!4 &1703922857
 Transform:
@@ -1299,4 +1250,3 @@ SceneRoots:
   - {fileID: 1088874965}
   - {fileID: 919024433}
   - {fileID: 8698140}
-  - {fileID: 354087399}

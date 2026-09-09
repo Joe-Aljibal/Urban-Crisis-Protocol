@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(NavMeshAgent))]
 public class ResourceWorker : Worker
 {
+    PlayerInfo playerInfo = PlayerInfo.Instance;
+
     private Transform[] _resourceTransforms;
     private Transform currentResource;
     private ResourceType cachedResourceType;
@@ -101,7 +103,7 @@ public class ResourceWorker : Worker
 
     private void HandleResourceBroughtBack()
     {
-        PlayerResources.OnResourceCollected?.Invoke(cachedResourceType);
+        playerInfo.addWood(1);
     }
 
     private void GoToNextResource()

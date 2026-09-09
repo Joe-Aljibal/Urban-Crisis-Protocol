@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6993018504647631289}
   - component: {fileID: 6810952976535562572}
   - component: {fileID: 3043492749135138230}
+  - component: {fileID: 2762911948819110260}
   m_Layer: 0
   m_Name: Hut
   m_TagString: Untagged
@@ -138,7 +139,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1261739651901052233}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb7187c3b493e37429889a6b90a29798, type: 3}
   m_Name: 
@@ -156,3 +157,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalHutManager
   hutData: {fileID: 11400000, guid: b594a3b4f7a5c1a4fa4ee999bfebaa5b, type: 2}
+--- !u!114 &2762911948819110260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261739651901052233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b48dcd1e93d70a74eb0c670741d000b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HutStation

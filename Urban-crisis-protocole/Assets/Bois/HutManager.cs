@@ -29,7 +29,7 @@ public class HutManager : MonoBehaviour
     private void HandleHutCreated(Vector3 position, HutData hutData, int numberHuts, int numberWorkers)
     {
             
-                CreateHut(position, hutData, numberHuts, numberWorkers, treeTransforms, woodHutPrefab, woodNpcPrefab);
+        CreateHut(position, hutData, numberHuts, numberWorkers, treeTransforms, woodHutPrefab, woodNpcPrefab);
                     
             
     }
@@ -92,7 +92,10 @@ public class HutManager : MonoBehaviour
                position.z);
 
             GameObject hut = Instantiate(hutData.hutPrefab, offsetPosition, Quaternion.identity);        
-            HutStation hutScript = hut.GetComponent<HutStation>();
+            //LocalHutManager localHutManager = hut.GetComponent<LocalHutManager>();
+            //localHutManager.hutData = hutData;
+
+            HutStationOld hutScript = hut.GetComponent<HutStationOld>();
 
             hutScript.SetResourceTransforms(resourceTransforms);
 
