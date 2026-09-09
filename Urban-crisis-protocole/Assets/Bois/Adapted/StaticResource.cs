@@ -11,6 +11,11 @@ public class StaticResource : MonoBehaviour
     public bool IsActiveResource { get; set; } = true;
     public bool IsAvailable { get; set; } = true;
 
+    void Awake()
+    {
+        ResourceManager.RegisterResource(resourceType, transform);
+    }
+
     public void Disable()
     {
         IsActiveResource = false;

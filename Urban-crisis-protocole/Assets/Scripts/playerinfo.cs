@@ -15,6 +15,7 @@ public class PlayerInfo
     int waterUsed;
     int food = 0;
     float money = 2000;
+    int wood = 0;
 
     public void addPopulation(int population)
     {
@@ -38,7 +39,8 @@ public class PlayerInfo
         if (electricity > 0)
         {
             this.electricity += electricity;
-        } else
+        }
+        else
         {
             this.electricity += electricity;
             electricityUsed = Mathf.Min(electricityUsed, electricity);
@@ -60,6 +62,9 @@ public class PlayerInfo
 
     public void addMoney(float money) { this.money += money; }
     public float getMoney => money;
+
+    public void addWood(int wood) { this.wood += wood; }
+    public int getWood => wood;
 
     public List<GameObject> electricityList = new List<GameObject>();
 

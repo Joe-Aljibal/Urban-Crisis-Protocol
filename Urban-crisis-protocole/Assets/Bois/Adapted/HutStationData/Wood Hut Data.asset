@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8d36a7fb289ea94daedcb2740f19748, type: 3}
-  m_Name: HutData
+  m_Name: Wood Hut Data
   m_EditorClassIdentifier: Assembly-CSharp::HutData
   hutType: 0
   resourceType: 0
-  hutPrefab: {fileID: 1261739651901052233, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
+  hutPrefab: {fileID: 5347721756260967645, guid: 663b655aad61e8c4fa649f13cf23925c, type: 3}
   WorkerPrefab: {fileID: 480734883234153411, guid: 5c1b58fbc9ee79f49badf5f11a5e1626, type: 3}
