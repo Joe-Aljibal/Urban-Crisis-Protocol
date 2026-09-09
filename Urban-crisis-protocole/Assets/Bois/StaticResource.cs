@@ -4,7 +4,10 @@ using UnityEngine.AI;
 
 public class StaticResource : MonoBehaviour
 {
-    [SerializeField] protected float respawnTime = 2.0f;
+    [SerializeField] private float respawnTime = 2.0f;
+    [SerializeField] private ResourceType resourceType;
+    
+    public ResourceType ResourceType => resourceType;
     public bool IsActiveResource { get; set; } = true;
     public bool IsAvailable { get; set; } = true;
 
