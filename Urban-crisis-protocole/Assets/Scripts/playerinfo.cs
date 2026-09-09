@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class PlayerInfo
 {
@@ -16,6 +17,7 @@ public class PlayerInfo
     int food = 0;
     float money = 2000;
     int wood = 0;
+    int stone = 0;
 
     public void addPopulation(int population)
     {
@@ -65,6 +67,22 @@ public class PlayerInfo
 
     public void addWood(int wood) { this.wood += wood; }
     public int getWood => wood;
+
+    public void addStone(int stone) { this.stone += stone; }
+    public int getStone => stone;
+
+    public void addResource(ResourceType type, int amount)
+    {
+        switch (type)
+        {
+            case ResourceType.Wood:
+                wood += amount;
+                break;
+            case ResourceType.Stone:
+                stone += amount;
+                break;
+        }
+    }
 
     public List<GameObject> electricityList = new List<GameObject>();
 
