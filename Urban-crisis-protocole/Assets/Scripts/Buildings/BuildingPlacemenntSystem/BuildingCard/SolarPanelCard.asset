@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d96b42292fadfb43ab47cb944b6a443, type: 3}
+  m_Name: SolarPanelCard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
+  prefabCurrentCaseSelection: {fileID: 7631688753224110343, guid: e7309b4fe602d0d4c9219c1192134d0e, type: 3}
+  completPrefab: {fileID: 7974999987799168280, guid: f6790bec82e262c4e930e0dd3a213559, type: 3}
+  meshPrefab: {fileID: 7974999987799168280, guid: f6790bec82e262c4e930e0dd3a213559, type: 3}
+  placementRule: {fileID: 11400000, guid: 2e42c4fbc8a4ff64eb82db7061b87df4, type: 2}

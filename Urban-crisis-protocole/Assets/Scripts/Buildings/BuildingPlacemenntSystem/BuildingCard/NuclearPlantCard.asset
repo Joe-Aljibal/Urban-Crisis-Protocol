@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d96b42292fadfb43ab47cb944b6a443, type: 3}
+  m_Name: NuclearPlantCard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
+  prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
+  completPrefab: {fileID: 6111766866430465922, guid: 25ff2a2ffbf78d94ab3a266f75b0d1c9, type: 3}
+  meshPrefab: {fileID: 6111766866430465922, guid: 25ff2a2ffbf78d94ab3a266f75b0d1c9, type: 3}
+  placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}
