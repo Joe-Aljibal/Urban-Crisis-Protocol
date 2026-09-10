@@ -1,9 +1,4 @@
 ﻿<Solution>
-<<<<<<< HEAD
-  <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
-=======
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
->>>>>>> c94a667f7f48309bd611df4da56cbe3ba43e6142
 </Solution>
