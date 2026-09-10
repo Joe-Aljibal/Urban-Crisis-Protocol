@@ -4,8 +4,12 @@
 TagManager:
   serializedVersion: 3
   tags:
+<<<<<<< HEAD
   - Bomb
   - Ground
+=======
+  - Tree
+>>>>>>> e96a254388030df5030341a24f96869f8c74e7d6
   layers:
   - Default
   - TransparentFX
