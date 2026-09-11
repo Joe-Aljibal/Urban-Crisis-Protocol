@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d96b42292fadfb43ab47cb944b6a443, type: 3}
-  m_Name: Batimentx
+  m_Name: House
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
-  prefabCurrentCaseSelection: {fileID: 0}
-  completPrefab: {fileID: 0}
-  meshPrefab: {fileID: 0}
-  placementRule: {fileID: 0}
+  prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
+  completPrefab: {fileID: 5141511499411440261, guid: 08ffe52f25b105243b0ae78cffbbaeb5, type: 3}
+  meshPrefab: {fileID: 5141511499411440261, guid: 08ffe52f25b105243b0ae78cffbbaeb5, type: 3}
+  placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}
