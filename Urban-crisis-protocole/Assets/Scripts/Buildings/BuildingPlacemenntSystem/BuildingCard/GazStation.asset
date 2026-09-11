@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: GazStation
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
   prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
-  completPrefab: {fileID: 1820916389850626277, guid: 1e1e897b6cf44d84a989f407039d826c, type: 3}
-  meshPrefab: {fileID: 1820916389850626277, guid: 1e1e897b6cf44d84a989f407039d826c, type: 3}
+  completPrefab: {fileID: 6877529577758904393, guid: 32b645105cf477a42aa29a78fd02c6e3, type: 3}
+  meshPrefab: {fileID: 6877529577758904393, guid: 32b645105cf477a42aa29a78fd02c6e3, type: 3}
   placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}

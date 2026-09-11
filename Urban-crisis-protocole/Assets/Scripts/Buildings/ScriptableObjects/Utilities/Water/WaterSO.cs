@@ -8,4 +8,6 @@ public class WaterSO : ScriptableObject, IBuildingSO
     public int electricityNeeded = 0;
     public int water = 10;
     public int price = 25;
+
+     public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
 }
