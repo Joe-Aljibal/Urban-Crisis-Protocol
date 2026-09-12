@@ -202,7 +202,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14592e4197b0c954bae54bd4da520461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombFallController
-  fallingSound: {fileID: 8300000, guid: 95f4954a92f5c284683796e502a4fea3, type: 3}
+  fallingSound: {fileID: 8300000, guid: f21d28b2f5aefdb49ada42f796092bbb, type: 3}
+  impactSound: {fileID: 8300000, guid: f9cfa49a5ab4e254e91eccab970643ed, type: 3}
+  validImpactLayer:
+    serializedVersion: 2
+    m_Bits: 48
+  impactLeadOffset: 0.15
 --- !u!114 &6916562662468553873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,8 +236,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombDetonationController
   explosionEffect: {fileID: 3655636147279737538, guid: 3e5a7ca421e0fa0438c571f2febd0293, type: 3}
-  explosionDelay: 1
-  effectDuration: 5
+  explosionDelay: 0.5
+  effectDuration: 3
 --- !u!114 &4524437043585889311
 MonoBehaviour:
   m_ObjectHideFlags: 0
