@@ -145,8 +145,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2029243068690900861}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -5.64239, y: 0.00001, z: -9.99206}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -162,7 +162,7 @@ Transform:
   - {fileID: 4250930709208479427}
   - {fileID: 5953399770572874199}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7985015091897849339
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &4603765861202178195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,11 +203,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombFallController
   fallingSound: {fileID: 8300000, guid: f21d28b2f5aefdb49ada42f796092bbb, type: 3}
-  impactSound: {fileID: 8300000, guid: f9cfa49a5ab4e254e91eccab970643ed, type: 3}
+  impactSound: {fileID: 8300000, guid: bb164ea47f6e0b6459647a3d20b2b251, type: 3}
   validImpactLayer:
     serializedVersion: 2
-    m_Bits: 48
-  impactLeadOffset: 0.15
+    m_Bits: 8
 --- !u!114 &6916562662468553873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BombImpactDetector
   validImpactLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8
 --- !u!114 &-4716146620997619225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,8 +235,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombDetonationController
   explosionEffect: {fileID: 3655636147279737538, guid: 3e5a7ca421e0fa0438c571f2febd0293, type: 3}
-  explosionDelay: 0.5
-  effectDuration: 3
+  explosionDelay: 3
+  explosionSound: {fileID: 8300000, guid: bb164ea47f6e0b6459647a3d20b2b251, type: 3}
+  explosionVolume: 5
+  effectDuration: 10
 --- !u!114 &4524437043585889311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -765,7 +766,7 @@ Transform:
   m_GameObject: {fileID: 5384504543259671882}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 12.37, z: 0}
+  m_LocalPosition: {x: -0, y: 12.3, z: 0}
   m_LocalScale: {x: 3.5, y: 3, z: 3.5}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -17,8 +17,8 @@ public class BombFallController : MonoBehaviour
     [SerializeField]
     private LayerMask validImpactLayer;
 
-    [SerializeField]
-    private float impactLeadOffset = 0f;
+    // [SerializeField]
+    // private float impactLeadOffset = 0f;
 
     private bool isFalling;
     private bool impactSoundStarted;
@@ -47,16 +47,20 @@ public class BombFallController : MonoBehaviour
         if (impactSoundStarted)
             return;
 
-        if (impactSound != null && GetTimeToImpact() <= impactSound.length + impactLeadOffset)
-        {
-            StartImpactSound();
-        }
-        else if (!fallSource.isPlaying && fallingSound != null)
+        if (!fallSource.isPlaying && fallingSound != null)
         {
             fallSource.clip = fallingSound;
             fallSource.loop = true;
             fallSource.Play();
         }
+    }
+
+    public void PlayImpactSound()
+    {
+        if (impactSoundStarted)
+            return;
+
+        StartImpactSound();
     }
 
     private void StartImpactSound()
@@ -67,28 +71,6 @@ public class BombFallController : MonoBehaviour
         impactSource.Play();
         fallSource.Stop();
     }
-
-    private float GetTimeToImpact()
-    {
-        if (
-            !Physics.Raycast(
-                transform.position,
-                Vector3.down,
-                out RaycastHit hit,
-                Mathf.Infinity,
-                validImpactLayer
-            )
-        )
-        {
-            return Mathf.Infinity;
-        }
-
-        float d = hit.distance;
-        float v = GetFallSpeed();
-        float g = Mathf.Abs(Physics.gravity.y);
-        return (-v + Mathf.Sqrt(v * v + 2f * g * d)) / g;
-    }
-
     private void BeginFall()
     {
         rb.useGravity = true;
