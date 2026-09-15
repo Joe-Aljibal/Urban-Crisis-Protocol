@@ -22,6 +22,12 @@ public class BombDetonationController : MonoBehaviour, IDetonable
 
     public event Action<Vector3> OnDetonated;
     private Coroutine explosionCoroutine;
+    private ExplosionAreaController explosionArea;
+
+    private void Awake()
+    {
+        explosionArea = GetComponent<ExplosionAreaController>();
+    }
 
     public void Detonate(Vector3 position)
     {
@@ -39,7 +45,10 @@ public class BombDetonationController : MonoBehaviour, IDetonable
         CreateExplosionEffect(position);
 
         OnDetonated?.Invoke(position);
-        DestroyBomb();
+        if (explosionArea != null)
+        explosionArea.OnAreaFinished += DestroyBomb;
+        else
+            DestroyBomb();
     }
 
     private void CreateExplosionEffect(Vector3 position)
