@@ -87,7 +87,7 @@ public class PlayerInfo
         resources[type] += amount;
     }
 
-    public List<GameObject> electricityList = new List<GameObject>();
+    public Dictionary<IBuilding, int> electricityList = new Dictionary<IBuilding, int>();
 
     public void ElectrifyBuildings(ElectricitySO electricitySO)
     {

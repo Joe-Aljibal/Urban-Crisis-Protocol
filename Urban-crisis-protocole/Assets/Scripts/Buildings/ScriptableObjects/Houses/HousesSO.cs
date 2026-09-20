@@ -6,6 +6,7 @@ public class HousesSO : ScriptableObject, IBuildingSO
     public string type = "Population";
     public string ressource = "Population";
     public int electricityNeeded;
+    public int electricityReceived = 0;
     public int waterNeeded;
     public int population;
     public int price;

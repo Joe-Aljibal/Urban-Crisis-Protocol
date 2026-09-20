@@ -9,6 +9,7 @@ public class Business: MonoBehaviour, IBuilding
     float cooldown = 0;
     bool isActive = true;
 
+    int electricityReceived = 0;
 
     void Start()
     {
@@ -23,7 +24,7 @@ public class Business: MonoBehaviour, IBuilding
             playerinfo.addMoney(businessesSO.profit);
             cooldown = 0;
         }
-            cooldown += Time.deltaTime;
+            cooldown = isActive ? cooldown + Time.deltaTime : 0;
     }
 
     public void DeleteButton()
@@ -35,18 +36,27 @@ public class Business: MonoBehaviour, IBuilding
         Destroy(gameObject);
     }
 
-    public void Deactivate() {
+    public void Deactivate(int electricityLost) {
         isActive = false;
+        electricityReceived -= electricityLost;
         playerinfo.electricityList.Add(gameObject);
-        playerinfo.UseElectricity(-businessesSO.electricityNeeded);
+        playerinfo.UseElectricity(-electricityLost);
     }
-    public bool IsActive() => isActive;
-    public void SetActive() {
+    public void Activate() {
         isActive = true;
         playerinfo.UseElectricity(businessesSO.electricityNeeded);
-
     }
 
+    public void UseElectricity(int electricity)
+    {
+        electricityReceived += electricity;
+        playerinfo.UseElectricity(electricity);
+
+        if (electricityReceived == GetElectricityNeeded())
+            Activate();
+    }
+
+    public bool IsActive() => isActive;
     public IBuildingSO GetBuildingSO() => businessesSO;
     public string GetType() => businessesSO.type;
     public string GetRessource() => businessesSO.ressource;
