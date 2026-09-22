@@ -3,18 +3,17 @@ using UnityEngine;
 public class Business: MonoBehaviour, IBuilding
 {
     [SerializeField] BusinessesSO businessesSO;
-    
     PlayerInfo playerinfo = PlayerInfo.Instance;
-    
+
+    int electricityReceived = 0;
     float cooldown = 0;
     bool isActive = true;
 
-    int electricityReceived = 0;
-
     void Start()
     {
+        playerinfo.electricityDependants.Add(this, 0);
+        playerinfo.ElectrifyBuildings();
         playerinfo.addWorkingPopulation(businessesSO.population);
-        playerinfo.UseElectricity(businessesSO.electricityNeeded);
     }
 
     void Update()
@@ -39,7 +38,7 @@ public class Business: MonoBehaviour, IBuilding
     public void Deactivate(int electricityLost) {
         isActive = false;
         electricityReceived -= electricityLost;
-        playerinfo.electricityList.Add(gameObject);
+        playerinfo.electricityDependants.Add(this, electricityReceived);
         playerinfo.UseElectricity(-electricityLost);
     }
     public void Activate() {
@@ -53,15 +52,19 @@ public class Business: MonoBehaviour, IBuilding
         playerinfo.UseElectricity(electricity);
 
         if (electricityReceived == GetElectricityNeeded())
+        {
             Activate();
+            playerinfo.electricityDependants.Remove(this);
+        }
     }
 
     public bool IsActive() => isActive;
     public IBuildingSO GetBuildingSO() => businessesSO;
-    public string GetType() => businessesSO.type;
+    public string GetBuildingType() => businessesSO.type;
     public string GetRessource() => businessesSO.ressource;
     public int GetPopulation() => businessesSO.population;
     public int GetPrice() => businessesSO.price;
+    public int GetElectricityReceived() => electricityReceived;
     public int GetElectricityNeeded() => businessesSO.electricityNeeded;
     public int GetProfit() => businessesSO.profit;
     public bool CanPlace() =>

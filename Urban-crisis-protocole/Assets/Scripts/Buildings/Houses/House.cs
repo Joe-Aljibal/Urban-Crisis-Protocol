@@ -29,7 +29,7 @@ public class House : MonoBehaviour, IBuilding
     {
         isActive = false;
         electricityReceived -= electricityLost;
-        playerInfo.electricityList.Add(gameObject);
+        playerInfo.electricityDependants.Add(this, electricityReceived);
         playerInfo.addPopulation(-houseSO.population);
     }
     public void Activate()
@@ -48,11 +48,11 @@ public class House : MonoBehaviour, IBuilding
     }
 
     public IBuildingSO GetBuildingSO() => houseSO;
-    public string GetType() => houseSO.type;
+    public string GetBuildingType() => houseSO.type;
     public string GetRessource() => houseSO.ressource;
     public int GetPopulation() => houseSO.population;
     public int GetPrice() => houseSO.price;
-    public int GetElectricityReceived() => houseSO.electricityReceived;
+    public int GetElectricityReceived() => electricityReceived;
     public int GetElectricityNeeded() => houseSO.electricityNeeded;
     public bool CanPlace() =>
         playerInfo.getMoney >= houseSO.price &&

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public interface IBuilding
 {
-    public string GetType();
+    public string GetBuildingType();
     public string GetRessource();
     public int GetElectricityReceived();
     public int GetElectricityNeeded();
