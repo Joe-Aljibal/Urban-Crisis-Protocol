@@ -8,4 +8,6 @@ public class ElectricitySO : ScriptableObject, IBuildingSO
     public string ressource = "Electricity";
     public int electricityOutput;
     public int price;
+
+    public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
 }
