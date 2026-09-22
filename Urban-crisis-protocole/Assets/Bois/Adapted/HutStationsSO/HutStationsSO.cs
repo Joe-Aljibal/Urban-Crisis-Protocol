@@ -9,4 +9,6 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
     public int population;
     public int resourceAmount = 1;
     public int price = 25;
+
+    public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
 }
