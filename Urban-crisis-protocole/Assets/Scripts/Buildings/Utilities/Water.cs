@@ -24,8 +24,8 @@ public class Water : MonoBehaviour, IBuilding
     public int GetElectricityNeeded() => waterSO.electricityNeeded;
     public int GetPrice() => waterSO.price;
     public string GetRessource() => waterSO.ressource;
-    public string GetType() => waterSO.type;
-
+    public string GetBuildingType() => waterSO.type;
+    public int GetWater => waterSO.water;
     public bool IsActive() => isActive;
 
     public void SetActive()
@@ -39,5 +39,12 @@ public class Water : MonoBehaviour, IBuilding
         playerInfo.addWater(-waterSO.water);
     }
 
-    public int GetWater => waterSO.water;
+    public int GetElectricityReceived() => 0;
+
+    public void Deactivate(int electricityLost)
+    {
+        throw new System.NotImplementedException();
+    }
+    public void Activate() { }
+    public void UseElectricity(int electricity) { }
 }

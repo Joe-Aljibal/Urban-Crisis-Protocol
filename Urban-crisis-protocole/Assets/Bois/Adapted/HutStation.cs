@@ -16,7 +16,7 @@ public class HutStation : MonoBehaviour, IBuilding
     public int GetElectricityNeeded() => woodHutStationSO.electricityNeeded;
     public int GetPrice() => woodHutStationSO.price;
     public string GetRessource() => woodHutStationSO.resource;
-    public string GetType() => woodHutStationSO.type;
+    public string GetBuildingType() => woodHutStationSO.type;
 
     public bool IsActive() => isActive;
 
@@ -30,6 +30,26 @@ public class HutStation : MonoBehaviour, IBuilding
     {
         isActive = false;
         playerInfo.addWood(-woodHutStationSO.resourceAmount);
+    }
+
+    public int GetElectricityReceived()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Deactivate(int electricityLost)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Activate()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void UseElectricity(int electricity)
+    {
+        throw new System.NotImplementedException();
     }
 
     public int GetWood => woodHutStationSO.resourceAmount;

@@ -87,25 +87,17 @@ public class PlayerInfo
         resources[type] += amount;
     }
 
-    public List<GameObject> electricityList = new List<GameObject>();
+    public Dictionary<IBuilding, int> electricityDependants = new();
+    public Dictionary<GameObject, int> electricityProviders = new();
 
-    public void ElectrifyBuildings(ElectricitySO electricitySO)
+    public void ElectrifyBuildings()
     {
-        if (electricityList.Count > 0)
+        foreach (var pair in electricityProviders)
         {
-            electricitySO.AddElectricity();
+            if (electricityDependants.Count < 1)
+                break;
 
-            foreach (GameObject go in electricityList)
-            {
-                if (getAvailableElectricity == 0)
-                    break;
-
-                if (getAvailableElectricity >= go.GetComponent<IBuilding>().GetElectricityNeeded())
-                {
-                    UseElectricity(go.GetComponent<IBuilding>().GetElectricityNeeded());
-                    electricityList.Remove(go);
-                }
-            }
+            pair.Key.GetComponent<Electricity>().ElectrifyBuildings();
         }
     }
 }
