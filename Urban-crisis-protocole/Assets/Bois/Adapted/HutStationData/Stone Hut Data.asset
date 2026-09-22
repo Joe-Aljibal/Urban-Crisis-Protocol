@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d36a7fb289ea94daedcb2740f19748, type: 3}
+  m_Name: Stone Hut Data
+  m_EditorClassIdentifier: Assembly-CSharp::HutData
+  resourceType: 1
+  hutPrefab: {fileID: 4096235033453140659, guid: 1eed85b20b0fa374aaa4ccf6d3f8ccb3, type: 3}
+  WorkerPrefab: {fileID: 480734883234153411, guid: 11eb50d5a26a27b4b870d205e4fe3dec, type: 3}

@@ -2,10 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CollectWoodOnClick : MonoBehaviour
+public class CollectResourceOnClick : MonoBehaviour
 {
     PlayerInfo playerInfo = PlayerInfo.Instance;
-    private void CollectWood()
+    private void CollectResourceClick()
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
@@ -14,16 +14,14 @@ public class CollectWoodOnClick : MonoBehaviour
             if (hit.transform.TryGetComponent(out StaticResource r) && Mouse.current.leftButton.wasPressedThisFrame
             && r.IsAvailable)
             {
-                r.Disable();
-                r.IsAvailable = false;
-                playerInfo.addWood(1);
+                playerInfo.addResource(r.ResourceType, 1);
             }
         }
     }
 
     void Update()
     {
-        CollectWood();
+        CollectResourceClick();
     }
 
 }

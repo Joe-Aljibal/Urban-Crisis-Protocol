@@ -11,11 +11,23 @@ public class BombDetonationController : MonoBehaviour, IDetonable
     public float explosionDelay = 1f;
 
     [SerializeField]
+    private AudioClip explosionSound;
+
+    [SerializeField]
+    private float explosionVolume = 1f;
+
+    [SerializeField]
     public float effectDuration = 5f;
     private bool hasExploded = false;
 
     public event Action<Vector3> OnDetonated;
     private Coroutine explosionCoroutine;
+    private ExplosionAreaController explosionArea;
+
+    private void Awake()
+    {
+        explosionArea = GetComponent<ExplosionAreaController>();
+    }
 
     public void Detonate(Vector3 position)
     {
@@ -33,13 +45,19 @@ public class BombDetonationController : MonoBehaviour, IDetonable
         CreateExplosionEffect(position);
 
         OnDetonated?.Invoke(position);
-        DestroyBomb();
+        if (explosionArea != null)
+        explosionArea.OnAreaFinished += DestroyBomb;
+        else
+            DestroyBomb();
     }
 
     private void CreateExplosionEffect(Vector3 position)
     {
         GameObject newEffect = Instantiate(explosionEffect, position, Quaternion.identity);
-
+        if (explosionSound != null)
+        {
+            AudioSource.PlayClipAtPoint(explosionSound, position, explosionVolume);
+        }
         Destroy(newEffect, effectDuration);
     }
 

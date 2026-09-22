@@ -53,6 +53,7 @@ public class BombImpactDetector : MonoBehaviour
         Vector3 impactPoint = GetImpactPoint(collision);
         if (fallController != null)
         {
+            fallController.PlayImpactSound();
             fallController.StopFall();
         }
         NotifyDetonation(impactPoint);

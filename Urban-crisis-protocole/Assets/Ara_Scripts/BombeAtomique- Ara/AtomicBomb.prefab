@@ -145,8 +145,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2029243068690900861}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -5.64239, y: 0.00001, z: -9.99206}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -161,8 +161,9 @@ Transform:
   - {fileID: 1988471162618032689}
   - {fileID: 4250930709208479427}
   - {fileID: 5953399770572874199}
+  - {fileID: 7340985924669685837}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7985015091897849339
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -189,7 +190,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &4603765861202178195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +203,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14592e4197b0c954bae54bd4da520461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombFallController
-  fallingSound: {fileID: 8300000, guid: 95f4954a92f5c284683796e502a4fea3, type: 3}
+  fallingSound: {fileID: 8300000, guid: f21d28b2f5aefdb49ada42f796092bbb, type: 3}
+  impactSound: {fileID: 8300000, guid: bb164ea47f6e0b6459647a3d20b2b251, type: 3}
+  validImpactLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &6916562662468553873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BombImpactDetector
   validImpactLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8
 --- !u!114 &-4716146620997619225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,8 +236,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombDetonationController
   explosionEffect: {fileID: 3655636147279737538, guid: 3e5a7ca421e0fa0438c571f2febd0293, type: 3}
-  explosionDelay: 1
-  effectDuration: 5
+  explosionDelay: 3
+  explosionSound: {fileID: 8300000, guid: bb164ea47f6e0b6459647a3d20b2b251, type: 3}
+  explosionVolume: 5
+  effectDuration: 1
 --- !u!114 &4524437043585889311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,8 +252,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 313c38dbed2920243ac4183d97703cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplosionAreaController
-  explosionRadius: 20
-  triggerDuration: 0.2
+  explosionRadius: 110
+  growthRadius: 0.1
+  triggerDuration: 0.01
+  explosionSpherePrefab: {fileID: 7002033290093421695}
+  explosionSphereMaterial: {fileID: 2100000, guid: 5bd22d36fad4f2f4495ba39c44b4e31e, type: 2}
+  explosionSphereColor: {r: 1, g: 0.45, b: 0.1, a: 1}
 --- !u!135 &3526704157700841485
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -760,7 +771,7 @@ Transform:
   m_GameObject: {fileID: 5384504543259671882}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 12.37, z: 0}
+  m_LocalPosition: {x: -0, y: 12.3, z: 0}
   m_LocalScale: {x: 3.5, y: 3, z: 3.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1170,6 +1181,118 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6420917567114534493}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7002033290093421695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7340985924669685837}
+  - component: {fileID: 7348152288099317966}
+  - component: {fileID: 142595612652316590}
+  - component: {fileID: 7814919187828443792}
+  m_Layer: 0
+  m_Name: Effet D'explosion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7340985924669685837
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002033290093421695}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 7.92553, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4387949195581166492}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7348152288099317966
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002033290093421695}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &142595612652316590
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002033290093421695}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 5bd22d36fad4f2f4495ba39c44b4e31e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &7814919187828443792
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002033290093421695}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
