@@ -14,4 +14,5 @@ public class ElectricitySO : ScriptableObject, IBuildingSO
     {
         PlayerInfo.Instance.addElectricity(electricityOutput);
     }
+    public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
 }
