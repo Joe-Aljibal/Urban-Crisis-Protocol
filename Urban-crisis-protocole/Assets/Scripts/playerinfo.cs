@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class PlayerInfo
 {
     public static PlayerInfo Instance { get; } = new PlayerInfo();
 
-    private PlayerInfo() { }
+    private PlayerInfo()
+    {
+        InitializeResources();
+    }
 
     int workingPopulation = 0;
     int population = 0;
@@ -15,7 +19,16 @@ public class PlayerInfo
     int waterUsed;
     int food = 0;
     float money = 2000;
-    int wood = 0;
+
+    public Dictionary<ResourceType, int> resources = new();
+
+    private void InitializeResources()
+    {
+        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
+            resources[type] = 0;
+        }
+    }
 
     public void addPopulation(int population)
     {
@@ -63,8 +76,16 @@ public class PlayerInfo
     public void addMoney(float money) { this.money += money; }
     public float getMoney => money;
 
-    public void addWood(int wood) { this.wood += wood; }
-    public int getWood => wood;
+    public void addWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public int getWood => resources[ResourceType.Wood];
+
+    public void addStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public int getStone => resources[ResourceType.Stone];
+
+    public void addResource(ResourceType type, int amount)
+    {
+        resources[type] += amount;
+    }
 
     public List<GameObject> electricityList = new List<GameObject>();
 

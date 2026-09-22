@@ -3,5 +3,5 @@ public enum ResourceType
 {
     Wood,
     Stone,
-    Coal,
+    Coal
 }

@@ -18,7 +18,7 @@ public class GameEndManager : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        gameEndPanel.SetActive(false);
+        // gameEndPanel.SetActive(false);
         detonationController.OnDetonated += HandleBombDetonated;
     }
 

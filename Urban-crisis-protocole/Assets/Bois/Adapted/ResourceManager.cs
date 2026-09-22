@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Knows the transform of all resources in the scene
+/// </summary>
+
 public static class ResourceManager
 {
     private static readonly Dictionary<ResourceType, List<Transform>> resources = new();

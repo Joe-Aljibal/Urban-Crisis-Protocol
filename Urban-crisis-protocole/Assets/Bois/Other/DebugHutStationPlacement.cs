@@ -5,42 +5,54 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// This class manages all huts in the scene
+/// Only serves purpose of debugging
 /// </summary>
 
 public class DebugHutStationPlacement : MonoBehaviour
 {
-    [SerializeField] HutData hutData;
+    [SerializeField] HutData[] hutDatas;
+    private HutData currentHutData;
 
-        void Update()
+    void Start()
     {
-        if(Keyboard.current.wKey.wasPressedThisFrame)
+        currentHutData = hutDatas[0];
+    }
+    void Update()
+    {
+        if (Keyboard.current.fKey.wasPressedThisFrame)
         {
-            AddHut(new Vector3(0,1,0), hutData);
+            int index = System.Array.IndexOf(hutDatas, currentHutData);
+            index = (index + 1 ) % hutDatas.Length;
+            currentHutData = hutDatas[index];
         }
-        if(Keyboard.current.aKey.wasPressedThisFrame)
+        if (Keyboard.current.wKey.wasPressedThisFrame)
         {
-            AddWorker(new Vector3(0,1,0), 1);
+            AddHut(new Vector3(0, 1, 0), currentHutData);
         }
-        if(Keyboard.current.sKey.wasPressedThisFrame)
+        if (Keyboard.current.aKey.wasPressedThisFrame)
         {
-            DeleteHut(new Vector3(0,1,0));
+            AddWorker(new Vector3(0, 1, 0), 1);
         }
-        if(Keyboard.current.dKey.wasPressedThisFrame)
+        if (Keyboard.current.sKey.wasPressedThisFrame)
         {
-            DeleteWorker(new Vector3(0,1,0), 1);
+            DeleteHut(new Vector3(0, 1, 0));
+        }
+        if (Keyboard.current.dKey.wasPressedThisFrame)
+        {
+            DeleteWorker(new Vector3(0, 1, 0), 1);
         }
         if (Keyboard.current.tabKey.isPressed)
         {
             Time.timeScale = 100.0f;
-        } else
+        }
+        else
         {
             Time.timeScale = 1.0f;
         }
     }
     private void AddHut(Vector3 position, HutData hutData)
     {
-            Instantiate(hutData.hutPrefab, position, Quaternion.identity);        
+        Instantiate(hutData.hutPrefab, position, Quaternion.identity);
     }
 
     private void AddWorker(Vector3 position, int number)
@@ -64,9 +76,9 @@ public class DebugHutStationPlacement : MonoBehaviour
 
         Collider[] hits = Physics.OverlapSphere(position, radius);
 
-        foreach(var col in hits)
+        foreach (var col in hits)
         {
-            if(col.TryGetComponent<WorkStation>(out var hut))
+            if (col.TryGetComponent<WorkStation>(out var hut))
             {
                 hut.DestroyBuilding();
             }
@@ -79,10 +91,10 @@ public class DebugHutStationPlacement : MonoBehaviour
 
         Collider[] hits = Physics.OverlapSphere(position, radius);
 
-        foreach(var col in hits)
+        foreach (var col in hits)
         {
-            
-            if(col.TryGetComponent<WorkStation>(out var hut))
+
+            if (col.TryGetComponent<WorkStation>(out var hut))
             {
                 hut.RemoveWorkers(number);
             }
