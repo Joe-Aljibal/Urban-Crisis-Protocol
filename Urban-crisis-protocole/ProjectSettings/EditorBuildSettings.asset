@@ -4,5 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/HomeScreen.unity
+    guid: daa6b7bfd96b2e74fb69bf347dfe6448
+  - enabled: 1
+    path: Assets/Scenes/EndOfTheGame.unity
+    guid: cefc24e6c617b064698c6f2eab8c08c9
+  - enabled: 1
+    path: Assets/Scenes/MainGame.unity
+    guid: 991ed99631d7881428808d46370d0050
+  m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
