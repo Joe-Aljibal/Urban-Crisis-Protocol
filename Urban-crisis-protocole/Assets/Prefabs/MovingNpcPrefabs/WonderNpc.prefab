@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 6439955093723673159}
   - component: {fileID: 6462102185225187595}
   - component: {fileID: 3954112697859179201}
-  - component: {fileID: -2777999238529562052}
+  - component: {fileID: -7707896223041681224}
   m_Layer: 0
-  m_Name: Npc
+  m_Name: WonderNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa50f261afb38b44bbd301eefb32923d, type: 2}
+  - {fileID: 2100000, guid: 87388059ba6d65f449faf929042b4a99, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -164,7 +164,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-2777999238529562052
+--- !u!114 &-7707896223041681224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -173,6 +173,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 480734883234153411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11da58687cc876d4088869f143dc95ef, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d9033b619f6544449f9e70a093604b3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ResourceWorker
+  m_EditorClassIdentifier: Assembly-CSharp::NpcMoveScript
+  wonderRadius: 10
+  MinWonderSpeed: 0.5
+  MaxWonderSpeed: 3.5

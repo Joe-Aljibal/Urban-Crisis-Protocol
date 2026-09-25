@@ -13,15 +13,21 @@ public class UiManager : MonoBehaviour
      private string closingMenuText = "Press (E) to close Menu";
     [SerializeField] private GameObject buildingMenu;
 
+    [SerializeField] private GameObject workStationMenu;
+    private WorkStationUI workStationUI;
+
     public event Action OnInteractWithMenu;
 
     void Start()
-    {}
+    {
+        workStationUI = GetComponent<WorkStationUI>();
+    }
 
 
     void Update()
     {
         InteractWithMenu();
+        InteractWithWorkStation();
     }
 
     void InteractWithMenu()
@@ -35,6 +41,26 @@ public class UiManager : MonoBehaviour
 
             OnInteractWithMenu?.Invoke();
 
+        }
+    }
+
+    // Handle Interactions with WorkStation buildings (OnClick)
+    void InteractWithWorkStation()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            workStationMenu.SetActive(false);
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if(Physics.Raycast(ray, out RaycastHit hit))
+        {
+            if(hit.transform.TryGetComponent(out WorkStation workStation) && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                workStationMenu.SetActive(true);
+                workStationUI.SetCurrentBuilding(workStation);
+            }
         }
     }
 

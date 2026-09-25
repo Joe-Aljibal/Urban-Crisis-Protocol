@@ -2,13 +2,16 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
+/// <summary>
+/// This class is responsible for controlling individual wondering NPCs.
+/// </summary>
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class NpcMove : MonoBehaviour
 {
     [SerializeField] private float wonderRadius = 15.0f;
     [SerializeField] private float MinWonderSpeed = 0.5f;
-    [SerializeField] private float MaxWonderSpeed = 3.5f;
+    [SerializeField] private float MaxWonderSpeed = 4f;
 
     private NavMeshAgent agent;
     private float interval = 3.0f;
@@ -37,6 +40,7 @@ public class NpcMove : MonoBehaviour
         }
     }
 
+    // Generate random point within radius to go to
     private void WanderToNextLocation()
     {
         Vector3 randomDirection = Random.insideUnitSphere * wonderRadius;

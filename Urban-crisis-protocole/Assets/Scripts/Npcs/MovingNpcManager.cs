@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// This class is responsible for managing the amount of moving NPCs in game.
+/// </summary>
+
 public class MovingNpcManager : MonoBehaviour
 {
     PlayerInfo playerInfo = PlayerInfo.Instance;
@@ -12,13 +16,6 @@ public class MovingNpcManager : MonoBehaviour
     
     private List<GameObject> movingNpcs = new List<GameObject>();
 
-    
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
          if (Keyboard.current.tabKey.isPressed)
@@ -29,12 +26,12 @@ public class MovingNpcManager : MonoBehaviour
         {
             Time.timeScale = 1.0f;
         }
-        CalculatePopulation();
+        CalculateNpcsFromPopulation();
         ManageMovingNpcs();
         //Debug.Log("Available Population: " + playerInfo.getAvailablePopulation + " Moving NPCs: " + movingNpcCount);
     }
 
-    private void CalculatePopulation()
+    private void CalculateNpcsFromPopulation()
     {
         movingNpcCount = Mathf.Clamp(playerInfo.getAvailablePopulation / 5, 0, maxMovingNPC);
     }
