@@ -64,6 +64,7 @@ public class Business: MonoBehaviour, IBuilding
     public string GetRessource() => businessesSO.ressource;
     public int GetPopulation() => businessesSO.population;
     public int GetPrice() => businessesSO.price;
+    public bool HasEnoughElectricity() => businessesSO.electricityNeeded <= electricityReceived;
     public int GetElectricityReceived() => electricityReceived;
     public int GetElectricityNeeded() => businessesSO.electricityNeeded;
     public int GetProfit() => businessesSO.profit;
