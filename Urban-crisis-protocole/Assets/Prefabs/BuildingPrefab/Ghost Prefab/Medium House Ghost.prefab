@@ -196,15 +196,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -258,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3713714619716210131
 RectTransform:
   m_ObjectHideFlags: 0
@@ -390,33 +390,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2e23e6ebadbd0934088807ce293f324a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4297374602381163200}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e23e6ebadbd0934088807ce293f324a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2537513060088140748}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e23e6ebadbd0934088807ce293f324a, type: 3}
 --- !u!4 &7348584120473374980 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2e23e6ebadbd0934088807ce293f324a, type: 3}
   m_PrefabInstance: {fileID: 7093683090263455471}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7976080540901313470 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e23e6ebadbd0934088807ce293f324a, type: 3}
-  m_PrefabInstance: {fileID: 7093683090263455471}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2537513060088140748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7976080540901313470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cb797b675b605243a9e13003612623e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::House
-  houseSO: {fileID: 11400000, guid: 8216d00e08347464db180c0790b5e627, type: 2}
-  elecMissingImage: {fileID: 7234893171010054859}
-  label: {fileID: 1128908154843998631}

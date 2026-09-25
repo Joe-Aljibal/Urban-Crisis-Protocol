@@ -1,6 +1,7 @@
 
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,8 @@ public class UiManager : MonoBehaviour
      private string closingMenuText = "Press (E) to close Menu";
     [SerializeField] private GameObject buildingMenu;
 
+    [SerializeField] TMP_Text elecShow;
+
     public event Action OnInteractWithMenu;
 
     void Start()
@@ -22,6 +25,8 @@ public class UiManager : MonoBehaviour
     void Update()
     {
         InteractWithMenu();
+
+        elecShow.text = $"{PlayerInfo.Instance.getElectricityUsed} / {PlayerInfo.Instance.getElectricity}";
     }
 
     void InteractWithMenu()
@@ -43,7 +48,4 @@ public class UiManager : MonoBehaviour
     {
         openBuildingMenuText.text = value ? openingMenuText : closingMenuText ;
     }
-
-
-
 }

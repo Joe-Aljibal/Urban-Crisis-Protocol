@@ -56,7 +56,7 @@ public class PlayerInfo
         else
         {
             this.electricity += electricity;
-            electricityUsed = Mathf.Min(electricityUsed, electricity);
+            electricityUsed = Mathf.Min(electricityUsed, this.electricity);
         }
     }
     public int getElectricity => electricity;
@@ -87,17 +87,30 @@ public class PlayerInfo
         resources[type] += amount;
     }
 
+    // The dependant and how much it more needs
     public Dictionary<IBuilding, int> electricityDependants = new();
-    public Dictionary<GameObject, int> electricityProviders = new();
+    // The provider and how much it gave
+    public Dictionary<Electricity, int> electricityProviders = new();
 
     public void ElectrifyBuildings()
     {
-        foreach (var pair in electricityProviders)
+        List<Electricity> providersToRemove = new();
+        foreach (var (provider, maxAmount) in electricityProviders)
         {
             if (electricityDependants.Count < 1)
                 break;
 
-            pair.Key.GetComponent<Electricity>().ElectrifyBuildings();
+            provider.GetComponent<Electricity>().ElectrifyBuildings();
+
+            if(!provider.HasEnoughElectricity())
+            {
+                providersToRemove.Add(provider);
+            }
+        }
+
+        foreach (Electricity provider in providersToRemove)
+        {
+            electricityProviders.Remove(provider);
         }
     }
 }

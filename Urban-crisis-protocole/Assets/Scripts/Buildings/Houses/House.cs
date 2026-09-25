@@ -1,24 +1,36 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class House : MonoBehaviour, IBuilding
 {
     PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] public HousesSO houseSO;
+    [SerializeField] Image elecMissingImage;
+    [SerializeField] TMP_Text label;
 
     int electricityReceived = 0;
 
-    bool isActive = true;
+    bool isActive = false;
 
     void Start()
     {
+        elecMissingImage.color = Color.blueViolet;
         playerInfo.addPopulation(houseSO.population);
-        playerInfo.UseElectricity(houseSO.electricityNeeded);
         playerInfo.useWater(houseSO.waterNeeded);
+
+        playerInfo.electricityDependants.Add(this, houseSO.electricityNeeded);
+        playerInfo.ElectrifyBuildings();
+    }
+    private void Update()
+    {
+        label.text = $"{electricityReceived} / {houseSO.electricityNeeded}";
     }
 
     public void DeleteButton()
     {
         playerInfo.addMoney(houseSO.price * .8f);
+        // ! Might change this in the future to the exact same system as the electricity
         playerInfo.addPopulation(-houseSO.population);
         playerInfo.UseElectricity(-houseSO.electricityNeeded);
         playerInfo.useWater(-houseSO.waterNeeded);
@@ -27,13 +39,15 @@ public class House : MonoBehaviour, IBuilding
     }
     public void Deactivate(int electricityLost)
     {
+        Debug.Log("Deactivated");
+        elecMissingImage.color = Color.red;
         isActive = false;
         electricityReceived -= electricityLost;
-        playerInfo.electricityDependants.Add(this, electricityReceived);
         playerInfo.addPopulation(-houseSO.population);
     }
     public void Activate()
     {
+        elecMissingImage.color = Color.green;
         isActive = true;
         playerInfo.addPopulation(houseSO.population);
     }
@@ -42,9 +56,6 @@ public class House : MonoBehaviour, IBuilding
     {
         electricityReceived += electricity;
         playerInfo.UseElectricity(electricity);
-        
-        if (electricityReceived == GetElectricityNeeded())
-            Activate();
     }
 
     public IBuildingSO GetBuildingSO() => houseSO;
@@ -60,4 +71,5 @@ public class House : MonoBehaviour, IBuilding
         playerInfo.getAvailableWater >= houseSO.waterNeeded;
 
     public bool IsActive() => isActive;
+    public bool HasEnoughElectricity() => electricityReceived >= houseSO.electricityNeeded;
 }
