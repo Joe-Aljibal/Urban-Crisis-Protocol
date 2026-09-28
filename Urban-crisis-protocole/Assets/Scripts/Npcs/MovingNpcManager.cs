@@ -28,7 +28,7 @@ public class MovingNpcManager : MonoBehaviour
         }
         CalculateNpcsFromPopulation();
         ManageMovingNpcs();
-        //Debug.Log("Available Population: " + playerInfo.getAvailablePopulation + " Moving NPCs: " + movingNpcCount);
+        Debug.Log("Available Population: " + playerInfo.getAvailablePopulation + " Moving NPCs: " + movingNpcCount);
     }
 
     private void CalculateNpcsFromPopulation()
