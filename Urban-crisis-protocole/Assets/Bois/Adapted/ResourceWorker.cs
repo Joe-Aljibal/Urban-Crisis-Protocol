@@ -103,7 +103,7 @@ public class ResourceWorker : Worker
 
     private void HandleResourceBroughtBack()
     {
-        playerInfo.addWood(1);
+        playerInfo.addResource(cachedResourceType, 1);
     }
 
     private void GoToNextResource()

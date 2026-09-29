@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class PlayerInfo
 {
     public static PlayerInfo Instance { get; } = new PlayerInfo();
 
-    private PlayerInfo() { }
+    private PlayerInfo()
+    {
+        InitializeResources();
+    }
 
     int workingPopulation = 0;
     int population = 0;
@@ -15,7 +19,16 @@ public class PlayerInfo
     int waterUsed;
     int food = 0;
     float money = 2000;
-    int wood = 0;
+
+    public Dictionary<ResourceType, int> resources = new();
+
+    private void InitializeResources()
+    {
+        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
+            resources[type] = 0;
+        }
+    }
 
     public void addPopulation(int population)
     {
@@ -43,7 +56,7 @@ public class PlayerInfo
         else
         {
             this.electricity += electricity;
-            electricityUsed = Mathf.Min(electricityUsed, electricity);
+            electricityUsed = Mathf.Min(electricityUsed, this.electricity);
         }
     }
     public int getElectricity => electricity;
@@ -63,28 +76,41 @@ public class PlayerInfo
     public void addMoney(float money) { this.money += money; }
     public float getMoney => money;
 
-    public void addWood(int wood) { this.wood += wood; }
-    public int getWood => wood;
+    public void addWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public int getWood => resources[ResourceType.Wood];
 
-    public List<GameObject> electricityList = new List<GameObject>();
+    public void addStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public int getStone => resources[ResourceType.Stone];
 
-    public void ElectrifyBuildings(ElectricitySO electricitySO)
+    public void addResource(ResourceType type, int amount)
     {
-        if (electricityList.Count > 0)
+        resources[type] += amount;
+    }
+
+    // The dependant and how much it more needs
+    public Dictionary<IBuilding, int> electricityDependants = new();
+    // The provider and how much it gave
+    public Dictionary<Electricity, int> electricityProviders = new();
+
+    public void ElectrifyBuildings()
+    {
+        List<Electricity> providersToRemove = new();
+        foreach (var (provider, maxAmount) in electricityProviders)
         {
-            electricitySO.AddElectricity();
+            if (electricityDependants.Count < 1)
+                break;
 
-            foreach (GameObject go in electricityList)
+            provider.GetComponent<Electricity>().ElectrifyBuildings();
+
+            if(!provider.HasEnoughElectricity())
             {
-                if (getAvailableElectricity == 0)
-                    break;
-
-                if (getAvailableElectricity >= go.GetComponent<IBuilding>().GetElectricityNeeded())
-                {
-                    UseElectricity(go.GetComponent<IBuilding>().GetElectricityNeeded());
-                    electricityList.Remove(go);
-                }
+                providersToRemove.Add(provider);
             }
+        }
+
+        foreach (Electricity provider in providersToRemove)
+        {
+            electricityProviders.Remove(provider);
         }
     }
 }
