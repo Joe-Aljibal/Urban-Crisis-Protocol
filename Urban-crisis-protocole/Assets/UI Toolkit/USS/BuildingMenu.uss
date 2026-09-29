@@ -1,0 +1,48 @@
+.centered-scroll-view .unity-scroll-view__content-container {
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6px 12px;
+}
+
+.stats-column {
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.stat-card {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(34, 34, 34);
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    min-width: 175px;
+}
+
+.stat-icon {
+    font-size: 18px;
+    margin-right: 6px;
+}
+
+.stat-title {
+    color: rgb(170, 170, 170);
+    font-size: 16px;
+    -unity-font-style: bold;
+    margin-right: 6px;
+}
+
+.stat-value {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    -unity-font-style: bold;
+    flex-grow: 1;
+    text-align: right;
+}

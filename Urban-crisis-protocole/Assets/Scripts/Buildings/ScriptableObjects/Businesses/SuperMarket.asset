@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BusinessesSO
   type: Business
   ressource: Money
+  icon: {fileID: 21300000, guid: 82316b12e947cb34e95b1925b99ae943, type: 3}
   electricityNeeded: 500
   population: 200
   price: 15000
   profit: 1200
+  card: {fileID: 11400000, guid: e2a91ef2204a93c4babfc0cf89c58e00, type: 2}

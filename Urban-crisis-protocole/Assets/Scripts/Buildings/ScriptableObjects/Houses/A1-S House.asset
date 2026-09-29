@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb8c5e03bbf11b3469a2fe7f946759ac, type: 3}
+  m_Name: A1-S House
+  m_EditorClassIdentifier: Assembly-CSharp::HousesSO
+  type: Population
+  ressource: Population
+  electricityNeeded: 6
+  waterNeeded: 5
+  population: 5
+  price: 200
+  card: {fileID: 11400000, guid: 1d98668df6c052e41a1e771b5b53cc03, type: 2}
+  icon: {fileID: 21300000, guid: 13e84c67b3dc17e4791e126d74e9409c, type: 3}

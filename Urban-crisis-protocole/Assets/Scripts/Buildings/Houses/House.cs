@@ -6,8 +6,8 @@ public class House : MonoBehaviour, IBuilding
 {
     PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] public HousesSO houseSO;
-    [SerializeField] Image elecMissingImage;
-    [SerializeField] TMP_Text label;
+    //[SerializeField] Image elecMissingImage;
+    //[SerializeField] TMP_Text label;
 
     int electricityReceived = 0;
 
@@ -15,7 +15,7 @@ public class House : MonoBehaviour, IBuilding
 
     void Start()
     {
-        elecMissingImage.color = Color.blueViolet;
+        //elecMissingImage.color = Color.blueViolet;
         playerInfo.addPopulation(houseSO.population);
         playerInfo.useWater(houseSO.waterNeeded);
 
@@ -24,7 +24,7 @@ public class House : MonoBehaviour, IBuilding
     }
     private void Update()
     {
-        label.text = $"{electricityReceived} / {houseSO.electricityNeeded}";
+        //label.text = $"{electricityReceived} / {houseSO.electricityNeeded}";
     }
 
     public void DeleteButton()
@@ -40,14 +40,14 @@ public class House : MonoBehaviour, IBuilding
     public void Deactivate(int electricityLost)
     {
         Debug.Log("Deactivated");
-        elecMissingImage.color = Color.red;
+        //elecMissingImage.color = Color.red;
         isActive = false;
         electricityReceived -= electricityLost;
         playerInfo.addPopulation(-houseSO.population);
     }
     public void Activate()
     {
-        elecMissingImage.color = Color.green;
+        //elecMissingImage.color = Color.green;
         isActive = true;
         playerInfo.addPopulation(houseSO.population);
     }

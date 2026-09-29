@@ -2,6 +2,8 @@ using UnityEngine;
 
 public interface IBuildingSO
 {
-    public bool CanPlace() ;
+    public Sprite GetIcon();
+    public BuildingCard GetCard();
+    public bool CanPlace();
 }
 
