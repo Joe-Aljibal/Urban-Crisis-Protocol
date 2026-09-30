@@ -60,9 +60,9 @@ public class GameManager : MonoBehaviour
         }
         else if (scene == "MainGame") // Check if the current scene is "MainGame".
         {
-            if (Keyboard.current.escapeKey.IsPressed()) // If the Escape key is pressed, load the "MainMenu" scene.
+            if (Keyboard.current.escapeKey.IsPressed()) // If the Escape key is pressed, load the "HomeScreen" scene.
             {
-                LoadChosenScene("Main Menu");
+                LoadChosenScene("HomeScreen");
             }
         } 
     }
