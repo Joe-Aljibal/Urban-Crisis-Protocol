@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-public class Electricity : MonoBehaviour, IBuilding
+public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] public ElectricitySO electricitySO;
     PlayerInfo playerInfo = PlayerInfo.Instance;
@@ -45,4 +45,18 @@ public class Electricity : MonoBehaviour, IBuilding
             playerInfo.electricityList.Add(go);
         }
     }
+    
+
+    // clean later same thing everywhere use parent of sciprtableobject
+     public List<UiDataModel> GetUiDataList()
+    {
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, electricitySO.type),
+           new UiDataModel(UiDataType.PRICE, electricitySO.price.ToString())
+        };
+    }
+
+    
 }

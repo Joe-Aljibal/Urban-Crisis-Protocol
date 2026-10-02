@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-public class Business: MonoBehaviour, IBuilding
+public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] BusinessesSO businessesSO;
     
@@ -58,4 +59,15 @@ public class Business: MonoBehaviour, IBuilding
         playerinfo.getMoney >= businessesSO.price &&
         playerinfo.getAvailableElectricity >= businessesSO.electricityNeeded &&
         playerinfo.getAvailablePopulation >= businessesSO.population;
+
+    public List<UiDataModel> GetUiDataList()
+    {
+
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, businessesSO.type),
+           new UiDataModel(UiDataType.PRICE, businessesSO.price.ToString())
+        };
+    }
 }

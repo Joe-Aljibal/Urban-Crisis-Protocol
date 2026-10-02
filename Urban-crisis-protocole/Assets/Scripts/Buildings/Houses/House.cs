@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class House : MonoBehaviour, IBuilding
+public class House : MonoBehaviour, IBuilding , IBuildingUiData 
 {
+
+    // dont need canPlace in Ibuilding you can get it true IbuildingSo which is in all buildings
     PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] public HousesSO houseSO;
     bool isActive = true;
@@ -43,5 +46,16 @@ public class House : MonoBehaviour, IBuilding
     {
         isActive = false;
         playerInfo.addPopulation(-houseSO.population);
+        
+    }
+
+    public List<UiDataModel> GetUiDataList()
+    {
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, "House"),
+           new UiDataModel(UiDataType.PRICE, houseSO.price.ToString())
+        };
     }
 }
