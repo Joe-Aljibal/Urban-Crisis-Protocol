@@ -13,6 +13,10 @@ public interface IBuilding
     public IBuildingSO GetBuildingSO();
 
     public bool IsActive();
-    public void Deactivate(int electricityLost);
+    public void Deactivate(int electricityLost, int workersLost);
     public void Activate();
+
+    public void ReceiveWorkers(int workers);
+    public int GetWorkersNeeded();
+    public bool HasEnoughWorkers();
 }

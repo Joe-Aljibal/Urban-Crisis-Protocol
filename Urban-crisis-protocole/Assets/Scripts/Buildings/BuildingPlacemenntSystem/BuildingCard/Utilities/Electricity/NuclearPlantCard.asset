@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: NuclearPlantCard
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
   prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
-  completPrefab: {fileID: 6111766866430465922, guid: 25ff2a2ffbf78d94ab3a266f75b0d1c9, type: 3}
-  meshPrefab: {fileID: 6111766866430465922, guid: 25ff2a2ffbf78d94ab3a266f75b0d1c9, type: 3}
+  completPrefab: {fileID: 4181938358068464743, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+  meshPrefab: {fileID: 8710866478276304158, guid: 138db8a1cc992a54fb082a834f44df9c, type: 3}
   placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-public class Electricity : MonoBehaviour, IBuilding
+public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider
 {
     [SerializeField] public ElectricitySO electricitySO;
 
@@ -18,21 +18,20 @@ public class Electricity : MonoBehaviour, IBuilding
     private void Start()
     {
         playerInfo.addElectricity(electricitySO.electricityOutput);
-        playerInfo.electricityProviders.Add(this, electricitySO.electricityOutput);
+        playerInfo.electricityProviders.Add(this);
         ElectrifyBuildings();
     }
 
     public void ElectrifyBuildings()
     {
         List<IBuilding> buildingsToRemove = new();
-        foreach (var pair in playerInfo.electricityDependants)
+
+        foreach (var dependant in playerInfo.electricityDependants)
         {
-            if (electricityDependants.ContainsKey(pair.Key))
+            if (electricityDependants.ContainsKey(dependant))
                 continue;
 
-            bool electricityLeft = electricitySO.electricityOutput - electricityGiven > 0;
-
-            if (!electricityLeft)
+            if (!CanGiveElectricity())
             {
                 playerInfo.electricityProviders.Remove(this);
                 Debug.Log("No more electricity left");
@@ -40,17 +39,17 @@ public class Electricity : MonoBehaviour, IBuilding
             }
 
             int electricityAvailable = electricitySO.electricityOutput - electricityGiven;
-            int electricityNeeded = pair.Key.GetElectricityNeeded() - pair.Key.GetElectricityReceived();
+            int electricityNeeded = dependant.GetElectricityNeeded();
             int amountToGive = Mathf.Min(electricityAvailable, electricityNeeded);
 
-            pair.Key.UseElectricity(amountToGive);
+            dependant.UseElectricity(amountToGive);
             electricityGiven += amountToGive;
-            electricityDependants.Add(pair.Key, amountToGive);
+            electricityDependants.Add(dependant, amountToGive);
 
-            if (pair.Key.HasEnoughElectricity())
+            if (dependant.HasEnoughElectricity())
             {
-                pair.Key.Activate();
-                buildingsToRemove.Add(pair.Key);
+                dependant.Activate();
+                buildingsToRemove.Add(dependant);
             }
         }
 
@@ -69,24 +68,24 @@ public class Electricity : MonoBehaviour, IBuilding
         playerInfo.addElectricity(-electricitySO.electricityOutput);
         foreach (var (dependant, amountReceived) in electricityDependants)
         {
-            dependant.Deactivate(amountReceived);
+            dependant.Deactivate(amountReceived, 0);
 
-            if (!playerInfo.electricityDependants.ContainsKey(dependant))
-                playerInfo.electricityDependants.Add(dependant, dependant.GetElectricityNeeded() - dependant.GetElectricityReceived());
+            if (!playerInfo.electricityDependants.Contains(dependant))
+                playerInfo.electricityDependants.Add(dependant);
         }
         playerInfo.ElectrifyBuildings();
     }
 
-    public void Deactivate(int x)
+    public void Deactivate(int x, int y)
     {
         isActive = false;
         playerInfo.addElectricity(-electricitySO.electricityOutput);
         electricityGiven = 0;
-        foreach (var pair in electricityDependants)
+        foreach (var (dependant, amountReceived) in electricityDependants)
         {
-            pair.Key.Deactivate(pair.Value);
-            if (!playerInfo.electricityDependants.ContainsKey(pair.Key))
-                playerInfo.electricityDependants.Add(pair.Key, pair.Value);
+            dependant.Deactivate(amountReceived, 0);
+            if (!playerInfo.electricityDependants.Contains(dependant))
+                playerInfo.electricityDependants.Add(dependant);
         }
     }
 
@@ -100,11 +99,16 @@ public class Electricity : MonoBehaviour, IBuilding
     public string GetBuildingType() => electricitySO.type;
     public string GetRessource() => electricitySO.ressource;
     // Tracks if it can still give out elecrticity
-    public bool HasEnoughElectricity() => electricityGiven < electricitySO.electricityOutput;
+    public bool HasEnoughElectricity() => true;
+    public bool CanGiveElectricity() => electricityGiven < electricitySO.electricityOutput;
     public int GetElectricityReceived() => 0;
     public int GetElectricityNeeded() => 0;
     public int GetPrice() => electricitySO.price;
     public bool CanPlace() => playerInfo.getMoney >= electricitySO.price;
     public bool IsActive() => isActive;
     public void UseElectricity(int x) { }
+
+    public void ReceiveWorkers(int workers) { }
+    public int GetWorkersNeeded() => 0;
+    public bool HasEnoughWorkers() => true;
 }

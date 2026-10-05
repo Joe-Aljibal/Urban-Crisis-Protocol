@@ -15,31 +15,31 @@
                 <ui:VisualElement class="stat-card">
                     <ui:Label text="💵" class="stat-icon"/>
                     <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="MoneyValue" text="$125,400" class="stat-value"/>
+                    <ui:Label name="MoneyValue" text="$X" class="stat-value"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-card">
                     <ui:Label text="👥" class="stat-icon"/>
                     <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="PeopleValue" text="1,250" class="stat-value"/>
+                    <ui:Label name="PopulationValue" text="x" class="stat-value"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="stats-column">
                 <ui:VisualElement class="stat-card">
                     <ui:Label text="⚡" class="stat-icon"/>
                     <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="ElectricityValue" text="45/100" class="stat-value"/>
+                    <ui:Label name="ElectricityValue" text="x/x" class="stat-value"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-card">
                     <ui:Label text="💧" class="stat-icon"/>
                     <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="WaterValue" text="80/120" class="stat-value"/>
+                    <ui:Label name="WaterValue" text="x/x" class="stat-value"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="stats-column stats-column-bread">
                 <ui:VisualElement class="stat-card">
                     <ui:Label text="🍞" class="stat-icon"/>
                     <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="FoodValue" text="850" class="stat-value"/>
+                    <ui:Label name="FoodValue" text="x" class="stat-value"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

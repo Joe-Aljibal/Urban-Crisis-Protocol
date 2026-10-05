@@ -38,7 +38,7 @@ public class HutStation : MonoBehaviour, IBuilding
         throw new System.NotImplementedException();
     }
 
-    public void Deactivate(int electricityLost)
+    public void Deactivate(int electricityLost, int workersLost)
     {
         throw new System.NotImplementedException();
     }
@@ -54,4 +54,8 @@ public class HutStation : MonoBehaviour, IBuilding
     }
 
     public int GetWood => woodHutStationSO.resourceAmount;
+    public void ReceiveWorkers(int workers) { }
+    public int GetWorkersNeeded() => 0;
+
+    public bool HasEnoughWorkers() => true;
 }

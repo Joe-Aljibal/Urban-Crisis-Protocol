@@ -42,10 +42,14 @@ public class Water : MonoBehaviour, IBuilding
 
     public int GetElectricityReceived() => 0;
 
-    public void Deactivate(int electricityLost)
+    public void Deactivate(int electricityLost, int workersLost)
     {
         throw new System.NotImplementedException();
     }
     public void Activate() { }
     public void UseElectricity(int electricity) { }
+    public void ReceiveWorkers(int workers) { }
+    public int GetWorkersNeeded() => 0;
+
+    public bool HasEnoughWorkers() => true;
 }

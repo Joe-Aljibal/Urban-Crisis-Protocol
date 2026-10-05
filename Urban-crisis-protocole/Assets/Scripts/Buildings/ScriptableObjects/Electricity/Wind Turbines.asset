@@ -16,3 +16,5 @@ MonoBehaviour:
   ressource: Electricity
   electricityOutput: 20
   price: 750
+  card: {fileID: 11400000, guid: ab6af8c2b9f0b894788ca1faca28c45b, type: 2}
+  icon: {fileID: 21300000, guid: 92004c4d2174d2346885c6d083a24762, type: 3}

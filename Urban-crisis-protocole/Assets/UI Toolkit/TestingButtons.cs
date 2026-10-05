@@ -36,6 +36,7 @@ public class TestingButtons : MonoBehaviour
     List<ElectricitySO> electricity = new();
     List<WaterSO> water = new();
 
+    VisualElement root;
     BuildingManager buildingManager;
 
     EventCallback<ClickEvent> housesCallback;
@@ -81,6 +82,7 @@ public class TestingButtons : MonoBehaviour
 
     private void BuildingsPlacementUI(PanelRenderer renderer, VisualElement rootElement, int version)
     {
+        root = rootElement;
         RefreshBuildingsSection(rootElement);
         SelectionSection(rootElement);
         SetPopupPosition(rootElement);
@@ -231,8 +233,24 @@ public class TestingButtons : MonoBehaviour
         panelRenderer.UnregisterUIReloadCallback(BuildingsPlacementUI);
     }
 
+    void UpdateInfoUI()
+    {
+        PlayerInfo playerInfo = PlayerInfo.Instance;
+        Label moneyText = root.Q<Label>("MoneyValue");
+        Label populationText = root.Q<Label>("PopulationValue");
+        Label electricityText = root.Q<Label>("ElectricityValue");
+        Label waterText = root.Q<Label>("WaterValue");
+        Label foodText = root.Q<Label>("FoodValue");
+
+        moneyText.text = "$" + playerInfo.getMoney.ToString();
+        populationText.text = playerInfo.getPopulation.ToString();
+        electricityText.text = playerInfo.getElectricity.ToString();
+        waterText.text = playerInfo.getWater.ToString();
+        foodText.text = playerInfo.getFood.ToString();
+    }
+
     private void Update()
     {
-
+        UpdateInfoUI();
     }
 }

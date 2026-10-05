@@ -28,6 +28,4 @@ public class FourSlotPlacementRules : BuildingPlacementRules
         futurPosition += new Vector3(0.25f, 0, 0.25f);
         return futurPosition;
     }
-
-
 }

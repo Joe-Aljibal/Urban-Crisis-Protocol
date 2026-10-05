@@ -87,30 +87,50 @@ public class PlayerInfo
         resources[type] += amount;
     }
 
-    // The dependant and how much it more needs
-    public Dictionary<IBuilding, int> electricityDependants = new();
-    // The provider and how much it gave
-    public Dictionary<Electricity, int> electricityProviders = new();
+    // The building that needs electricit and how much more it needs
+    public List<IBuilding> electricityDependants = new();
+    // The providers available to give out electricity
+    public List<Electricity> electricityProviders = new();
 
     public void ElectrifyBuildings()
     {
         List<Electricity> providersToRemove = new();
-        foreach (var (provider, maxAmount) in electricityProviders)
+        foreach (var provider in electricityProviders)
         {
             if (electricityDependants.Count < 1)
                 break;
 
             provider.GetComponent<Electricity>().ElectrifyBuildings();
 
-            if(!provider.HasEnoughElectricity())
-            {
+            if(!provider.CanGiveElectricity())
                 providersToRemove.Add(provider);
-            }
         }
 
         foreach (Electricity provider in providersToRemove)
-        {
             electricityProviders.Remove(provider);
+    }
+
+    // The building that needs workers
+    public List<IBuilding> workerDependants = new();
+    // The houses available to give out workers
+    public List<House> workerProviders = new();
+
+    public void EmployWorkers()
+    {
+        List<House> providersToRemove = new();
+
+        foreach (var provider in workerProviders)
+        {
+            if (workerDependants.Count < 1)
+                break;
+
+            provider.GetComponent<House>().EmployWorkers();
+
+            if (!provider.HasEnoughWorkers())
+                providersToRemove.Add(provider);
         }
+
+        foreach (var provider in providersToRemove)
+            workerProviders.Remove(provider);
     }
 }

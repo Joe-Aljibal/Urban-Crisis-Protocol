@@ -16,7 +16,7 @@ MonoBehaviour:
   ressource: Money
   icon: {fileID: 21300000, guid: e680bd2ed0751c84eac75378dca5cbe2, type: 3}
   electricityNeeded: 6
-  population: 3
+  workersNeeded: 5
   price: 300
   profit: 50
   card: {fileID: 11400000, guid: e2a91ef2204a93c4babfc0cf89c58e00, type: 2}
