@@ -2,14 +2,21 @@ using UnityEngine;
 
 public interface IBuilding
 {
-    public string GetType();
+    public string GetBuildingType();
     public string GetRessource();
+    public void UseElectricity(int electricity);
+    public int GetElectricityReceived();
     public int GetElectricityNeeded();
+    public bool HasEnoughElectricity();
     public int GetPrice();
     public bool CanPlace();
     public IBuildingSO GetBuildingSO();
 
     public bool IsActive();
-    public void SetActive();
-    public void Deactivate();
+    public void Deactivate(int electricityLost, int workersLost);
+    public void Activate();
+
+    public void ReceiveWorkers(int workers);
+    public int GetWorkersNeeded();
+    public bool HasEnoughWorkers();
 }

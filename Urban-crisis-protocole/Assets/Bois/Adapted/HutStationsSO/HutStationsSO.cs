@@ -10,5 +10,7 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
     public int resourceAmount = 1;
     public int price = 25;
 
+    public Sprite GetIcon() => null;
+    public BuildingCard GetCard() => null;
     public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
 }

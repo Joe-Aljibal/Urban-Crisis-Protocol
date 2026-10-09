@@ -56,7 +56,7 @@ public class PlayerInfo
         else
         {
             this.electricity += electricity;
-            electricityUsed = Mathf.Min(electricityUsed, electricity);
+            electricityUsed = Mathf.Min(electricityUsed, this.electricity);
         }
     }
     public int getElectricity => electricity;
@@ -87,25 +87,50 @@ public class PlayerInfo
         resources[type] += amount;
     }
 
-    public List<GameObject> electricityList = new List<GameObject>();
+    // The building that needs electricit and how much more it needs
+    public List<IBuilding> electricityDependants = new();
+    // The providers available to give out electricity
+    public List<Electricity> electricityProviders = new();
 
-    public void ElectrifyBuildings(ElectricitySO electricitySO)
+    public void ElectrifyBuildings()
     {
-        if (electricityList.Count > 0)
+        List<Electricity> providersToRemove = new();
+        foreach (var provider in electricityProviders)
         {
-            electricitySO.AddElectricity();
+            if (electricityDependants.Count < 1)
+                break;
 
-            foreach (GameObject go in electricityList)
-            {
-                if (getAvailableElectricity == 0)
-                    break;
+            provider.GetComponent<Electricity>().ElectrifyBuildings();
 
-                if (getAvailableElectricity >= go.GetComponent<IBuilding>().GetElectricityNeeded())
-                {
-                    UseElectricity(go.GetComponent<IBuilding>().GetElectricityNeeded());
-                    electricityList.Remove(go);
-                }
-            }
+            if(!provider.CanGiveElectricity())
+                providersToRemove.Add(provider);
         }
+
+        foreach (Electricity provider in providersToRemove)
+            electricityProviders.Remove(provider);
+    }
+
+    // The building that needs workers
+    public List<IBuilding> workerDependants = new();
+    // The houses available to give out workers
+    public List<House> workerProviders = new();
+
+    public void EmployWorkers()
+    {
+        List<House> providersToRemove = new();
+
+        foreach (var provider in workerProviders)
+        {
+            if (workerDependants.Count < 1)
+                break;
+
+            provider.GetComponent<House>().EmployWorkers();
+
+            if (!provider.HasEnoughWorkers())
+                providersToRemove.Add(provider);
+        }
+
+        foreach (var provider in providersToRemove)
+            workerProviders.Remove(provider);
     }
 }
