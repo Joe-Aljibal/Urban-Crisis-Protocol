@@ -67,7 +67,8 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         return new List<UiDataModel>
         { 
            new UiDataModel(UiDataType.NAME, businessesSO.type),
-           new UiDataModel(UiDataType.PRICE, businessesSO.price.ToString())
+           new UiDataModel(UiDataType.PRICE, "Current price : "  + businessesSO.price.ToString())
+
         };
     }
 }

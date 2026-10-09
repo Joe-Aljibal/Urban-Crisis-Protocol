@@ -8,6 +8,7 @@ public class House : MonoBehaviour, IBuilding , IBuildingUiData
     PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] public HousesSO houseSO;
     bool isActive = true;
+   
 
     void Start()
     {
@@ -55,7 +56,7 @@ public class House : MonoBehaviour, IBuilding , IBuildingUiData
         return new List<UiDataModel>
         { 
            new UiDataModel(UiDataType.NAME, "House"),
-           new UiDataModel(UiDataType.PRICE, houseSO.price.ToString()),
+           new UiDataModel(UiDataType.PRICE, "Current price : " + houseSO.price.ToString()),
         };
     }
 }

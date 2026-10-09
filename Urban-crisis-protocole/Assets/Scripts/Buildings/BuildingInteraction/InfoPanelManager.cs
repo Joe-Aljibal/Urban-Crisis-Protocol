@@ -16,12 +16,8 @@ public class InfoPanelManager : MonoBehaviour
 
     // a UidataModele is juste oen way to represnte one info(text) but it has to value (1) a datatype that represente what the info is about 
     // (2) the actual value (ex: the price , the name , number of workers etc.. )
-    Dictionary<UiDataType, string> texts = new Dictionary<UiDataType, string>();
-    void Awake()
+      void Awake()
     {
-
-        texts[UiDataType.NAME] = "";
-        texts[UiDataType.PRICE] = "Current price : ";
     }
 
     // une petite phrase | valeur  x
@@ -41,7 +37,7 @@ public class InfoPanelManager : MonoBehaviour
         List<UiDataModel> list = selectedBuilding.GetUiDataList();
         foreach (UiDataModel uiText in list)
         {
-            AddText(texts[uiText.GetUiDataType] + uiText.GetValue);
+            AddText(uiText.GetValue);
         }
     }
 
