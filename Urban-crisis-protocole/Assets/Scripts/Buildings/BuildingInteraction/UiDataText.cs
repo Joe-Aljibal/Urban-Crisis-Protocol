@@ -1,11 +1,11 @@
+using UnityEngine;
 
-
-public class UiDataModel
+public class UiDataText
 {
     private UiDataType type;
     private string value;
 
-    public UiDataModel(UiDataType type, string value)
+    public UiDataText(UiDataType type, string value)
     {
         this.type = type;
         this.value = value;

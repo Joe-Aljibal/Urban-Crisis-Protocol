@@ -35,7 +35,7 @@ public class UiManager : MonoBehaviour
         {
             bool isOpen = buildingMenu.activeSelf;
             buildingMenu.SetActive(!isOpen);
-            
+            Debug.Log("allo");
             ChangeMenuText(isOpen);
 
             OnInteractWithMenu?.Invoke();

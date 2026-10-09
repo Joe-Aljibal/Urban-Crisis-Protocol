@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : MonoBehaviour, IBuilding
+public class Water : MonoBehaviour, IBuilding , IBuildingUiData
 {
     [SerializeField] WaterSO waterSO;
     PlayerInfo playerInfo = PlayerInfo.Instance;
@@ -46,10 +47,30 @@ public class Water : MonoBehaviour, IBuilding
     {
         throw new System.NotImplementedException();
     }
+
+    public List<UiDataText> GetUiTextList()
+    {
+        
+        return new List<UiDataText>
+        { 
+           
+        };
+    }
+
+    public List<UiDataInteraction> GetUiInteractionList()
+    {
+        return new List<UiDataInteraction>
+        {
+            
+        };
+    }
     public void Activate() { }
     public void UseElectricity(int electricity) { }
     public void ReceiveWorkers(int workers) { }
     public int GetWorkersNeeded() => 0;
 
     public bool HasEnoughWorkers() => true;
+
+   
+   
 }

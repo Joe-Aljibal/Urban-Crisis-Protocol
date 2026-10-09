@@ -138,17 +138,27 @@ public class House : MonoBehaviour, IBuilding , IBuildingUiData
         
     }
 
-    public List<UiDataModel> GetUiDataList()
+    public List<UiDataText> GetUiTextList()
     {
         
-        return new List<UiDataModel>
+        return new List<UiDataText>
         { 
-           new UiDataModel(UiDataType.NAME, "House"),
-           new UiDataModel(UiDataType.PRICE, "Current price : " + houseSO.price.ToString()),
+           new UiDataText(UiDataType.NAME, "House"),
+           new UiDataText(UiDataType.PRICE, "Current price : " + houseSO.price.ToString()),
+        };
+    }
+
+    public List<UiDataInteraction> GetUiInteractionList()
+    {
+        return new List<UiDataInteraction>
+        {
+            
         };
     }
     public bool HasEnoughElectricity() => electricityReceived >= houseSO.electricityNeeded;
     public bool HasEnoughWorkers() => workersGiven < houseSO.population;
     public void ReceiveWorkers(int workers) { }
     public int GetWorkersNeeded() => 0;
+
+    
 }

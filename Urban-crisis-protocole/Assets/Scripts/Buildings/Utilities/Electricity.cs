@@ -120,13 +120,21 @@ public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData
     
 
     // clean later same thing everywhere use parent of sciprtableobject
-     public List<UiDataModel> GetUiDataList()
+     public List<UiDataText> GetUiTextList()
     {
         
-        return new List<UiDataModel>
+        return new List<UiDataText>
         { 
-           new UiDataModel(UiDataType.NAME, electricitySO.type),
-           new UiDataModel(UiDataType.PRICE, electricitySO.price.ToString())
+           new UiDataText(UiDataType.NAME, electricitySO.type),
+           new UiDataText(UiDataType.PRICE, electricitySO.price.ToString())
+        };
+    }
+
+     public List<UiDataInteraction> GetUiInteractionList()
+    {
+        return new List<UiDataInteraction>
+        {
+            
         };
     }
 

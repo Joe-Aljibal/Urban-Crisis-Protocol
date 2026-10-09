@@ -103,15 +103,23 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     public int GetPopulation() => businessesSO.workersNeeded;
     public int GetElectricityNeeded() => businessesSO.electricityNeeded;
 
-    public List<UiDataModel> GetUiDataList()
+    public List<UiDataText> GetUiTextList()
     {
 
         
-        return new List<UiDataModel>
+        return new List<UiDataText>
         { 
-           new UiDataModel(UiDataType.NAME, businessesSO.type),
-           new UiDataModel(UiDataType.PRICE, "Current price : "  + businessesSO.price.ToString())
+           new UiDataText(UiDataType.NAME, businessesSO.type),
+           new UiDataText(UiDataType.PRICE, "Current price : "  + businessesSO.price.ToString())
 
+        };
+    }
+
+    public List<UiDataInteraction> GetUiInteractionList()
+    {
+        return new List<UiDataInteraction>
+        {
+            
         };
     }
     public int GetWorkersNeeded() => businessesSO.workersNeeded - workersReceived;

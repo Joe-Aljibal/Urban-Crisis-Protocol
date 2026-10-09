@@ -27,8 +27,8 @@ public class TestingButtons : MonoBehaviour
     // Paths
     string housesPath = "Assets/Scripts/Buildings/ScriptableObjects/Houses";
     string businessesPath = "Assets/Scripts/Buildings/ScriptableObjects/Businesses";
-    string electricityPath = "Assets/Scripts/Buildings/ScriptableObjects/Electricity";
-    string waterPath = "Assets/Scripts/Buildings/ScriptableObjects/Water";
+    string electricityPath = "Assets/Scripts/Buildings/ScriptableObjects/Utilities/Electricity";
+    string waterPath = "Assets/Scripts/Buildings/ScriptableObjects/Utilities/Water";
 
     // ScriptableObject Arrays
     List<HousesSO> houses = new();

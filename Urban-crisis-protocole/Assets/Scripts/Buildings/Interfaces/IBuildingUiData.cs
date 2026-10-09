@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public interface IBuildingUiData
 {
-    public List<UiDataModel> GetUiDataList();
+    public List<UiDataText> GetUiTextList();
+    public List<UiDataInteraction> GetUiInteractionList();
 }
 

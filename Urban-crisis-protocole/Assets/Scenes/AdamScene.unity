@@ -3583,6 +3583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UiManager
   openBuildingMenuText: {fileID: 1706493722}
   buildingMenu: {fileID: 704377142}
+  elecShow: {fileID: 0}
 --- !u!4 &1957280985
 Transform:
   m_ObjectHideFlags: 0
