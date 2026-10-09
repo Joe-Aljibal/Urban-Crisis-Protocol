@@ -55,7 +55,7 @@ public class House : MonoBehaviour, IBuilding , IBuildingUiData
         return new List<UiDataModel>
         { 
            new UiDataModel(UiDataType.NAME, "House"),
-           new UiDataModel(UiDataType.PRICE, houseSO.price.ToString())
+           new UiDataModel(UiDataType.PRICE, houseSO.price.ToString()),
         };
     }
 }

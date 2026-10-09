@@ -24,6 +24,8 @@ public class InfoPanelManager : MonoBehaviour
         texts[UiDataType.PRICE] = "Current price : ";
     }
 
+    // une petite phrase | valeur  x
+    // UiDataType.NAME
   
     void Update()
     {}
