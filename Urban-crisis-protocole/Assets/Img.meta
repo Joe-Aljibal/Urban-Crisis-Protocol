@@ -1,6 +1,15 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 4fc250af45a461145a6876a66ba2aece
 folderAsset: yes
+=======
+<<<<<<<< HEAD:Urban-crisis-protocole/Assets/Img.meta
+guid: 4fc250af45a461145a6876a66ba2aece
+folderAsset: yes
+========
+guid: 3707bab51e2ad2c428a00151342d56f4
+>>>>>>>> f2a747a34f2dcadb81371bce0fc35054bc0f28cf:Urban-crisis-protocole/Assets/Ara_Scripts/Camera/Camera.unity.meta
+>>>>>>> b95941a8736da7963b1dbdf6262f330cce66bfb2
 DefaultImporter:
   externalObjects: {}
   userData: 

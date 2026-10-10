@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider
+public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuildingUiData
 {
     [SerializeField] public ElectricitySO electricitySO;
 
@@ -111,4 +111,26 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider
     public void ReceiveWorkers(int workers) { }
     public int GetWorkersNeeded() => 0;
     public bool HasEnoughWorkers() => true;
+    public void SetActive() {}
+    public void Deactivate() {
+        isActive = false;
+        playerInfo.addElectricity(-electricitySO.electricityOutput);
+        foreach (var (dependant, amountToGive) in electricityDependants)
+        {
+            dependant.Deactivate(amountToGive, 0);
+            playerInfo.electricityDependants.Add(dependant);
+        }
+    }
+    
+
+    // clean later same thing everywhere use parent of sciprtableobject
+     public List<UiDataModel> GetUiDataList()
+    {
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, electricitySO.type),
+           new UiDataModel(UiDataType.PRICE, electricitySO.price.ToString())
+        };
+    }
 }

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class House : MonoBehaviour, IBuilding, IWorkerProvider
+public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
 {
+
+    // dont need canPlace in Ibuilding you can get it true IbuildingSo which is in all buildings
     PlayerInfo playerInfo = PlayerInfo.Instance;
     [SerializeField] public HousesSO houseSO;
     //[SerializeField] Image elecMissingImage;
@@ -130,4 +131,24 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider
     public bool HasEnoughWorkers() => workersGiven < houseSO.population;
     public void ReceiveWorkers(int workers) { }
     public int GetWorkersNeeded() => 0;
+    public void SetActive() {
+        isActive = true;
+        playerInfo.addPopulation(houseSO.population);
+    }
+    public void Deactivate()
+    {
+        isActive = false;
+        playerInfo.addPopulation(-houseSO.population);
+        
+    }
+
+    public List<UiDataModel> GetUiDataList()
+    {
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, "House"),
+           new UiDataModel(UiDataType.PRICE, houseSO.price.ToString())
+        };
+    }
 }

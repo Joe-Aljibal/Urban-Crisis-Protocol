@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
   prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
   completPrefab: {fileID: 5334596742684202292, guid: 45791baad3566154c967b39592c982c6, type: 3}
+<<<<<<< HEAD:Urban-crisis-protocole/Assets/Scripts/Buildings/BuildingPlacemenntSystem/BuildingCard/Businesses/GasStation.asset
   meshPrefab: {fileID: 5334596742684202292, guid: a75c764ce89b59c43bd6744273ee4b06, type: 3}
+=======
+  meshPrefab: {fileID: 5334596742684202292, guid: 45791baad3566154c967b39592c982c6, type: 3}
+>>>>>>> b95941a8736da7963b1dbdf6262f330cce66bfb2:Urban-crisis-protocole/Assets/Scripts/Buildings/BuildingPlacemenntSystem/BuildingCard/GazStation.asset
   placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}

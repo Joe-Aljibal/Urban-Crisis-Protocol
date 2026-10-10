@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class Business: MonoBehaviour, IBuilding
+public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] BusinessesSO businessesSO;
     [SerializeField] Image workersImage;
@@ -89,7 +90,6 @@ public class Business: MonoBehaviour, IBuilding
     public bool HasEnoughElectricity() => businessesSO.electricityNeeded <= electricityReceived;
     public bool HasEnoughWorkers() => businessesSO.workersNeeded <= workersReceived;
     public int GetElectricityReceived() => electricityReceived;
-    public int GetElectricityNeeded() => businessesSO.electricityNeeded - electricityReceived;
     public int GetProfit() => businessesSO.profit;
     public bool CanPlace() => playerinfo.getMoney >= businessesSO.price;
 
@@ -100,4 +100,18 @@ public class Business: MonoBehaviour, IBuilding
     }
 
     public int GetWorkersNeeded() => businessesSO.workersNeeded - workersReceived;
+    public string GetType() => businessesSO.type;
+    public int GetPopulation() => businessesSO.workersNeeded;
+    public int GetElectricityNeeded() => businessesSO.electricityNeeded;
+
+    public List<UiDataModel> GetUiDataList()
+    {
+
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, businessesSO.type),
+           new UiDataModel(UiDataType.PRICE, businessesSO.price.ToString())
+        };
+    }
 }
