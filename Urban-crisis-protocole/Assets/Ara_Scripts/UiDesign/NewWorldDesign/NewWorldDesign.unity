@@ -41170,6 +41170,7 @@ GameObject:
   - component: {fileID: 723584079}
   - component: {fileID: 723584078}
   - component: {fileID: 723584077}
+  - component: {fileID: 723584081}
   m_Layer: 0
   m_Name: Map Camera
   m_TagString: Untagged
@@ -41177,6 +41178,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &723584081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723584076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3b4e65d417a4c3aa2d375ac460de827, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TownMapController
+  townCamera: {fileID: 428600149}
+  keyboardSpeed: 20
+  mapMoveSpeed: 50
 --- !u!114 &723584077
 MonoBehaviour:
   m_ObjectHideFlags: 0

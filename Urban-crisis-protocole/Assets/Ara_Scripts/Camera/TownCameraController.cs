@@ -56,6 +56,8 @@ public class TownCameraController : MonoBehaviour
     private Vector2 previousMousePosition;
     private CameraView currentView;
 
+    public Vector3 FocusPosition => GetCurrentTown().position + panOffset;
+
     private void Start()
     {
         cameraComponent = GetComponent<Camera>();
@@ -127,13 +129,12 @@ public class TownCameraController : MonoBehaviour
             forward.Normalize();
 
             float worldUnitsPerPixel = cameraComponent.orthographicSize * 2f / Screen.height;
-            panOffset -=
+            MoveFocus(
                 (right * mouseDifference.x + forward * mouseDifference.y)
                 * worldUnitsPerPixel
-                * dragSpeed;
+                * -dragSpeed
+            );
 
-            panOffset.x = Mathf.Clamp(panOffset.x, -panLimit, panLimit);
-            panOffset.z = Mathf.Clamp(panOffset.z, -panLimit, panLimit);
             previousMousePosition = currentMousePosition;
         }
         if (mouse.middleButton.wasReleasedThisFrame)
@@ -166,19 +167,8 @@ public class TownCameraController : MonoBehaviour
     private void MoveCamera()
     {
         Quaternion cameraRotation = Quaternion.Euler(pitch, yaw, 0f);
-
-        Vector3 focusPosition;
-
-        if (currentView == CameraView.HumanTown)
-        {
-            focusPosition = humanTown.position + panOffset;
-        }
-        else
-        {
-            focusPosition = aiTown.position + panOffset;
-        }
-
-        Vector3 targetPosition = focusPosition - cameraRotation * Vector3.forward * cameraDistance;
+        Vector3 targetPosition =
+            FocusPosition - cameraRotation * Vector3.forward * cameraDistance;
 
         transform.position = Vector3.MoveTowards(
             transform.position,
@@ -199,7 +189,54 @@ public class TownCameraController : MonoBehaviour
     {
         Quaternion cameraRotation = Quaternion.Euler(pitch, yaw, 0f);
         transform.rotation = cameraRotation;
-        transform.position = humanTown.position - cameraRotation * Vector3.forward * cameraDistance;
+        transform.position =
+            FocusPosition - cameraRotation * Vector3.forward * cameraDistance;
         cameraComponent.orthographicSize = townZoom;
+    }
+
+    public void MoveFocus(Vector3 movement)
+    {
+        panOffset += movement;
+        ClampPanOffset();
+    }
+
+    public void FocusOnGround(Vector3 groundPosition)
+    {
+        Vector3 humanDistance = groundPosition - humanTown.position;
+        Vector3 aiDistance = groundPosition - aiTown.position;
+
+        humanDistance.y = 0f;
+        aiDistance.y = 0f;
+
+        if (humanDistance.sqrMagnitude <= aiDistance.sqrMagnitude)
+        {
+            currentView = CameraView.HumanTown;
+        }
+        else
+        {
+            currentView = CameraView.AiTown;
+        }
+
+        panOffset = groundPosition - GetCurrentTown().position;
+        panOffset.y = 0f;
+
+        ClampPanOffset();
+        dragging = false;
+    }
+
+    private Transform GetCurrentTown()
+    {
+        if (currentView == CameraView.HumanTown)
+        {
+            return humanTown;
+        }
+
+        return aiTown;
+    }
+
+    private void ClampPanOffset()
+    {
+        panOffset.x = Mathf.Clamp(panOffset.x, -panLimit, panLimit);
+        panOffset.z = Mathf.Clamp(panOffset.z, -panLimit, panLimit);
     }
 }
