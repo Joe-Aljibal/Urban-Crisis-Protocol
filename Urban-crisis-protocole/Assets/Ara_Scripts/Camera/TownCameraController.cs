@@ -31,7 +31,7 @@ public class TownCameraController : MonoBehaviour
     private float zoomTransitionSpeed = 20f;
 
     [SerializeField]
-    private float panLimit = 20f;
+    private float panLimit = 190f;
 
     [SerializeField]
     private float cameraDistance = 60f;
