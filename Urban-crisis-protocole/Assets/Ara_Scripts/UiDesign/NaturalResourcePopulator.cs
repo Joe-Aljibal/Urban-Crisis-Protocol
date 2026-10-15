@@ -37,7 +37,7 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private int resourceNumber;
 
-    private void Start()
+    private void Awake()
     {
         System.Random random = new System.Random(seed);
 
@@ -66,13 +66,37 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private void SpawnArea(Vector2 center, Vector2 size, System.Random random)
     {
-        SpawnResources(treeTemplate, treesPerSide, center, size, random);
-        SpawnResources(bushTemplate, bushesPerSide, center, size, random);
-        SpawnResources(rockTemplate, rocksPerSide, center, size, random);
+        SpawnResources(
+            treeTemplate,
+            ResourceType.Wood,
+            treesPerSide,
+            center,
+            size,
+            random
+        );
+
+        SpawnResources(
+            bushTemplate,
+            ResourceType.Wood,
+            bushesPerSide,
+            center,
+            size,
+            random
+        );
+
+        SpawnResources(
+            rockTemplate,
+            ResourceType.Stone,
+            rocksPerSide,
+            center,
+            size,
+            random
+        );
     }
 
     private void SpawnResources(
         GameObject resourceTemplate,
+        ResourceType resourceType,
         int amount,
         Vector2 center,
         Vector2 size,
@@ -108,7 +132,20 @@ public class NaturalResourcePopulator : MonoBehaviour
             resourceNumber++;
             resource.transform.localScale = resourceTemplate.transform.localScale * scale;
             resource.name = resourceTemplate.name + "_Generated_" + resourceNumber;
+
+            MakeCollectible(resource, resourceType);
         }
+    }
+
+    private void MakeCollectible(GameObject resource, ResourceType resourceType)
+    {
+        foreach (MeshFilter mesh in resource.GetComponentsInChildren<MeshFilter>())
+        {
+            mesh.gameObject.AddComponent<BoxCollider>();
+        }
+
+        StaticResource staticResource = resource.AddComponent<StaticResource>();
+        staticResource.Configure(resourceType, true);
     }
 
     private float RandomRange(System.Random random, float minimum, float maximum)
