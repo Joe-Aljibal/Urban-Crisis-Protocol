@@ -70,80 +70,71 @@ public class NaturalResourcePopulator : MonoBehaviour
     [SerializeField]
     private int seed = 2026;
 
+    private System.Random random;
+    private List<Vector2> usedPositions = new List<Vector2>();
     private int resourceNumber;
-
     private int mountainNumber;
 
     private void OnEnable()
     {
-        Populate();
+        GenerateNature();
     }
 
     private void OnDisable()
     {
-        ClearGeneratedResources();
-        ClearGeneratedMountains();
+        ClearGeneratedObjects();
     }
 
-    private void Populate()
+    private void GenerateNature()
     {
-        ClearGeneratedResources();
-        ClearGeneratedMountains();
+        ClearGeneratedObjects();
+
+        random = new System.Random(seed);
+        usedPositions.Clear();
         resourceNumber = 0;
         mountainNumber = 0;
 
-        System.Random random = new System.Random(seed);
-        List<Vector2> positions = new List<Vector2>();
-
-        SpawnAroundTown(humanTown, positions, random);
-        SpawnAroundTown(aiTown, positions, random);
-        SpawnAcrossGround(positions, random);
-        SpawnMountains(random);
+        GenerateResourcesAroundTown(humanTown);
+        GenerateResourcesAroundTown(aiTown);
+        GenerateResourcesOnOuterGround();
+        GenerateMountains();
     }
 
-    private void SpawnMountains(System.Random random)
+    private void GenerateMountains()
     {
         float edgeX = mapSize.x / 2f - mountainEdgeInset;
         float edgeZ = mapSize.y / 2f - mountainEdgeInset;
 
+        float horizontalSpacing = edgeX * 2f / mountainsPerLongSide;
+        float verticalSpacing = edgeZ * 2f / mountainsPerShortSide;
+
         for (int i = 0; i < mountainsPerLongSide; i++)
         {
-            float x = Mathf.Lerp(
-                -edgeX,
-                edgeX,
-                (i + 0.5f) / mountainsPerLongSide
-            );
+            float x = -edgeX + horizontalSpacing / 2f + i * horizontalSpacing;
 
-            SpawnMountain(new Vector2(x, edgeZ), random);
-            SpawnMountain(new Vector2(x, -edgeZ), random);
+            CreateMountain(x, edgeZ);
+            CreateMountain(x, -edgeZ);
         }
 
         for (int i = 0; i < mountainsPerShortSide; i++)
         {
-            float z = Mathf.Lerp(
-                -edgeZ,
-                edgeZ,
-                (i + 0.5f) / mountainsPerShortSide
-            );
+            float z = -edgeZ + verticalSpacing / 2f + i * verticalSpacing;
 
-            SpawnMountain(new Vector2(edgeX, z), random);
-            SpawnMountain(new Vector2(-edgeX, z), random);
+            CreateMountain(edgeX, z);
+            CreateMountain(-edgeX, z);
         }
     }
 
-    private void SpawnMountain(Vector2 mapPosition, System.Random random)
+    private void CreateMountain(float x, float z)
     {
-        mapPosition += new Vector2(
-            RandomRange(random, -5f, 5f),
-            RandomRange(random, -5f, 5f)
-        );
+        x += GetRandomNumber(-5f, 5f);
+        z += GetRandomNumber(-5f, 5f);
 
-        Vector3 position = new Vector3(
-            mapPosition.x,
-            mountainTemplate.transform.position.y,
-            mapPosition.y
-        );
-        Quaternion rotation = Quaternion.Euler(0f, RandomRange(random, 0f, 360f), 0f);
+        float height = mountainTemplate.transform.position.y;
+        float angle = GetRandomNumber(0f, 360f);
+
+        Vector3 position = new Vector3(x, height, z);
+        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
 
         GameObject mountain = Instantiate(
             mountainTemplate,
@@ -152,7 +143,7 @@ public class NaturalResourcePopulator : MonoBehaviour
             mountainParent
         );
 
-        float scale = RandomRange(random, 0.8f, 1.15f);
+        float scale = GetRandomNumber(0.8f, 1.15f);
 
         mountainNumber++;
         mountain.transform.localScale = mountainTemplate.transform.localScale * scale;
@@ -160,163 +151,91 @@ public class NaturalResourcePopulator : MonoBehaviour
 
         if (!Application.isPlaying)
         {
-            MakeEditorPreview(mountain);
+            HidePreviewObject(mountain);
         }
     }
 
-    private void SpawnAroundTown(
-        Transform town,
-        List<Vector2> positions,
-        System.Random random
-    )
+    private void GenerateResourcesAroundTown(Transform town)
     {
-        Vector2 center = new Vector2(town.position.x, town.position.z);
+        Vector2 townCenter = new Vector2(town.position.x, town.position.z);
 
-        float xOffset = territorySize.x / 2f + resourceBandWidth / 2f;
-        float zOffset = territorySize.y / 2f + resourceBandWidth / 2f;
+        float horizontalOffset = territorySize.x / 2f + resourceBandWidth / 2f;
+        float verticalOffset = territorySize.y / 2f + resourceBandWidth / 2f;
 
-        Vector2 sideBand = new Vector2(resourceBandWidth, territorySize.y);
-        Vector2 topBottomBand = new Vector2(
+        Vector2 sideSize = new Vector2(resourceBandWidth, territorySize.y);
+        Vector2 topSize = new Vector2(
             territorySize.x + resourceBandWidth * 2f,
             resourceBandWidth
         );
 
-        SpawnArea(
-            center + Vector2.right * xOffset,
-            sideBand,
-            treesPerSide,
-            bushesPerSide,
-            rocksPerSide,
-            positions,
-            random
-        );
+        Vector2 rightSide = new Vector2(townCenter.x + horizontalOffset, townCenter.y);
+        Vector2 leftSide = new Vector2(townCenter.x - horizontalOffset, townCenter.y);
+        Vector2 topSide = new Vector2(townCenter.x, townCenter.y + verticalOffset);
+        Vector2 bottomSide = new Vector2(townCenter.x, townCenter.y - verticalOffset);
 
-        SpawnArea(
-            center + Vector2.left * xOffset,
-            sideBand,
-            treesPerSide,
-            bushesPerSide,
-            rocksPerSide,
-            positions,
-            random
-        );
-
-        SpawnArea(
-            center + Vector2.up * zOffset,
-            topBottomBand,
-            treesPerSide,
-            bushesPerSide,
-            rocksPerSide,
-            positions,
-            random
-        );
-
-        SpawnArea(
-            center + Vector2.down * zOffset,
-            topBottomBand,
-            treesPerSide,
-            bushesPerSide,
-            rocksPerSide,
-            positions,
-            random
-        );
+        GenerateArea(rightSide, sideSize, treesPerSide, bushesPerSide, rocksPerSide);
+        GenerateArea(leftSide, sideSize, treesPerSide, bushesPerSide, rocksPerSide);
+        GenerateArea(topSide, topSize, treesPerSide, bushesPerSide, rocksPerSide);
+        GenerateArea(bottomSide, topSize, treesPerSide, bushesPerSide, rocksPerSide);
     }
 
-    private void SpawnAcrossGround(List<Vector2> positions, System.Random random)
+    private void GenerateResourcesOnOuterGround()
     {
         float sideWidth = (mapSize.x - existingMapSize.x) / 2f;
-        float topBottomHeight = (mapSize.y - existingMapSize.y) / 2f;
+        float topHeight = (mapSize.y - existingMapSize.y) / 2f;
 
-        Vector2 sideArea = new Vector2(sideWidth, existingMapSize.y);
-        Vector2 topBottomArea = new Vector2(mapSize.x, topBottomHeight);
+        Vector2 sideSize = new Vector2(sideWidth, existingMapSize.y);
+        Vector2 topSize = new Vector2(mapSize.x, topHeight);
 
-        float xOffset = existingMapSize.x / 2f + sideWidth / 2f;
-        float zOffset = existingMapSize.y / 2f + topBottomHeight / 2f;
+        float horizontalOffset = existingMapSize.x / 2f + sideWidth / 2f;
+        float verticalOffset = existingMapSize.y / 2f + topHeight / 2f;
 
-        SpawnOuterArea(Vector2.right * xOffset, sideArea, positions, random);
-        SpawnOuterArea(Vector2.left * xOffset, sideArea, positions, random);
-        SpawnOuterArea(Vector2.up * zOffset, topBottomArea, positions, random);
-        SpawnOuterArea(Vector2.down * zOffset, topBottomArea, positions, random);
+        GenerateOuterArea(new Vector2(horizontalOffset, 0f), sideSize);
+        GenerateOuterArea(new Vector2(-horizontalOffset, 0f), sideSize);
+        GenerateOuterArea(new Vector2(0f, verticalOffset), topSize);
+        GenerateOuterArea(new Vector2(0f, -verticalOffset), topSize);
     }
 
-    private void SpawnOuterArea(
-        Vector2 center,
-        Vector2 size,
-        List<Vector2> positions,
-        System.Random random
-    )
+    private void GenerateOuterArea(Vector2 center, Vector2 size)
     {
-        SpawnArea(
+        GenerateArea(
             center,
             size,
             outerTreesPerArea,
             outerBushesPerArea,
-            outerRocksPerArea,
-            positions,
-            random
+            outerRocksPerArea
         );
     }
 
-    private void SpawnArea(
+    private void GenerateArea(
         Vector2 center,
         Vector2 size,
         int treeAmount,
         int bushAmount,
-        int rockAmount,
-        List<Vector2> positions,
-        System.Random random
+        int rockAmount
     )
     {
-        SpawnResources(
-            treeTemplate,
-            ResourceType.Wood,
-            treeAmount,
-            center,
-            size,
-            positions,
-            random
-        );
-
-        SpawnResources(
-            bushTemplate,
-            ResourceType.Wood,
-            bushAmount,
-            center,
-            size,
-            positions,
-            random
-        );
-
-        SpawnResources(
-            rockTemplate,
-            ResourceType.Stone,
-            rockAmount,
-            center,
-            size,
-            positions,
-            random
-        );
+        CreateResources(treeTemplate, ResourceType.Wood, treeAmount, center, size);
+        CreateResources(bushTemplate, ResourceType.Wood, bushAmount, center, size);
+        CreateResources(rockTemplate, ResourceType.Stone, rockAmount, center, size);
     }
 
-    private void SpawnResources(
+    private void CreateResources(
         GameObject resourceTemplate,
         ResourceType resourceType,
         int amount,
         Vector2 center,
-        Vector2 size,
-        List<Vector2> positions,
-        System.Random random
+        Vector2 size
     )
     {
         for (int i = 0; i < amount; i++)
         {
-            Vector2 mapPosition = FindPosition(center, size, positions, random);
-            Vector3 position = new Vector3(
-                mapPosition.x,
-                resourceTemplate.transform.position.y,
-                mapPosition.y
-            );
-            Quaternion rotation = Quaternion.Euler(0f, RandomRange(random, 0f, 360f), 0f);
+            Vector2 mapPosition = FindFreePosition(center, size);
+            float height = resourceTemplate.transform.position.y;
+            float angle = GetRandomNumber(0f, 360f);
+
+            Vector3 position = new Vector3(mapPosition.x, height, mapPosition.y);
+            Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
 
             GameObject resource = Instantiate(
                 resourceTemplate,
@@ -325,7 +244,7 @@ public class NaturalResourcePopulator : MonoBehaviour
                 transform
             );
 
-            float scale = RandomRange(random, 0.85f, 1.15f);
+            float scale = GetRandomNumber(0.85f, 1.15f);
 
             resourceNumber++;
             resource.transform.localScale = resourceTemplate.transform.localScale * scale;
@@ -337,82 +256,48 @@ public class NaturalResourcePopulator : MonoBehaviour
             }
             else
             {
-                MakeEditorPreview(resource);
+                HidePreviewObject(resource);
             }
 
-            positions.Add(mapPosition);
+            usedPositions.Add(mapPosition);
         }
     }
 
-    private void ClearGeneratedResources()
+    private Vector2 FindFreePosition(Vector2 center, Vector2 size)
     {
-        ClearGeneratedChildren(transform);
-    }
+        float left = center.x - size.x / 2f;
+        float right = center.x + size.x / 2f;
+        float bottom = center.y - size.y / 2f;
+        float top = center.y + size.y / 2f;
 
-    private void ClearGeneratedMountains()
-    {
-        ClearGeneratedChildren(mountainParent);
-    }
-
-    private void ClearGeneratedChildren(Transform parent)
-    {
-        for (int i = parent.childCount - 1; i >= 0; i--)
-        {
-            Transform child = parent.GetChild(i);
-
-            if (!child.name.Contains("_Generated_"))
-                continue;
-
-            if (Application.isPlaying)
-            {
-                Destroy(child.gameObject);
-            }
-            else
-            {
-                DestroyImmediate(child.gameObject);
-            }
-        }
-    }
-
-    private void MakeEditorPreview(GameObject resource)
-    {
-        HideFlags previewFlags = HideFlags.HideInHierarchy | HideFlags.DontSaveInEditor;
-
-        foreach (Transform child in resource.GetComponentsInChildren<Transform>())
-        {
-            child.gameObject.hideFlags = previewFlags;
-        }
-    }
-
-    private Vector2 FindPosition(
-        Vector2 center,
-        Vector2 size,
-        List<Vector2> positions,
-        System.Random random
-    )
-    {
         Vector2 position = center;
 
         for (int attempt = 0; attempt < 24; attempt++)
         {
-            position = new Vector2(
-                RandomRange(random, center.x - size.x / 2f, center.x + size.x / 2f),
-                RandomRange(random, center.y - size.y / 2f, center.y + size.y / 2f)
-            );
+            float x = GetRandomNumber(left, right);
+            float z = GetRandomNumber(bottom, top);
 
-            if (IsFarEnough(position, positions))
-                break;
+            position = new Vector2(x, z);
+
+            if (IsPositionFree(position))
+            {
+                return position;
+            }
         }
 
         return position;
     }
 
-    private bool IsFarEnough(Vector2 position, List<Vector2> positions)
+    private bool IsPositionFree(Vector2 position)
     {
-        foreach (Vector2 otherPosition in positions)
+        foreach (Vector2 usedPosition in usedPositions)
         {
-            if (Vector2.Distance(position, otherPosition) < minimumSpacing)
+            float distance = Vector2.Distance(position, usedPosition);
+
+            if (distance < minimumSpacing)
+            {
                 return false;
+            }
         }
 
         return true;
@@ -429,8 +314,48 @@ public class NaturalResourcePopulator : MonoBehaviour
         staticResource.Configure(resourceType, true);
     }
 
-    private float RandomRange(System.Random random, float minimum, float maximum)
+    private void ClearGeneratedObjects()
     {
-        return Mathf.Lerp(minimum, maximum, (float)random.NextDouble());
+        RemoveGeneratedChildren(transform);
+        RemoveGeneratedChildren(mountainParent);
+    }
+
+    private void RemoveGeneratedChildren(Transform parent)
+    {
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Transform child = parent.GetChild(i);
+
+            if (child.name.Contains("_Generated_"))
+            {
+                RemoveObject(child.gameObject);
+            }
+        }
+    }
+
+    private void RemoveObject(GameObject objectToRemove)
+    {
+        if (Application.isPlaying)
+        {
+            Destroy(objectToRemove);
+        }
+        else
+        {
+            DestroyImmediate(objectToRemove);
+        }
+    }
+
+    private void HidePreviewObject(GameObject previewObject)
+    {
+        foreach (Transform child in previewObject.GetComponentsInChildren<Transform>())
+        {
+            child.gameObject.hideFlags = HideFlags.HideAndDontSave;
+        }
+    }
+
+    private float GetRandomNumber(float minimum, float maximum)
+    {
+        float percentage = (float)random.NextDouble();
+        return minimum + (maximum - minimum) * percentage;
     }
 }
