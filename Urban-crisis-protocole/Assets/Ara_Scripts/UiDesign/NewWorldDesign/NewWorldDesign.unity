@@ -374,7 +374,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2ee2b0558b4ff844d9d7cc7f584aed02, type: 2}
+  - {fileID: 2100000, guid: 7c02d1eaa72f4af7b492cbb1e915a614, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1904,7 +1904,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.18, z: 0}
-  m_LocalScale: {x: 11, y: 0.25, z: 153}
+  m_LocalScale: {x: 12.5, y: 0.25, z: 62}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 300083}
@@ -1925,8 +1925,8 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300084}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1942,7 +1942,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 97dbd3eb492bea64386444419f32de46, type: 2}
+  - {fileID: 2100000, guid: d6140fb497b84073b4b2b0d68982de13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1992,13 +1992,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300088}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.052336, z: 0, w: 0.99863}
-  m_LocalPosition: {x: 1.8, y: 0.19, z: 53}
-  m_LocalScale: {x: 16, y: 0.24, z: 23}
+  m_LocalRotation: {x: 0, y: -0.026177, z: 0, w: 0.999657}
+  m_LocalPosition: {x: 4, y: 0.19, z: 52}
+  m_LocalScale: {x: 12.5, y: 0.24, z: 62}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 300083}
-  m_LocalEulerAnglesHint: {x: 0, y: -6, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -3, z: 0}
 --- !u!33 &300090
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2015,8 +2015,8 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300088}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2032,7 +2032,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 97dbd3eb492bea64386444419f32de46, type: 2}
+  - {fileID: 2100000, guid: d6140fb497b84073b4b2b0d68982de13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2082,13 +2082,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300092}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.061049, z: 0, w: 0.998135}
-  m_LocalPosition: {x: -1.7, y: 0.19, z: -54}
-  m_LocalScale: {x: 15, y: 0.24, z: 22}
+  m_LocalRotation: {x: 0, y: 0.026177, z: 0, w: 0.999657}
+  m_LocalPosition: {x: -4, y: 0.19, z: -52}
+  m_LocalScale: {x: 12.5, y: 0.24, z: 62}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 300083}
-  m_LocalEulerAnglesHint: {x: 0, y: 7, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 3, z: 0}
 --- !u!33 &300094
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2105,8 +2105,8 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300092}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2122,7 +2122,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 97dbd3eb492bea64386444419f32de46, type: 2}
+  - {fileID: 2100000, guid: d6140fb497b84073b4b2b0d68982de13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2163,7 +2163,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &300097
 Transform:
   m_ObjectHideFlags: 0
@@ -2172,13 +2172,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300096}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.017452, z: 0, w: 0.999848}
-  m_LocalPosition: {x: -6, y: 0.22, z: -35}
-  m_LocalScale: {x: 2.2, y: 0.35, z: 84}
+  m_LocalRotation: {x: 0, y: 0.034899, z: 0, w: 0.999391}
+  m_LocalPosition: {x: -7.5, y: 0.22, z: -28}
+  m_LocalScale: {x: 2, y: 0.35, z: 58}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 300083}
-  m_LocalEulerAnglesHint: {x: 0, y: 2, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 4, z: 0}
 --- !u!33 &300098
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2253,7 +2253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &300101
 Transform:
   m_ObjectHideFlags: 0
@@ -2262,13 +2262,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300100}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.017452, z: 0, w: 0.999848}
-  m_LocalPosition: {x: 6, y: 0.22, z: 34}
-  m_LocalScale: {x: 2.2, y: 0.35, z: 86}
+  m_LocalRotation: {x: 0, y: -0.034899, z: 0, w: 0.999391}
+  m_LocalPosition: {x: 7.5, y: 0.22, z: 28}
+  m_LocalScale: {x: 2, y: 0.35, z: 58}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 300083}
-  m_LocalEulerAnglesHint: {x: 0, y: -2, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -4, z: 0}
 --- !u!33 &300102
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2343,7 +2343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &300105
 Transform:
   m_ObjectHideFlags: 0
@@ -2353,7 +2353,7 @@ Transform:
   m_GameObject: {fileID: 300104}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.069756, z: 0, w: 0.997564}
-  m_LocalPosition: {x: 1.2, y: 0.38, z: 53}
+  m_LocalPosition: {x: 3.8, y: 0.38, z: 53}
   m_LocalScale: {x: 7.5, y: 0.55, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2433,7 +2433,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &300109
 Transform:
   m_ObjectHideFlags: 0
@@ -2443,7 +2443,7 @@ Transform:
   m_GameObject: {fileID: 300108}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.087156, z: 0, w: 0.996195}
-  m_LocalPosition: {x: -1.1, y: 0.38, z: -54}
+  m_LocalPosition: {x: -4.2, y: 0.38, z: -54}
   m_LocalScale: {x: 6.5, y: 0.5, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -32784,19 +32784,30 @@ MonoBehaviour:
   aiTown: {fileID: 1348564896}
   mountainParent: {fileID: 10000001}
   territorySize: {x: 60, y: 75}
-  resourceBandWidth: 20
-  treesPerSide: 12
-  bushesPerSide: 6
-  rocksPerSide: 3
+  resourceBandWidth: 40
+  treesPerSide: 5
+  bushesPerSide: 2
+  rocksPerSide: 1
   mapSize: {x: 540, y: 350}
   existingMapSize: {x: 230, y: 155}
-  outerTreesPerArea: 50
-  outerBushesPerArea: 25
-  outerRocksPerArea: 10
+  outerTreesPerArea: 72
+  outerBushesPerArea: 36
+  outerRocksPerArea: 14
   mountainsPerLongSide: 8
   mountainsPerShortSide: 5
   mountainEdgeInset: 20
-  minimumSpacing: 5
+  mountainBandDepth: 35
+  riverMountainClearance: 45
+  minimumSpacing: 8
+  emptySpace: 0.3
+  positionVariation: 0.25
+  outerTopMargin: 30
+  emptyAreaRadius: 26
+  emptyAreaCenters:
+  - {x: -210, y: 90}
+  - {x: -175, y: -80}
+  - {x: 185, y: 70}
+  - {x: 225, y: -95}
   seed: 2026
 --- !u!114 &90000002
 MonoBehaviour:
@@ -41048,13 +41059,13 @@ MonoBehaviour:
   aiTown: {fileID: 1348564896}
   pitch: 55
   yaw: 45
-  dragSpeed: 1
-  speed: 30
-  zoomTransitionSpeed: 20
-  panLimit: 190
+  dragSpeed: 1.2
+  movementSmoothness: 5
+  zoomSmoothness: 8
+  panLimit: 200
   cameraDistance: 60
   townZoom: 30
-  zoomSpeed: 2
+  zoomSpeed: 3
   minimumZoom: 12
   maximumZoom: 50
 --- !u!114 &428600150
@@ -41081,7 +41092,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -41239,8 +41250,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TownMapController
   townCamera: {fileID: 428600149}
-  keyboardSpeed: 20
-  mapMoveSpeed: 50
+  keyboardSpeed: 35
+  mapMoveSpeed: 70
 --- !u!114 &723584077
 MonoBehaviour:
   m_ObjectHideFlags: 0

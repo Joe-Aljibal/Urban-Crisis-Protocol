@@ -22,13 +22,13 @@ public class TownCameraController : MonoBehaviour
     private float yaw = 45f;
 
     [SerializeField]
-    private float dragSpeed = 1f;
+    private float dragSpeed = 1.2f;
 
     [SerializeField]
-    private float speed = 30f;
+    private float movementSmoothness = 5f;
 
     [SerializeField]
-    private float zoomTransitionSpeed = 20f;
+    private float zoomSmoothness = 8f;
 
     [SerializeField]
     private float panLimit = 190f;
@@ -170,18 +170,18 @@ public class TownCameraController : MonoBehaviour
         Vector3 targetPosition =
             FocusPosition - cameraRotation * Vector3.forward * cameraDistance;
 
-        transform.position = Vector3.MoveTowards(
+        transform.position = Vector3.Lerp(
             transform.position,
             targetPosition,
-            speed * Time.deltaTime
+            movementSmoothness * Time.deltaTime
         );
 
         transform.rotation = cameraRotation;
 
-        cameraComponent.orthographicSize = Mathf.MoveTowards(
+        cameraComponent.orthographicSize = Mathf.Lerp(
             cameraComponent.orthographicSize,
             townZoom,
-            zoomTransitionSpeed * Time.deltaTime
+            zoomSmoothness * Time.deltaTime
         );
     }
 

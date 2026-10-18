@@ -29,16 +29,16 @@ public class NaturalResourcePopulator : MonoBehaviour
     private Vector2 territorySize = new Vector2(60f, 75f);
 
     [SerializeField]
-    private float resourceBandWidth = 20f;
+    private float resourceBandWidth = 40f;
 
     [SerializeField]
-    private int treesPerSide = 12;
+    private int treesPerSide = 5;
 
     [SerializeField]
-    private int bushesPerSide = 6;
+    private int bushesPerSide = 2;
 
     [SerializeField]
-    private int rocksPerSide = 3;
+    private int rocksPerSide = 1;
 
     [SerializeField]
     private Vector2 mapSize = new Vector2(540f, 350f);
@@ -47,13 +47,13 @@ public class NaturalResourcePopulator : MonoBehaviour
     private Vector2 existingMapSize = new Vector2(230f, 155f);
 
     [SerializeField]
-    private int outerTreesPerArea = 50;
+    private int outerTreesPerArea = 72;
 
     [SerializeField]
-    private int outerBushesPerArea = 25;
+    private int outerBushesPerArea = 36;
 
     [SerializeField]
-    private int outerRocksPerArea = 10;
+    private int outerRocksPerArea = 14;
 
     [SerializeField]
     private int mountainsPerLongSide = 8;
@@ -65,7 +65,36 @@ public class NaturalResourcePopulator : MonoBehaviour
     private float mountainEdgeInset = 20f;
 
     [SerializeField]
-    private float minimumSpacing = 5f;
+    private float mountainBandDepth = 35f;
+
+    [SerializeField]
+    private float riverMountainClearance = 45f;
+
+    [SerializeField]
+    private float minimumSpacing = 8f;
+
+    [SerializeField]
+    [Range(0f, 0.5f)]
+    private float emptySpace = 0.3f;
+
+    [SerializeField]
+    [Range(0f, 0.4f)]
+    private float positionVariation = 0.25f;
+
+    [SerializeField]
+    private float outerTopMargin = 30f;
+
+    [SerializeField]
+    private float emptyAreaRadius = 26f;
+
+    [SerializeField]
+    private Vector2[] emptyAreaCenters = new Vector2[]
+    {
+        new Vector2(-210f, 90f),
+        new Vector2(-175f, -80f),
+        new Vector2(185f, 70f),
+        new Vector2(225f, -95f)
+    };
 
     [SerializeField]
     private int seed = 2026;
@@ -104,31 +133,56 @@ public class NaturalResourcePopulator : MonoBehaviour
     {
         float edgeX = mapSize.x / 2f - mountainEdgeInset;
         float edgeZ = mapSize.y / 2f - mountainEdgeInset;
-
         float horizontalSpacing = edgeX * 2f / mountainsPerLongSide;
         float verticalSpacing = edgeZ * 2f / mountainsPerShortSide;
 
         for (int i = 0; i < mountainsPerLongSide; i++)
         {
-            float x = -edgeX + horizontalSpacing / 2f + i * horizontalSpacing;
+            float slotCenter = -edgeX + horizontalSpacing * (i + 0.5f);
+            float variation = horizontalSpacing * 0.3f;
 
-            CreateMountain(x, edgeZ);
-            CreateMountain(x, -edgeZ);
+            float northX = slotCenter + GetRandomNumber(-variation, variation);
+            float southX = slotCenter + GetRandomNumber(-variation, variation);
+
+            float northZ = edgeZ - GetRandomNumber(0f, mountainBandDepth);
+            float southZ = -edgeZ + GetRandomNumber(0f, mountainBandDepth);
+
+            CreateMountain(northX, northZ, true);
+            CreateMountain(southX, southZ, true);
         }
 
         for (int i = 0; i < mountainsPerShortSide; i++)
         {
-            float z = -edgeZ + verticalSpacing / 2f + i * verticalSpacing;
+            float slotCenter = -edgeZ + verticalSpacing * (i + 0.5f);
+            float variation = verticalSpacing * 0.3f;
 
-            CreateMountain(edgeX, z);
-            CreateMountain(-edgeX, z);
+            float eastZ = slotCenter + GetRandomNumber(-variation, variation);
+            float westZ = slotCenter + GetRandomNumber(-variation, variation);
+
+            float eastX = edgeX - GetRandomNumber(0f, mountainBandDepth);
+            float westX = -edgeX + GetRandomNumber(0f, mountainBandDepth);
+
+            CreateMountain(eastX, eastZ, false);
+            CreateMountain(westX, westZ, false);
         }
     }
 
-    private void CreateMountain(float x, float z)
+    private void CreateMountain(float x, float z, bool nearRiver)
     {
-        x += GetRandomNumber(-5f, 5f);
-        z += GetRandomNumber(-5f, 5f);
+        x += GetRandomNumber(-6f, 6f);
+        z += GetRandomNumber(-6f, 6f);
+
+        if (nearRiver && Mathf.Abs(x) < riverMountainClearance)
+        {
+            if (x < 0f)
+            {
+                x = -riverMountainClearance;
+            }
+            else
+            {
+                x = riverMountainClearance;
+            }
+        }
 
         float height = mountainTemplate.transform.position.y;
         float angle = GetRandomNumber(0f, 360f);
@@ -143,10 +197,17 @@ public class NaturalResourcePopulator : MonoBehaviour
             mountainParent
         );
 
-        float scale = GetRandomNumber(0.8f, 1.15f);
+        float width = GetRandomNumber(0.7f, 1.25f);
+        float heightScale = GetRandomNumber(0.8f, 1.3f);
+        float depth = GetRandomNumber(0.7f, 1.25f);
+        Vector3 templateScale = mountainTemplate.transform.localScale;
 
         mountainNumber++;
-        mountain.transform.localScale = mountainTemplate.transform.localScale * scale;
+        mountain.transform.localScale = new Vector3(
+            templateScale.x * width,
+            templateScale.y * heightScale,
+            templateScale.z * depth
+        );
         mountain.name = mountainTemplate.name + "_Generated_" + mountainNumber;
 
         if (!Application.isPlaying)
@@ -182,18 +243,12 @@ public class NaturalResourcePopulator : MonoBehaviour
     private void GenerateResourcesOnOuterGround()
     {
         float sideWidth = (mapSize.x - existingMapSize.x) / 2f;
-        float topHeight = (mapSize.y - existingMapSize.y) / 2f;
-
-        Vector2 sideSize = new Vector2(sideWidth, existingMapSize.y);
-        Vector2 topSize = new Vector2(mapSize.x, topHeight);
-
+        Vector2 sideSize = new Vector2(sideWidth, mapSize.y - outerTopMargin);
         float horizontalOffset = existingMapSize.x / 2f + sideWidth / 2f;
-        float verticalOffset = existingMapSize.y / 2f + topHeight / 2f;
+        float verticalOffset = -outerTopMargin / 2f;
 
-        GenerateOuterArea(new Vector2(horizontalOffset, 0f), sideSize);
-        GenerateOuterArea(new Vector2(-horizontalOffset, 0f), sideSize);
-        GenerateOuterArea(new Vector2(0f, verticalOffset), topSize);
-        GenerateOuterArea(new Vector2(0f, -verticalOffset), topSize);
+        GenerateOuterArea(new Vector2(horizontalOffset, verticalOffset), sideSize);
+        GenerateOuterArea(new Vector2(-horizontalOffset, verticalOffset), sideSize);
     }
 
     private void GenerateOuterArea(Vector2 center, Vector2 size)
@@ -215,22 +270,33 @@ public class NaturalResourcePopulator : MonoBehaviour
         int rockAmount
     )
     {
-        CreateResources(treeTemplate, ResourceType.Wood, treeAmount, center, size);
-        CreateResources(bushTemplate, ResourceType.Wood, bushAmount, center, size);
-        CreateResources(rockTemplate, ResourceType.Stone, rockAmount, center, size);
+        int totalAmount = treeAmount + bushAmount + rockAmount;
+        List<Vector2> positions = CreateNaturalPositions(center, size, totalAmount);
+
+        MixPositions(positions);
+
+        CreateResources(treeTemplate, ResourceType.Wood, treeAmount, positions, 0);
+        CreateResources(bushTemplate, ResourceType.Wood, bushAmount, positions, treeAmount);
+        CreateResources(
+            rockTemplate,
+            ResourceType.Stone,
+            rockAmount,
+            positions,
+            treeAmount + bushAmount
+        );
     }
 
     private void CreateResources(
         GameObject resourceTemplate,
         ResourceType resourceType,
         int amount,
-        Vector2 center,
-        Vector2 size
+        List<Vector2> positions,
+        int firstPosition
     )
     {
         for (int i = 0; i < amount; i++)
         {
-            Vector2 mapPosition = FindFreePosition(center, size);
+            Vector2 mapPosition = positions[firstPosition + i];
             float height = resourceTemplate.transform.position.y;
             float angle = GetRandomNumber(0f, 360f);
 
@@ -244,10 +310,16 @@ public class NaturalResourcePopulator : MonoBehaviour
                 transform
             );
 
-            float scale = GetRandomNumber(0.85f, 1.15f);
+            float width = GetRandomNumber(0.75f, 1.2f);
+            float heightScale = GetRandomNumber(0.85f, 1.3f);
+            Vector3 templateScale = resourceTemplate.transform.localScale;
 
             resourceNumber++;
-            resource.transform.localScale = resourceTemplate.transform.localScale * scale;
+            resource.transform.localScale = new Vector3(
+                templateScale.x * width,
+                templateScale.y * heightScale,
+                templateScale.z * width
+            );
             resource.name = resourceTemplate.name + "_Generated_" + resourceNumber;
 
             if (Application.isPlaying)
@@ -259,7 +331,73 @@ public class NaturalResourcePopulator : MonoBehaviour
                 HidePreviewObject(resource);
             }
 
-            usedPositions.Add(mapPosition);
+        }
+    }
+
+    private List<Vector2> CreateNaturalPositions(Vector2 center, Vector2 size, int amount)
+    {
+        List<Vector2> positions = new List<Vector2>();
+        List<Vector2> availablePositions = new List<Vector2>();
+
+        float areaShape = size.x / size.y;
+        int cellAmount = Mathf.CeilToInt(amount * (1f + emptySpace));
+        int columns = Mathf.CeilToInt(Mathf.Sqrt(cellAmount * areaShape));
+        int rows = Mathf.CeilToInt((float)cellAmount / columns);
+
+        float cellWidth = size.x / columns;
+        float cellHeight = size.y / rows;
+        float left = center.x - size.x / 2f;
+        float bottom = center.y - size.y / 2f;
+
+        for (int row = 0; row < rows; row++)
+        {
+            for (int column = 0; column < columns; column++)
+            {
+                float x = left + cellWidth * (column + 0.5f);
+                float z = bottom + cellHeight * (row + 0.5f);
+
+                x += GetRandomNumber(-cellWidth * positionVariation, cellWidth * positionVariation);
+                z += GetRandomNumber(-cellHeight * positionVariation, cellHeight * positionVariation);
+
+                availablePositions.Add(new Vector2(x, z));
+            }
+        }
+
+        MixPositions(availablePositions);
+
+        foreach (Vector2 position in availablePositions)
+        {
+            if (positions.Count == amount)
+            {
+                break;
+            }
+
+            if (IsPositionFree(position))
+            {
+                positions.Add(position);
+                usedPositions.Add(position);
+            }
+        }
+
+        while (positions.Count < amount)
+        {
+            Vector2 position = FindFreePosition(center, size);
+            positions.Add(position);
+            usedPositions.Add(position);
+        }
+
+        return positions;
+    }
+
+    private void MixPositions(List<Vector2> positions)
+    {
+        for (int i = positions.Count - 1; i > 0; i--)
+        {
+            int otherPosition = random.Next(i + 1);
+            Vector2 savedPosition = positions[i];
+
+            positions[i] = positions[otherPosition];
+            positions[otherPosition] = savedPosition;
         }
     }
 
@@ -272,7 +410,7 @@ public class NaturalResourcePopulator : MonoBehaviour
 
         Vector2 position = center;
 
-        for (int attempt = 0; attempt < 24; attempt++)
+        for (int attempt = 0; attempt < 100; attempt++)
         {
             float x = GetRandomNumber(left, right);
             float z = GetRandomNumber(bottom, top);
@@ -290,6 +428,14 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private bool IsPositionFree(Vector2 position)
     {
+        foreach (Vector2 emptyAreaCenter in emptyAreaCenters)
+        {
+            if (Vector2.Distance(position, emptyAreaCenter) < emptyAreaRadius)
+            {
+                return false;
+            }
+        }
+
         foreach (Vector2 usedPosition in usedPositions)
         {
             float distance = Vector2.Distance(position, usedPosition);
