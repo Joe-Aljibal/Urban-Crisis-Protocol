@@ -32757,6 +32757,7 @@ GameObject:
   - component: {fileID: 20000001}
   - component: {fileID: 90000001}
   - component: {fileID: 90000002}
+  - component: {fileID: 90000003}
   m_Layer: 0
   m_Name: Additional_Nature_Growth
   m_TagString: Untagged
@@ -32802,6 +32803,7 @@ MonoBehaviour:
   emptySpace: 0.3
   positionVariation: 0.25
   outerTopMargin: 30
+  resourceRegenerationTime: 10
   emptyAreaRadius: 26
   emptyAreaCenters:
   - {x: -210, y: 90}
@@ -32821,6 +32823,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd3dcf663e0a544fb456dbf04b6d4b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectResourceOnClick
+--- !u!114 &90000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3bf380e19cfe6841bec3f7a3b79ef15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceUIManager
+  woodText: {fileID: 0}
+  stoneText: {fileID: 0}
+  showSimpleCounter: 1
 --- !u!4 &20000001
 Transform:
   m_ObjectHideFlags: 0

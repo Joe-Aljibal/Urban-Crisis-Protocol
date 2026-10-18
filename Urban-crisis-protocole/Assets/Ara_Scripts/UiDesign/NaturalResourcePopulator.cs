@@ -85,6 +85,9 @@ public class NaturalResourcePopulator : MonoBehaviour
     private float outerTopMargin = 30f;
 
     [SerializeField]
+    private float resourceRegenerationTime = 10f;
+
+    [SerializeField]
     private float emptyAreaRadius = 26f;
 
     [SerializeField]
@@ -457,7 +460,11 @@ public class NaturalResourcePopulator : MonoBehaviour
         }
 
         StaticResource staticResource = resource.AddComponent<StaticResource>();
-        staticResource.Configure(resourceType, true);
+        staticResource.Configure(
+            resourceType,
+            false,
+            resourceRegenerationTime
+        );
     }
 
     private void ClearGeneratedObjects()

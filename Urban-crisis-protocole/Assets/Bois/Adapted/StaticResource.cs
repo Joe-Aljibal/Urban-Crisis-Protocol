@@ -32,12 +32,17 @@ public class StaticResource : MonoBehaviour
         }
     }
 
-    public void Configure(ResourceType type, bool remainDepleted)
+    public void Configure(
+        ResourceType type,
+        bool remainDepleted,
+        float regenerationTime
+    )
     {
         ResourceManager.UnregisterResource(resourceType, transform);
 
         resourceType = type;
         staysDepleted = remainDepleted;
+        respawnTime = regenerationTime;
 
         ResourceManager.RegisterResource(resourceType, transform);
     }

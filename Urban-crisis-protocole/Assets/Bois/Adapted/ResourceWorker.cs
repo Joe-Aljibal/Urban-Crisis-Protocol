@@ -97,7 +97,6 @@ public class ResourceWorker : Worker
         if (currentResource == null) return;
         cachedResourceType = GetCurrentResourceScript().ResourceType;
         GetCurrentResourceScript().Disable();
-        GetCurrentResourceScript().IsAvailable = true;
         currentResource = null;
     }
 
