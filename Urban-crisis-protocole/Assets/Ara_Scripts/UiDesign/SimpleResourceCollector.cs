@@ -3,11 +3,16 @@ using UnityEngine;
 
 public class SimpleResourceCollector : MonoBehaviour
 {
+    private const float ResourceSearchDelay = 1f;
+    private const float DelayAfterDelivery = 0.5f;
+    private const float MinimumSquaredDirectionLength = 0.01f;
+
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float turnSpeed = 360f;
     [SerializeField] private float exploitationTime = 1.5f;
     [SerializeField] private float stoppingDistance = 2f;
     [SerializeField] private int resourceAmount = 1;
+    [SerializeField] private TownType town;
 
     private Vector3 homePosition;
     private StaticResource targetResource;
@@ -58,7 +63,7 @@ public class SimpleResourceCollector : MonoBehaviour
         if (searchTimer > 0f)
             return;
 
-        searchTimer = 1f;
+        searchTimer = ResourceSearchDelay;
         targetResource = FindClosestResource();
 
         if (targetResource != null)
@@ -147,10 +152,16 @@ public class SimpleResourceCollector : MonoBehaviour
         if (!MoveTo(homePosition))
             return;
 
-        PlayerInfo.Instance.addResource(carriedResourceType, resourceAmount);
+        TownResourceStatistics.AddResource(town, carriedResourceType, resourceAmount);
+
+        if (town == TownType.Human)
+        {
+            PlayerInfo.Instance.addResource(carriedResourceType, resourceAmount);
+        }
+
         DeliveredResources += resourceAmount;
         isReturningHome = false;
-        searchTimer = 0.5f;
+        searchTimer = DelayAfterDelivery;
         CurrentAction = "Ressource déposée";
     }
 
@@ -176,7 +187,7 @@ public class SimpleResourceCollector : MonoBehaviour
 
         Vector3 direction = destination - transform.position;
 
-        if (direction.sqrMagnitude > 0.01f)
+        if (direction.sqrMagnitude > MinimumSquaredDirectionLength)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.RotateTowards(

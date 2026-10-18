@@ -4,106 +4,60 @@ using UnityEngine;
 [ExecuteAlways]
 public class NaturalResourcePopulator : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject treeTemplate;
+    private const string GeneratedName = "_Generated_";
+    private const float Half = 0.5f;
+    private const float FullRotation = 360f;
+    private const float MountainSlotVariation = 0.3f;
+    private const float MountainPositionVariation = 6f;
+    private const float MountainMinimumWidth = 0.7f;
+    private const float MountainMaximumWidth = 1.25f;
+    private const float MountainMinimumHeight = 0.8f;
+    private const float MountainMaximumHeight = 1.3f;
+    private const float ResourceMinimumWidth = 0.75f;
+    private const float ResourceMaximumWidth = 1.2f;
+    private const float ResourceMinimumHeight = 0.85f;
+    private const float ResourceMaximumHeight = 1.3f;
+    private const int MaximumPositionAttempts = 100;
 
-    [SerializeField]
-    private GameObject bushTemplate;
-
-    [SerializeField]
-    private GameObject rockTemplate;
-
-    [SerializeField]
-    private GameObject mountainTemplate;
-
-    [SerializeField]
-    private Transform humanTown;
-
-    [SerializeField]
-    private Transform aiTown;
-
-    [SerializeField]
-    private Transform mountainParent;
-
-    [SerializeField]
-    private Vector2 territorySize = new Vector2(60f, 75f);
-
-    [SerializeField]
-    private float resourceBandWidth = 40f;
-
-    [SerializeField]
-    private int treesPerSide = 5;
-
-    [SerializeField]
-    private int bushesPerSide = 2;
-
-    [SerializeField]
-    private int rocksPerSide = 1;
-
-    [SerializeField]
-    private Vector2 mapSize = new Vector2(540f, 350f);
-
-    [SerializeField]
-    private Vector2 existingMapSize = new Vector2(230f, 155f);
-
-    [SerializeField]
-    private int outerTreesPerArea = 72;
-
-    [SerializeField]
-    private int outerBushesPerArea = 36;
-
-    [SerializeField]
-    private int outerRocksPerArea = 14;
-
-    [SerializeField]
-    private int mountainsPerLongSide = 8;
-
-    [SerializeField]
-    private int mountainsPerShortSide = 5;
-
-    [SerializeField]
-    private float mountainEdgeInset = 20f;
-
-    [SerializeField]
-    private float mountainBandDepth = 35f;
-
-    [SerializeField]
-    private float riverMountainClearance = 45f;
-
-    [SerializeField]
-    private float minimumSpacing = 8f;
-
-    [SerializeField]
-    [Range(0f, 0.5f)]
-    private float emptySpace = 0.3f;
-
-    [SerializeField]
-    [Range(0f, 0.4f)]
-    private float positionVariation = 0.25f;
-
-    [SerializeField]
-    private float outerTopMargin = 30f;
-
-    [SerializeField]
-    private float resourceRegenerationTime = 10f;
-
-    [SerializeField]
-    private float emptyAreaRadius = 26f;
-
-    [SerializeField]
-    private Vector2[] emptyAreaCenters = new Vector2[]
+    [SerializeField] private GameObject treeTemplate;
+    [SerializeField] private GameObject bushTemplate;
+    [SerializeField] private GameObject rockTemplate;
+    [SerializeField] private GameObject mountainTemplate;
+    [SerializeField] private Transform humanTown;
+    [SerializeField] private Transform aiTown;
+    [SerializeField] private Transform mountainParent;
+    [SerializeField] private Vector2 territorySize = new Vector2(60f, 75f);
+    [SerializeField] private float resourceBandWidth = 40f;
+    [SerializeField] private int treesPerSide = 5;
+    [SerializeField] private int bushesPerSide = 2;
+    [SerializeField] private int rocksPerSide = 1;
+    [SerializeField] private Vector2 mapSize = new Vector2(540f, 350f);
+    [SerializeField] private Vector2 existingMapSize = new Vector2(230f, 155f);
+    [SerializeField] private int outerTreesPerArea = 72;
+    [SerializeField] private int outerBushesPerArea = 36;
+    [SerializeField] private int outerRocksPerArea = 14;
+    [SerializeField] private int mountainsPerLongSide = 8;
+    [SerializeField] private int mountainsPerShortSide = 5;
+    [SerializeField] private float mountainEdgeInset = 20f;
+    [SerializeField] private float mountainBandDepth = 35f;
+    [SerializeField] private float riverMountainClearance = 45f;
+    [SerializeField] private float minimumSpacing = 8f;
+    [SerializeField] private float emptySpace = 0.3f;
+    [SerializeField] private float positionVariation = 0.25f;
+    [SerializeField] private float outerTopMargin = 30f;
+    [SerializeField] private float resourceRegenerationTime = 10f;
+    [SerializeField] private float emptyAreaRadius = 26f;
+    [SerializeField] private Vector2[] emptyAreaCenters =
     {
         new Vector2(-210f, 90f),
         new Vector2(-175f, -80f),
         new Vector2(185f, 70f),
         new Vector2(225f, -95f)
     };
-
-    [SerializeField]
-    private int seed = 2026;
+    [SerializeField] private int seed = 2026;
 
     private System.Random random;
-    private List<Vector2> usedPositions = new List<Vector2>();
+    private readonly List<Vector2> usedPositions = new List<Vector2>();
     private int resourceNumber;
     private int mountainNumber;
 
@@ -134,65 +88,59 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private void GenerateMountains()
     {
-        float edgeX = mapSize.x / 2f - mountainEdgeInset;
-        float edgeZ = mapSize.y / 2f - mountainEdgeInset;
-        float horizontalSpacing = edgeX * 2f / mountainsPerLongSide;
-        float verticalSpacing = edgeZ * 2f / mountainsPerShortSide;
+        float edgeX = mapSize.x * Half - mountainEdgeInset;
+        float edgeZ = mapSize.y * Half - mountainEdgeInset;
 
-        for (int i = 0; i < mountainsPerLongSide; i++)
+        GenerateMountainEdges(mountainsPerLongSide, edgeX, edgeZ, true);
+        GenerateMountainEdges(mountainsPerShortSide, edgeZ, edgeX, false);
+    }
+
+    private void GenerateMountainEdges(
+        int amount,
+        float movingEdge,
+        float fixedEdge,
+        bool horizontal
+    )
+    {
+        float spacing = movingEdge * 2f / amount;
+
+        for (int index = 0; index < amount; index++)
         {
-            float slotCenter = -edgeX + horizontalSpacing * (i + 0.5f);
-            float variation = horizontalSpacing * 0.3f;
+            float center = -movingEdge + spacing * (index + Half);
+            float variation = spacing * MountainSlotVariation;
+            float firstPosition = center + RandomBetween(-variation, variation);
+            float secondPosition = center + RandomBetween(-variation, variation);
+            float positiveEdge = fixedEdge - RandomBetween(0f, mountainBandDepth);
+            float negativeEdge = -fixedEdge + RandomBetween(0f, mountainBandDepth);
 
-            float northX = slotCenter + GetRandomNumber(-variation, variation);
-            float southX = slotCenter + GetRandomNumber(-variation, variation);
-
-            float northZ = edgeZ - GetRandomNumber(0f, mountainBandDepth);
-            float southZ = -edgeZ + GetRandomNumber(0f, mountainBandDepth);
-
-            CreateMountain(northX, northZ, true);
-            CreateMountain(southX, southZ, true);
-        }
-
-        for (int i = 0; i < mountainsPerShortSide; i++)
-        {
-            float slotCenter = -edgeZ + verticalSpacing * (i + 0.5f);
-            float variation = verticalSpacing * 0.3f;
-
-            float eastZ = slotCenter + GetRandomNumber(-variation, variation);
-            float westZ = slotCenter + GetRandomNumber(-variation, variation);
-
-            float eastX = edgeX - GetRandomNumber(0f, mountainBandDepth);
-            float westX = -edgeX + GetRandomNumber(0f, mountainBandDepth);
-
-            CreateMountain(eastX, eastZ, false);
-            CreateMountain(westX, westZ, false);
+            if (horizontal)
+            {
+                CreateMountain(firstPosition, positiveEdge, true);
+                CreateMountain(secondPosition, negativeEdge, true);
+            }
+            else
+            {
+                CreateMountain(positiveEdge, firstPosition, false);
+                CreateMountain(negativeEdge, secondPosition, false);
+            }
         }
     }
 
     private void CreateMountain(float x, float z, bool nearRiver)
     {
-        x += GetRandomNumber(-6f, 6f);
-        z += GetRandomNumber(-6f, 6f);
+        x += RandomBetween(-MountainPositionVariation, MountainPositionVariation);
+        z += RandomBetween(-MountainPositionVariation, MountainPositionVariation);
 
         if (nearRiver && Mathf.Abs(x) < riverMountainClearance)
         {
             if (x < 0f)
-            {
                 x = -riverMountainClearance;
-            }
             else
-            {
                 x = riverMountainClearance;
-            }
         }
 
-        float height = mountainTemplate.transform.position.y;
-        float angle = GetRandomNumber(0f, 360f);
-
-        Vector3 position = new Vector3(x, height, z);
-        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
-
+        Vector3 position = new Vector3(x, mountainTemplate.transform.position.y, z);
+        Quaternion rotation = Quaternion.Euler(0f, RandomRotation(), 0f);
         GameObject mountain = Instantiate(
             mountainTemplate,
             position,
@@ -200,58 +148,55 @@ public class NaturalResourcePopulator : MonoBehaviour
             mountainParent
         );
 
-        float width = GetRandomNumber(0.7f, 1.25f);
-        float heightScale = GetRandomNumber(0.8f, 1.3f);
-        float depth = GetRandomNumber(0.7f, 1.25f);
+        float width = RandomBetween(MountainMinimumWidth, MountainMaximumWidth);
+        float height = RandomBetween(MountainMinimumHeight, MountainMaximumHeight);
+        float depth = RandomBetween(MountainMinimumWidth, MountainMaximumWidth);
         Vector3 templateScale = mountainTemplate.transform.localScale;
 
-        mountainNumber++;
         mountain.transform.localScale = new Vector3(
             templateScale.x * width,
-            templateScale.y * heightScale,
+            templateScale.y * height,
             templateScale.z * depth
         );
-        mountain.name = mountainTemplate.name + "_Generated_" + mountainNumber;
+
+        mountainNumber++;
+        mountain.name = mountainTemplate.name + GeneratedName + mountainNumber;
 
         if (!Application.isPlaying)
-        {
             HidePreviewObject(mountain);
-        }
     }
 
     private void GenerateResourcesAroundTown(Transform town)
     {
-        Vector2 townCenter = new Vector2(town.position.x, town.position.z);
-
-        float horizontalOffset = territorySize.x / 2f + resourceBandWidth / 2f;
-        float verticalOffset = territorySize.y / 2f + resourceBandWidth / 2f;
-
+        Vector2 center = new Vector2(town.position.x, town.position.z);
+        float horizontalOffset = (territorySize.x + resourceBandWidth) * Half;
+        float verticalOffset = (territorySize.y + resourceBandWidth) * Half;
         Vector2 sideSize = new Vector2(resourceBandWidth, territorySize.y);
         Vector2 topSize = new Vector2(
             territorySize.x + resourceBandWidth * 2f,
             resourceBandWidth
         );
 
-        Vector2 rightSide = new Vector2(townCenter.x + horizontalOffset, townCenter.y);
-        Vector2 leftSide = new Vector2(townCenter.x - horizontalOffset, townCenter.y);
-        Vector2 topSide = new Vector2(townCenter.x, townCenter.y + verticalOffset);
-        Vector2 bottomSide = new Vector2(townCenter.x, townCenter.y - verticalOffset);
+        GenerateTownArea(center + new Vector2(horizontalOffset, 0f), sideSize);
+        GenerateTownArea(center - new Vector2(horizontalOffset, 0f), sideSize);
+        GenerateTownArea(center + new Vector2(0f, verticalOffset), topSize);
+        GenerateTownArea(center - new Vector2(0f, verticalOffset), topSize);
+    }
 
-        GenerateArea(rightSide, sideSize, treesPerSide, bushesPerSide, rocksPerSide);
-        GenerateArea(leftSide, sideSize, treesPerSide, bushesPerSide, rocksPerSide);
-        GenerateArea(topSide, topSize, treesPerSide, bushesPerSide, rocksPerSide);
-        GenerateArea(bottomSide, topSize, treesPerSide, bushesPerSide, rocksPerSide);
+    private void GenerateTownArea(Vector2 center, Vector2 size)
+    {
+        GenerateArea(center, size, treesPerSide, bushesPerSide, rocksPerSide);
     }
 
     private void GenerateResourcesOnOuterGround()
     {
-        float sideWidth = (mapSize.x - existingMapSize.x) / 2f;
-        Vector2 sideSize = new Vector2(sideWidth, mapSize.y - outerTopMargin);
-        float horizontalOffset = existingMapSize.x / 2f + sideWidth / 2f;
-        float verticalOffset = -outerTopMargin / 2f;
+        float sideWidth = (mapSize.x - existingMapSize.x) * Half;
+        float horizontalOffset = (existingMapSize.x + sideWidth) * Half;
+        float verticalOffset = -outerTopMargin * Half;
+        Vector2 size = new Vector2(sideWidth, mapSize.y - outerTopMargin);
 
-        GenerateOuterArea(new Vector2(horizontalOffset, verticalOffset), sideSize);
-        GenerateOuterArea(new Vector2(-horizontalOffset, verticalOffset), sideSize);
+        GenerateOuterArea(new Vector2(horizontalOffset, verticalOffset), size);
+        GenerateOuterArea(new Vector2(-horizontalOffset, verticalOffset), size);
     }
 
     private void GenerateOuterArea(Vector2 center, Vector2 size)
@@ -277,7 +222,6 @@ public class NaturalResourcePopulator : MonoBehaviour
         List<Vector2> positions = CreateNaturalPositions(center, size, totalAmount);
 
         MixPositions(positions);
-
         CreateResources(treeTemplate, ResourceType.Wood, treeAmount, positions, 0);
         CreateResources(bushTemplate, ResourceType.Wood, bushAmount, positions, treeAmount);
         CreateResources(
@@ -290,140 +234,134 @@ public class NaturalResourcePopulator : MonoBehaviour
     }
 
     private void CreateResources(
-        GameObject resourceTemplate,
-        ResourceType resourceType,
+        GameObject template,
+        ResourceType type,
         int amount,
         List<Vector2> positions,
         int firstPosition
     )
     {
-        for (int i = 0; i < amount; i++)
+        for (int index = 0; index < amount; index++)
         {
-            Vector2 mapPosition = positions[firstPosition + i];
-            float height = resourceTemplate.transform.position.y;
-            float angle = GetRandomNumber(0f, 360f);
-
-            Vector3 position = new Vector3(mapPosition.x, height, mapPosition.y);
-            Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
-
-            GameObject resource = Instantiate(
-                resourceTemplate,
-                position,
-                rotation,
-                transform
+            Vector2 mapPosition = positions[firstPosition + index];
+            Vector3 position = new Vector3(
+                mapPosition.x,
+                template.transform.position.y,
+                mapPosition.y
             );
+            Quaternion rotation = Quaternion.Euler(0f, RandomRotation(), 0f);
+            GameObject resource = Instantiate(template, position, rotation, transform);
 
-            float width = GetRandomNumber(0.75f, 1.2f);
-            float heightScale = GetRandomNumber(0.85f, 1.3f);
-            Vector3 templateScale = resourceTemplate.transform.localScale;
+            float width = RandomBetween(ResourceMinimumWidth, ResourceMaximumWidth);
+            float height = RandomBetween(ResourceMinimumHeight, ResourceMaximumHeight);
+            Vector3 templateScale = template.transform.localScale;
 
-            resourceNumber++;
             resource.transform.localScale = new Vector3(
                 templateScale.x * width,
-                templateScale.y * heightScale,
+                templateScale.y * height,
                 templateScale.z * width
             );
-            resource.name = resourceTemplate.name + "_Generated_" + resourceNumber;
+
+            resourceNumber++;
+            resource.name = template.name + GeneratedName + resourceNumber;
 
             if (Application.isPlaying)
-            {
-                MakeCollectible(resource, resourceType);
-            }
+                MakeCollectible(resource, type);
             else
-            {
                 HidePreviewObject(resource);
-            }
-
         }
     }
 
-    private List<Vector2> CreateNaturalPositions(Vector2 center, Vector2 size, int amount)
+    private List<Vector2> CreateNaturalPositions(
+        Vector2 center,
+        Vector2 size,
+        int amount
+    )
     {
         List<Vector2> positions = new List<Vector2>();
-        List<Vector2> availablePositions = new List<Vector2>();
-
-        float areaShape = size.x / size.y;
-        int cellAmount = Mathf.CeilToInt(amount * (1f + emptySpace));
-        int columns = Mathf.CeilToInt(Mathf.Sqrt(cellAmount * areaShape));
-        int rows = Mathf.CeilToInt((float)cellAmount / columns);
-
-        float cellWidth = size.x / columns;
-        float cellHeight = size.y / rows;
-        float left = center.x - size.x / 2f;
-        float bottom = center.y - size.y / 2f;
-
-        for (int row = 0; row < rows; row++)
-        {
-            for (int column = 0; column < columns; column++)
-            {
-                float x = left + cellWidth * (column + 0.5f);
-                float z = bottom + cellHeight * (row + 0.5f);
-
-                x += GetRandomNumber(-cellWidth * positionVariation, cellWidth * positionVariation);
-                z += GetRandomNumber(-cellHeight * positionVariation, cellHeight * positionVariation);
-
-                availablePositions.Add(new Vector2(x, z));
-            }
-        }
+        List<Vector2> availablePositions = CreateGridPositions(center, size, amount);
 
         MixPositions(availablePositions);
 
         foreach (Vector2 position in availablePositions)
         {
             if (positions.Count == amount)
-            {
                 break;
-            }
 
             if (IsPositionFree(position))
-            {
-                positions.Add(position);
-                usedPositions.Add(position);
-            }
+                SavePosition(position, positions);
         }
 
         while (positions.Count < amount)
+            SavePosition(FindFreePosition(center, size), positions);
+
+        return positions;
+    }
+
+    private List<Vector2> CreateGridPositions(Vector2 center, Vector2 size, int amount)
+    {
+        List<Vector2> positions = new List<Vector2>();
+        float areaShape = size.x / size.y;
+        int cellAmount = Mathf.CeilToInt(amount * (1f + emptySpace));
+        int columns = Mathf.CeilToInt(Mathf.Sqrt(cellAmount * areaShape));
+        int rows = Mathf.CeilToInt((float)cellAmount / columns);
+        float cellWidth = size.x / columns;
+        float cellHeight = size.y / rows;
+        float left = center.x - size.x * Half;
+        float bottom = center.y - size.y * Half;
+
+        for (int row = 0; row < rows; row++)
         {
-            Vector2 position = FindFreePosition(center, size);
-            positions.Add(position);
-            usedPositions.Add(position);
+            for (int column = 0; column < columns; column++)
+            {
+                float x = left + cellWidth * (column + Half);
+                float z = bottom + cellHeight * (row + Half);
+                float xVariation = cellWidth * positionVariation;
+                float zVariation = cellHeight * positionVariation;
+
+                x += RandomBetween(-xVariation, xVariation);
+                z += RandomBetween(-zVariation, zVariation);
+                positions.Add(new Vector2(x, z));
+            }
         }
 
         return positions;
     }
 
+    private void SavePosition(Vector2 position, List<Vector2> positions)
+    {
+        positions.Add(position);
+        usedPositions.Add(position);
+    }
+
     private void MixPositions(List<Vector2> positions)
     {
-        for (int i = positions.Count - 1; i > 0; i--)
+        for (int index = positions.Count - 1; index > 0; index--)
         {
-            int otherPosition = random.Next(i + 1);
-            Vector2 savedPosition = positions[i];
-
-            positions[i] = positions[otherPosition];
-            positions[otherPosition] = savedPosition;
+            int otherIndex = random.Next(index + 1);
+            Vector2 savedPosition = positions[index];
+            positions[index] = positions[otherIndex];
+            positions[otherIndex] = savedPosition;
         }
     }
 
     private Vector2 FindFreePosition(Vector2 center, Vector2 size)
     {
-        float left = center.x - size.x / 2f;
-        float right = center.x + size.x / 2f;
-        float bottom = center.y - size.y / 2f;
-        float top = center.y + size.y / 2f;
-
+        float left = center.x - size.x * Half;
+        float right = center.x + size.x * Half;
+        float bottom = center.y - size.y * Half;
+        float top = center.y + size.y * Half;
         Vector2 position = center;
 
-        for (int attempt = 0; attempt < 100; attempt++)
+        for (int attempt = 0; attempt < MaximumPositionAttempts; attempt++)
         {
-            float x = GetRandomNumber(left, right);
-            float z = GetRandomNumber(bottom, top);
-
-            position = new Vector2(x, z);
+            position = new Vector2(
+                RandomBetween(left, right),
+                RandomBetween(bottom, top)
+            );
 
             if (IsPositionFree(position))
-            {
                 return position;
-            }
         }
 
         return position;
@@ -431,40 +369,28 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private bool IsPositionFree(Vector2 position)
     {
-        foreach (Vector2 emptyAreaCenter in emptyAreaCenters)
+        foreach (Vector2 emptyCenter in emptyAreaCenters)
         {
-            if (Vector2.Distance(position, emptyAreaCenter) < emptyAreaRadius)
-            {
+            if (Vector2.Distance(position, emptyCenter) < emptyAreaRadius)
                 return false;
-            }
         }
 
         foreach (Vector2 usedPosition in usedPositions)
         {
-            float distance = Vector2.Distance(position, usedPosition);
-
-            if (distance < minimumSpacing)
-            {
+            if (Vector2.Distance(position, usedPosition) < minimumSpacing)
                 return false;
-            }
         }
 
         return true;
     }
 
-    private void MakeCollectible(GameObject resource, ResourceType resourceType)
+    private void MakeCollectible(GameObject resource, ResourceType type)
     {
         foreach (MeshFilter mesh in resource.GetComponentsInChildren<MeshFilter>())
-        {
             mesh.gameObject.AddComponent<BoxCollider>();
-        }
 
         StaticResource staticResource = resource.AddComponent<StaticResource>();
-        staticResource.Configure(
-            resourceType,
-            false,
-            resourceRegenerationTime
-        );
+        staticResource.Configure(type, false, resourceRegenerationTime);
     }
 
     private void ClearGeneratedObjects()
@@ -475,38 +401,32 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private void RemoveGeneratedChildren(Transform parent)
     {
-        for (int i = parent.childCount - 1; i >= 0; i--)
+        for (int index = parent.childCount - 1; index >= 0; index--)
         {
-            Transform child = parent.GetChild(i);
+            GameObject child = parent.GetChild(index).gameObject;
 
-            if (child.name.Contains("_Generated_"))
-            {
-                RemoveObject(child.gameObject);
-            }
-        }
-    }
+            if (!child.name.Contains(GeneratedName))
+                continue;
 
-    private void RemoveObject(GameObject objectToRemove)
-    {
-        if (Application.isPlaying)
-        {
-            Destroy(objectToRemove);
-        }
-        else
-        {
-            DestroyImmediate(objectToRemove);
+            if (Application.isPlaying)
+                Destroy(child);
+            else
+                DestroyImmediate(child);
         }
     }
 
     private void HidePreviewObject(GameObject previewObject)
     {
         foreach (Transform child in previewObject.GetComponentsInChildren<Transform>())
-        {
             child.gameObject.hideFlags = HideFlags.HideAndDontSave;
-        }
     }
 
-    private float GetRandomNumber(float minimum, float maximum)
+    private float RandomRotation()
+    {
+        return RandomBetween(0f, FullRotation);
+    }
+
+    private float RandomBetween(float minimum, float maximum)
     {
         float percentage = (float)random.NextDouble();
         return minimum + (maximum - minimum) * percentage;

@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 8968899}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -19832,6 +19832,7 @@ GameObject:
   - component: {fileID: 8968900}
   - component: {fileID: 8968899}
   - component: {fileID: 8968901}
+  - component: {fileID: 8968902}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -19948,6 +19949,28 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &8968902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f0bf50d7da41a8a4028b818524029d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayNightCycle
+  fullDayDuration: 60
+  startingHour: 8
+  sunYaw: -30
+  dayIntensity: 1.1
+  nightIntensity: 0.08
+  dayAmbientIntensity: 1
+  nightAmbientIntensity: 0.2
+  debugTimeJump: 1
+  dayColor: {r: 1, g: 0.96, b: 0.84, a: 1}
+  nightColor: {r: 0.25, g: 0.35, b: 0.55, a: 1}
 --- !u!1 &10000000
 GameObject:
   m_ObjectHideFlags: 0
@@ -32823,6 +32846,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd3dcf663e0a544fb456dbf04b6d4b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectResourceOnClick
+  humanTown: {fileID: 717982381}
+  aiTown: {fileID: 1348564896}
 --- !u!114 &90000003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32839,6 +32864,8 @@ MonoBehaviour:
   stoneText: {fileID: 0}
   showSimpleCounter: 1
   resourceCollector: {fileID: 91000014}
+  aiResourceCollector: {fileID: 91000024}
+  dayNightCycle: {fileID: 8968902}
 --- !u!4 &20000001
 Transform:
   m_ObjectHideFlags: 0
@@ -41560,6 +41587,116 @@ MonoBehaviour:
   exploitationTime: 1.5
   stoppingDistance: 2
   resourceAmount: 1
+  town: 0
+--- !u!1 &91000020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 91000021}
+  - component: {fileID: 91000022}
+  - component: {fileID: 91000023}
+  - component: {fileID: 91000024}
+  m_Layer: 0
+  m_Name: AI_Resource_Collector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &91000021
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91000020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 120, y: 2, z: -8}
+  m_LocalScale: {x: 2, y: 4, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &91000022
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91000020}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &91000023
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91000020}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: c2a9efed37ab54f469cfcd6f3719507e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &91000024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91000020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c81b1e432cfd48edaf76109ba14b1e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleResourceCollector
+  moveSpeed: 10
+  turnSpeed: 360
+  exploitationTime: 1.5
+  stoppingDistance: 2
+  resourceAmount: 1
+  town: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -41570,3 +41707,4 @@ SceneRoots:
   - {fileID: 723584080}
   - {fileID: 828992957}
   - {fileID: 91000011}
+  - {fileID: 91000021}

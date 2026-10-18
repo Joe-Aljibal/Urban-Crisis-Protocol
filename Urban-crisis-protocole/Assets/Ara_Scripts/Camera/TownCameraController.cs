@@ -145,6 +145,9 @@ public class TownCameraController : MonoBehaviour
 
     private void HandleZoom()
     {
+        if (ResourceUIManager.IsPointerOverDashboard)
+            return;
+
         Mouse mouse = Mouse.current;
 
         float mouseWheel = mouse.scroll.ReadValue().y;
