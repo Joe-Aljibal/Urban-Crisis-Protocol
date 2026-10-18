@@ -9,6 +9,7 @@ public class ResourceUIManager : MonoBehaviour
     [SerializeField] private TMP_Text stoneText;
 
     [SerializeField] private bool showSimpleCounter;
+    [SerializeField] private SimpleResourceCollector resourceCollector;
 
     private void UpdateWoodText()
     {
@@ -42,7 +43,7 @@ public class ResourceUIManager : MonoBehaviour
         sectionStyle.fontStyle = FontStyle.Bold;
 
         GUILayout.BeginArea(
-            new Rect(20f, 20f, 340f, 265f),
+            new Rect(20f, 20f, 340f, 340f),
             "STATISTIQUES DES RESSOURCES",
             windowStyle
         );
@@ -59,6 +60,14 @@ public class ResourceUIManager : MonoBehaviour
         GUILayout.Label("Pierre : " + playerInfo.getExploitedStone, labelStyle);
         GUILayout.Label("Charbon : " + playerInfo.getExploitedCoal, labelStyle);
         GUILayout.Label("Total : " + playerInfo.getTotalExploited, sectionStyle);
+
+        GUILayout.Space(10f);
+        GUILayout.Label("NPC exploiteur", sectionStyle);
+        GUILayout.Label("État : " + resourceCollector.CurrentAction, labelStyle);
+        GUILayout.Label(
+            "Ressources livrées : " + resourceCollector.DeliveredResources,
+            labelStyle
+        );
         GUILayout.EndArea();
     }
 }
