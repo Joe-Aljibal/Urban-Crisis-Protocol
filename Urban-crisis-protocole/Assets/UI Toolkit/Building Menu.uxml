@@ -44,4 +44,27 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
+    <ui:VisualElement name="BuildingPopUp" style="flex-grow: 1; background-color: rgb(0, 0, 0); position: absolute; right: 2.5%; aspect-ratio: 0.75; width: 20%; align-self: auto; align-content: flex-start; top: 20%; bottom: auto; justify-content: space-between; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; align-items: center;">
+        <ui:Label text="Name" name="BuildingName" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 50px; color: rgb(255, 255, 255); -unity-text-align: upper-center; -unity-font-style: bold;"/>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; right: auto; left: auto; padding-right: 0; padding-left: 0; padding-top: 0; padding-bottom: 0; justify-content: space-between; align-items: center; width: 75%; align-self: center;">
+            <ui:VisualElement name="ProductionValue" style="flex-grow: 0; -unity-background-image-tint-color: rgb(0, 0, 0); background-color: rgb(156, 29, 29); aspect-ratio: 1; height: auto; width: 45%; flex-shrink: 0; justify-content: space-between;">
+                <ui:Label text="Ress.Type" name="ProductionText" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold; flex-grow: 1;"/>
+                <ui:Label text="Ress.Type" name="ProductionText" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="" style="flex-grow: 0; background-color: rgb(202, 121, 121); aspect-ratio: 1; flex-shrink: 0; width: 45%;"/>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; justify-content: space-between; align-items: center; align-content: auto; width: 75%; align-self: center;">
+            <ui:VisualElement name="RessourceNeeded1" style="flex-grow: 0; background-color: rgb(124, 30, 130); aspect-ratio: 1; flex-shrink: 0; width: 45%;">
+                <ui:Label text="Ress.Type" name="RessourceNeeded1Icon" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold; flex-grow: 1;"/>
+                <ui:Label text="Ress.Type" name="RessourceNeeded1Text" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="RessourceNeeded2" style="flex-grow: 0; background-color: rgb(209, 139, 203); aspect-ratio: 1; width: 45%; position: relative; flex-shrink: 0;">
+                <ui:Label text="Ress.Type" name="RessourceNeeded2Icon" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold; flex-grow: 1;"/>
+                <ui:Label text="Ress.Type" name="RessourceNeeded2Text" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; width: 100%; justify-content: center; padding-bottom: 10px; padding-top: 10px;">
+            <ui:Button text="Vendre" style="aspect-ratio: auto; -unity-font-style: bold; font-size: 30px; align-self: center; margin-bottom: 0; margin-top: 0; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(197, 36, 36); border-left-color: rgb(255, 203, 203); border-right-color: rgb(255, 203, 203); border-top-color: rgb(255, 203, 203); border-bottom-color: rgb(255, 203, 203); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; color: rgb(255, 255, 255); margin-right: 0; margin-left: 0; width: 75%;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
