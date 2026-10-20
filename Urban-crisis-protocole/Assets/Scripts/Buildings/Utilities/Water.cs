@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : MonoBehaviour, IBuilding , IBuildingUiData
+public class Water : MonoBehaviour, IBuilding , IBuildingUiData, ISellable
 {
     [SerializeField] WaterSO waterSO;
     PlayerInfo playerInfo = PlayerInfo.Instance;
@@ -61,7 +61,7 @@ public class Water : MonoBehaviour, IBuilding , IBuildingUiData
     {
         return new List<UiDataInteraction>
         {
-            
+            new UiDataInteraction(UiInteractionType.SELL, new Sell())
         };
     }
     public void Activate() { }
@@ -71,6 +71,6 @@ public class Water : MonoBehaviour, IBuilding , IBuildingUiData
 
     public bool HasEnoughWorkers() => true;
 
-   
-   
+    public void Sell()
+    {}
 }

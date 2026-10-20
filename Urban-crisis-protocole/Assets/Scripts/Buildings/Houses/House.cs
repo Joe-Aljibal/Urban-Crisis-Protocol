@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class House : MonoBehaviour, IBuilding , IBuildingUiData 
+public class House : MonoBehaviour, IBuilding , IBuildingUiData, ISellable
 {
 
     // dont need canPlace in Ibuilding you can get it true IbuildingSo which is in all buildings
@@ -74,7 +74,7 @@ public class House : MonoBehaviour, IBuilding , IBuildingUiData
             playerInfo.workerDependants.Remove(building);
         }
     }
-    public void DeleteButton()
+    public void Sell()
     {
         Destroy(gameObject);
     }
@@ -152,7 +152,7 @@ public class House : MonoBehaviour, IBuilding , IBuildingUiData
     {
         return new List<UiDataInteraction>
         {
-            
+            new UiDataInteraction(UiInteractionType.SELL, new Sell())
         };
     }
     public bool HasEnoughElectricity() => electricityReceived >= houseSO.electricityNeeded;

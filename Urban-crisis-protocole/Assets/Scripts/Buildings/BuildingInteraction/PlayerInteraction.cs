@@ -27,7 +27,7 @@ public class PlayerInteraction : MonoBehaviour
            
             
             panel.SetActive(true);
-            panel.GetComponent<InfoPanelManager>().ReformatePanel(building);
+            panel.GetComponent<InfoPanelManager>().ReformatePanel(building, gameObject);
         }
         
     }

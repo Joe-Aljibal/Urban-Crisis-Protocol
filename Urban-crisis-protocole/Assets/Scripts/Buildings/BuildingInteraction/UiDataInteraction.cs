@@ -3,9 +3,14 @@ using UnityEngine;
 public class UiDataInteraction 
 {
     private UiInteractionType type;
-    public UiDataInteraction(UiInteractionType type)
-    { this.type = type;}
+    private IInteract interaction;
+    public UiDataInteraction(UiInteractionType type, IInteract interaction)
+    { 
+        this.type = type;
+        this.interaction = interaction;
+    }
 
-    public UiInteractionType GetUiDataType => type;
+    public UiInteractionType GetUiInteractionType => type;
+    public IInteract GetUiInteraction => interaction;
 
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class Business: MonoBehaviour, IBuilding, IBuildingUiData
+public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
 {
     [SerializeField] BusinessesSO businessesSO;
     [SerializeField] Image workersImage;
@@ -19,7 +19,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     {
         playerinfo.electricityDependants.Add(this);
         playerinfo.workerDependants.Add(this);
-        playerinfo.ElectrifyBuildings();
+        // playerinfo.ElectrifyBuildings();
         playerinfo.EmployWorkers();
     }
 
@@ -42,7 +42,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         cooldown = cooldown + Time.deltaTime;
     }
 
-    public void DeleteButton()
+    public void Sell()
     {
         playerinfo.addMoney(businessesSO.price * .8f);
 
@@ -119,7 +119,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     {
         return new List<UiDataInteraction>
         {
-            
+            new UiDataInteraction(UiInteractionType.SELL, new Sell())
         };
     }
     public int GetWorkersNeeded() => businessesSO.workersNeeded - workersReceived;

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 
-public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData
+public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData, ISellable
 {
     [SerializeField] ElectricitySO electricitySO;
     PlayerInfo playerInfo = PlayerInfo.Instance;
@@ -23,7 +23,7 @@ public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData
         ElectrifyBuildings();
     }
 
-    public void ElectrifyBuildings()
+public void ElectrifyBuildings()
     {
         List<IBuilding> buildingsToRemove = new();
 
@@ -59,7 +59,7 @@ public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData
             playerInfo.electricityDependants.Remove(building);
         }
     }
-    public void DeleteButton()
+    public void Sell()
     {
         Destroy(gameObject);
     }
@@ -130,11 +130,11 @@ public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData
         };
     }
 
-     public List<UiDataInteraction> GetUiInteractionList()
+    public List<UiDataInteraction> GetUiInteractionList()
     {
         return new List<UiDataInteraction>
         {
-            
+            new UiDataInteraction(UiInteractionType.SELL, new Sell())
         };
     }
 

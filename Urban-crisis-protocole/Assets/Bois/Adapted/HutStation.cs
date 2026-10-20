@@ -58,4 +58,9 @@ public class HutStation : MonoBehaviour, IBuilding
     public int GetWorkersNeeded() => 0;
 
     public bool HasEnoughWorkers() => true;
+
+    public void DeleteButton()
+    {
+        throw new System.NotImplementedException();
+    }
 }
