@@ -45,7 +45,6 @@ public class NaturalResourcePopulator : MonoBehaviour
     [SerializeField] private float emptySpace = 0.3f;
     [SerializeField] private float positionVariation = 0.25f;
     [SerializeField] private float outerTopMargin = 30f;
-    [SerializeField] private float resourceRegenerationTime = 10f;
     [SerializeField] private float emptyAreaRadius = 26f;
     [SerializeField] private Vector2[] emptyAreaCenters =
     {
@@ -390,7 +389,7 @@ public class NaturalResourcePopulator : MonoBehaviour
             mesh.gameObject.AddComponent<BoxCollider>();
 
         StaticResource staticResource = resource.AddComponent<StaticResource>();
-        staticResource.Configure(type, false, resourceRegenerationTime);
+        staticResource.Configure(type);
     }
 
     private void ClearGeneratedObjects()

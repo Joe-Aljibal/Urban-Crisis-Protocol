@@ -1,12 +1,9 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class StaticResource : MonoBehaviour
 {
-    [SerializeField] private float respawnTime = 2.0f;
     [SerializeField] private ResourceType resourceType;
-    [SerializeField] private bool staysDepleted;
     
     public ResourceType ResourceType => resourceType;
     public bool IsActiveResource { get; set; } = true;
@@ -25,39 +22,15 @@ public class StaticResource : MonoBehaviour
         IsActiveResource = false;
         IsAvailable = false;
         DisableComponents();
-
-        if (!staysDepleted)
-        {
-            StartCoroutine(RespawnCoroutine());
-        }
     }
 
-    public void Configure(
-        ResourceType type,
-        bool remainDepleted,
-        float regenerationTime
-    )
+    public void Configure(ResourceType type)
     {
         ResourceManager.UnregisterResource(resourceType, transform);
 
         resourceType = type;
-        staysDepleted = remainDepleted;
-        respawnTime = regenerationTime;
 
         ResourceManager.RegisterResource(resourceType, transform);
-    }
-
-    private IEnumerator RespawnCoroutine()
-    {
-        yield return new WaitForSeconds(respawnTime);
-        ActivateComponents();
-    }
-
-    private void ActivateComponents()
-    {
-        SetComponentsEnabled(true);
-        IsActiveResource = true;
-        IsAvailable = true;
     }
 
     private void DisableComponents()
