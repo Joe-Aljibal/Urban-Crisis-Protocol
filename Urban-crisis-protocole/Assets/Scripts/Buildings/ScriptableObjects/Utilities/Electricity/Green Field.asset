@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SolarPanelSO
   type: Utility
   ressource: Electricity
+  buildingName: Green Field
+  description: 
   electricityOutput: 250
   price: 2000
+  card: {fileID: 0}
+  icon: {fileID: 0}

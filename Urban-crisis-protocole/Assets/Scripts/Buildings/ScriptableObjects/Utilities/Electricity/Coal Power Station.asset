@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SolarPanelSO
   type: Utility
   ressource: Electricity
+  buildingName: Coal Power Station
+  description: 
   electricityOutput: 1200
   price: 7500
+  card: {fileID: 0}
+  icon: {fileID: 0}

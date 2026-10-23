@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SolarPanelSO
   type: Utility
   ressource: Electricity
+  buildingName: Wind Turbines
+  description: 
   electricityOutput: 20
   price: 750
   card: {fileID: 11400000, guid: ab6af8c2b9f0b894788ca1faca28c45b, type: 2}

@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterSiloSO
   type: Utilities
   ressource: Water
+  buildingName: Water Silo
+  description: 
   electricityNeeded: 0
   water: 10
-  population: 0
   price: 25
+  card: {fileID: 0}
+  icon: {fileID: 0}
