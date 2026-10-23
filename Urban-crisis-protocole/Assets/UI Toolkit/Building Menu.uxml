@@ -3,44 +3,11 @@
     <ui:VisualElement name="Container" class="bottom-bar">
         <ui:VisualElement name="AboveBar" picking-mode="Ignore" class="above-bar">
             <ui:VisualElement name="BuildingInfo" class="panel building-info">
-                <ui:VisualElement name="ModelContainer" class="model-container">
-                    <ui:Label text="[ 3D Model View ]" class="model-placeholder"/>
-                </ui:VisualElement>
+                <ui:VisualElement name="ModelContainer" class="model-container" style="background-image: url(&quot;project://database/Assets/Scenes/New%20Render%20Texture.renderTexture?fileID=8400000&amp;guid=91287b08afaea5a4eb7085e59cc09460&amp;type=2#New Render Texture&quot;);"/>
                 <ui:VisualElement name="DetailsContainer" class="details">
                     <ui:VisualElement>
                         <ui:Label name="BuildingName" text="⚡ Power Plant" class="title"/>
-                        <ui:VisualElement name="PopUpGrid" class="tile-grid">
-                            <ui:VisualElement class="info-tile">
-                                <ui:Label text="🪙" class="tile-icon"/>
-                                <ui:Label text="Cost" class="tile-label"/>
-                                <ui:Label name="InfoCostValue" text="500" class="tile-value val-red"/>
-                            </ui:VisualElement>
-                            <ui:VisualElement class="info-tile">
-                                <ui:Label text="💧" class="tile-icon"/>
-                                <ui:Label text="Uses" class="tile-label"/>
-                                <ui:Label name="InfoUsesValue" text="50" class="tile-value val-blue"/>
-                            </ui:VisualElement>
-                            <ui:VisualElement class="info-tile">
-                                <ui:Label text="⚡" class="tile-icon"/>
-                                <ui:Label text="Yields" class="tile-label"/>
-                                <ui:Label name="InfoYieldsValue" text="120" class="tile-value val-green"/>
-                            </ui:VisualElement>
-                            <ui:VisualElement class="info-tile">
-                                <ui:Label text="⭐" class="tile-icon"/>
-                                <ui:Label text="Level" class="tile-label"/>
-                                <ui:Label name="InfoLevelValue" text="1" class="tile-value val-orange"/>
-                            </ui:VisualElement>
-                            <ui:VisualElement class="info-tile">
-                                <ui:Label text="⏱️" class="tile-icon"/>
-                                <ui:Label text="Time" class="tile-label"/>
-                                <ui:Label name="InfoTimeValue" text="10s" class="tile-value val-white"/>
-                            </ui:VisualElement>
-                            <ui:VisualElement class="info-tile">
-                                <ui:Label text="🛡️" class="tile-icon"/>
-                                <ui:Label text="Armor" class="tile-label"/>
-                                <ui:Label name="InfoArmorValue" text="25" class="tile-value val-purple"/>
-                            </ui:VisualElement>
-                        </ui:VisualElement>
+                        <ui:VisualElement name="PopUpGrid" class="tile-grid"/>
                     </ui:VisualElement>
                     <ui:VisualElement class="description-box">
                         <ui:Label name="BuildingDescription" text="Description" class="description"/>

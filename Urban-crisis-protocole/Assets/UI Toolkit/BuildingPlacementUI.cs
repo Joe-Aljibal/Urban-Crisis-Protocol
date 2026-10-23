@@ -24,6 +24,9 @@ public class BuildingPlacementUI : MonoBehaviour
     Sections currentSection;
     bool isPopUp = false;
     Coroutine hidingDescCoroutine = null;
+    ViewModelCam viewModelCamera;
+    [SerializeField] GameObject viewModelPivot;
+
 
     // Paths
     string housesPath = "Assets/Scripts/Buildings/ScriptableObjects/Houses";
@@ -47,6 +50,8 @@ public class BuildingPlacementUI : MonoBehaviour
 
     private void Awake()
     {
+        viewModelCamera = FindAnyObjectByType<ViewModelCam>();
+
         panelRenderer = GetComponent<PanelRenderer>();
         panelRenderer.RegisterUIReloadCallback(BuildingsPlacementUI);
         currentSection = Sections.None;
@@ -176,6 +181,17 @@ public class BuildingPlacementUI : MonoBehaviour
 
     void ShowDescription(VisualElement rootElement, IBuildingSO so)
     {
+        // Handling 3d view model
+        viewModelCamera.StartSpinning();
+        foreach ( Transform child in viewModelPivot.transform ) { Destroy(child.gameObject); }
+        GameObject model = Instantiate(so.GetCard().meshPrefab, Vector3.zero, Quaternion.identity, viewModelPivot.transform);
+        model.layer = LayerMask.NameToLayer("3DModelView");
+        foreach(Transform child in model.transform)
+        {
+            child.gameObject.layer = LayerMask.NameToLayer("3DModelView");
+        }
+        //model.transform.localScale = new Vector3(1,1,1);
+
         if (hidingDescCoroutine != null)
         {
             StopCoroutine(hidingDescCoroutine);
@@ -184,7 +200,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
         VisualElement descWindow = rootElement.Q("BuildingInfo");
 
-        descWindow.Q("ModelContainer").style.backgroundImage = new StyleBackground(so.GetIcon());
+        //descWindow.Q("ModelContainer").style.backgroundImage = new StyleBackground(so.GetIcon());
         descWindow.Q<Label>("BuildingName").text = so.GetBuildingName();
         descWindow.Q<Label>("BuildingDescription").text = so.GetDescription();
         var buildingStats = so.GetStats();
@@ -233,7 +249,9 @@ public class BuildingPlacementUI : MonoBehaviour
         descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
         descWindow.style.translate = new Translate(0, 320);
         descWindow.style.scale = new Scale(new Vector2(0.1f, 0.1f));
-    } 
+
+        viewModelCamera.StopSpinning();
+    }
 
     void ShowPopUp(VisualElement rootElement)
     {

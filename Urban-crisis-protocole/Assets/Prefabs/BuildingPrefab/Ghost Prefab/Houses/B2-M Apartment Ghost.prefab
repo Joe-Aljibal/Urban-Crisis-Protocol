@@ -10,19 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7239524929014894338, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_Name
-      value: Medium Apartment Ghost Variant
+      value: B2-M Apartment Ghost
       objectReference: {fileID: 0}
     - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 46.589333
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.7748725
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -107.39854
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_LocalRotation.w
