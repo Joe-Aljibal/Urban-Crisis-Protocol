@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class TestingButtons : MonoBehaviour
+public class BuildingPlacementUI : MonoBehaviour
 {
     private PanelRenderer panelRenderer;
     IBuildingSO[] buildingsSelected;
@@ -23,6 +23,7 @@ public class TestingButtons : MonoBehaviour
     };
     Sections currentSection;
     bool isPopUp = false;
+    Coroutine hidingDescCoroutine = null;
 
     // Paths
     string housesPath = "Assets/Scripts/Buildings/ScriptableObjects/Houses";
@@ -86,6 +87,7 @@ public class TestingButtons : MonoBehaviour
         RefreshBuildingsSection(rootElement);
         SelectionSection(rootElement);
         SetPopupPosition(rootElement);
+        StartCoroutine(HideDescriptionCoroutine(rootElement));
     }
 
     void RefreshBuildingsSection(VisualElement rootElement)
@@ -103,6 +105,8 @@ public class TestingButtons : MonoBehaviour
         foreach (var so in buildingsSelected)
         {
             Button newButton = new Button();
+            newButton.RegisterCallback<MouseEnterEvent>(e => { ShowDescription(rootElement, so); });
+            newButton.RegisterCallback<MouseLeaveEvent>(e => { hidingDescCoroutine = StartCoroutine(HideDescriptionCoroutine(rootElement)); });
 
             if (so.GetIcon() != null)
             {
@@ -170,22 +174,75 @@ public class TestingButtons : MonoBehaviour
         }
     }
 
+    void ShowDescription(VisualElement rootElement, IBuildingSO so)
+    {
+        if (hidingDescCoroutine != null)
+        {
+            StopCoroutine(hidingDescCoroutine);
+            hidingDescCoroutine = null;
+        }
+
+        VisualElement descWindow = rootElement.Q("BuildingInfo");
+
+        descWindow.Q("ModelContainer").style.backgroundImage = new StyleBackground(so.GetIcon());
+        descWindow.Q<Label>("BuildingName").text = so.GetBuildingName();
+        descWindow.Q<Label>("BuildingDescription").text = so.GetDescription();
+        var buildingStats = so.GetStats();
+
+        rootElement.Q("PopUpGrid").Clear();
+        foreach ( var stat in buildingStats )
+        {
+            CreatePopUpGridElement(rootElement, stat);
+        }
+
+        descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
+        descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
+        descWindow.style.translate = new Translate(0, 0);
+        descWindow.style.scale = new Scale(new Vector2(1, 1));
+    }
+
+    VisualElement CreatePopUpGridElement(VisualElement rootElement, Dictionary<string, string> stat)
+    {
+        VisualElement parent = new VisualElement();
+        parent.AddToClassList("info-tile");
+
+        Label icon = new Label(stat["icon"]);
+        icon.AddToClassList("tile-icon");
+
+        Label label = new Label(stat["label"]);
+        label.AddToClassList("tile-label");
+
+        Label value = new Label(stat["value"]);
+        value.AddToClassList("tile-value");
+
+        parent.Add(icon);
+        parent.Add(label);
+        parent.Add(value);
+        rootElement.Q("PopUpGrid").Add(parent);
+
+        return parent;
+    }
+
+    System.Collections.IEnumerator HideDescriptionCoroutine(VisualElement rootElement)
+    {
+        yield return new WaitForSeconds(.25f);
+        new WaitForSeconds(1f);
+        VisualElement descWindow = rootElement.Q("BuildingInfo");
+
+        descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
+        descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
+        descWindow.style.translate = new Translate(0, 320);
+        descWindow.style.scale = new Scale(new Vector2(0.1f, 0.1f));
+    } 
+
     void ShowPopUp(VisualElement rootElement)
     {
         isPopUp = true;
 
         VisualElement scroller = rootElement.Q<ScrollView>("BuildingsContainer");
 
-        scroller.style.transitionDuration = new List<TimeValue>
-        {
-            new TimeValue(150, TimeUnit.Millisecond)
-        };
-
-        scroller.style.transitionProperty = new List<StylePropertyName>
-        {
-            new StylePropertyName("translate")
-        };
-
+        scroller.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
+        scroller.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate") };
         scroller.style.translate = new Translate(0, 0);
     }
 
@@ -193,21 +250,13 @@ public class TestingButtons : MonoBehaviour
     {
         isPopUp = false;
         currentSection = Sections.None;
-        buildingsSelected = new IBuildingSO[] {};
+        buildingsSelected = new IBuildingSO[] { };
         RefreshBuildingsSection(rootElement);
 
         VisualElement scroller = rootElement.Q<ScrollView>("BuildingsContainer");
 
-        scroller.style.transitionDuration = new List<TimeValue>
-        {
-            new TimeValue(150, TimeUnit.Millisecond)
-        };
-
-        scroller.style.transitionProperty = new List<StylePropertyName>
-        {
-            new StylePropertyName("translate")
-        };
-
+        scroller.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
+        scroller.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate") };
         scroller.style.translate = new Translate(0, 120);
     }
 

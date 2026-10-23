@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] BusinessesSO businessesSO;
-    [SerializeField] Image workersImage;
-    [SerializeField] Image electricityImage;
+    //[SerializeField] Image workersImage;
+    //[SerializeField] Image electricityImage;
     PlayerInfo playerinfo = PlayerInfo.Instance;
 
     int electricityReceived = 0;
@@ -25,8 +25,8 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     void Update()
     {
-        electricityImage.color = HasEnoughElectricity() ? Color.green : Color.red;
-        workersImage.color = HasEnoughWorkers() ? Color.green : Color.red;
+        //electricityImage.color = HasEnoughElectricity() ? Color.green : Color.red;
+        //workersImage.color = HasEnoughWorkers() ? Color.green : Color.red;
         
         if (!isActive)
         {

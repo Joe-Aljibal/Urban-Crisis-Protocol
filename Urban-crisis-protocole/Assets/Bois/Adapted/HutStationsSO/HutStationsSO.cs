@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Water Silo", menuName = "ScriptableObjects/Hut Station")]
@@ -13,4 +15,24 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
     public Sprite GetIcon() => null;
     public BuildingCard GetCard() => null;
     public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
+
+    public string GetBuildingName()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public List GetStats()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    List<Dictionary<string, string>> IBuildingSO.GetStats()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string GetDescription()
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -1,70 +1,119 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/USS/BuildingMenu.uss?fileID=7433441132597879392&amp;guid=3cb5ceb7f3cd2d34d94432acf88269d1&amp;type=3#BuildingMenu"/>
-    <ui:VisualElement name="Container" style="flex-grow: 0; background-color: rgb(0, 0, 0); position: absolute; left: auto; right: auto; bottom: 0; top: auto; flex-shrink: 0; align-self: center; aspect-ratio: 16; width: 100%;">
-        <ui:ScrollView name="BuildingsContainer" vertical-scroller-visibility="Hidden" mode="Horizontal" focusable="false" touch-scroll-type="Clamped" horizontal-scroller-visibility="Hidden" class="centered-scroll-view" style="bottom: 120px; position: absolute; aspect-ratio: auto; width: 750px; align-self: center; background-color: rgb(0, 0, 0); justify-content: center; align-content: auto; align-items: stretch; flex-shrink: 0; height: 120px; flex-direction: column; border-top-left-radius: 20px; border-top-right-radius: 20px;"/>
-        <ui:VisualElement name="SelectorsContainer" style="flex-grow: 1; align-self: center; height: 100%; width: 50%; background-color: rgba(188, 77, 77, 0); flex-direction: row; padding-left: 5%; padding-bottom: initial; padding-right: 5%; padding-top: initial; align-items: center; align-content: auto; justify-content: space-around;">
-            <ui:Button text="🏡" name="HousesSelector" enabled="true" style="aspect-ratio: 1; height: 80%; background-color: rgba(188, 188, 188, 0); background-image: none; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; font-size: 75px;"/>
-            <ui:Button text="💵" name="BusinessesSelector" style="aspect-ratio: 1; height: 80%; background-color: rgba(188, 188, 188, 0); background-image: none; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; font-size: 75px;"/>
-            <ui:Button text="🏭" name="IndustriesSelector" style="aspect-ratio: 1; height: 80%; background-color: rgba(188, 188, 188, 0); background-image: none; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; font-size: 75px;"/>
-            <ui:Button text="🍞" name="FoodSelector" style="aspect-ratio: 1; height: 80%; background-color: rgba(188, 188, 188, 0); background-image: none; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; font-size: 75px;"/>
-            <ui:Button text="⚡" name="ElectricitySelector" parse-escape-sequences="false" style="aspect-ratio: 1; height: 80%; background-color: rgba(188, 188, 188, 0); background-image: none; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; font-size: 75px;"/>
-            <ui:Button text="💧" name="WaterSelector" style="aspect-ratio: 1; height: 80%; background-color: rgba(188, 188, 188, 0); background-image: none; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; font-size: 75px;"/>
+    <ui:VisualElement name="Container" class="bottom-bar">
+        <ui:VisualElement name="AboveBar" picking-mode="Ignore" class="above-bar">
+            <ui:VisualElement name="BuildingInfo" class="panel building-info">
+                <ui:VisualElement name="ModelContainer" class="model-container">
+                    <ui:Label text="[ 3D Model View ]" class="model-placeholder"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="DetailsContainer" class="details">
+                    <ui:VisualElement>
+                        <ui:Label name="BuildingName" text="⚡ Power Plant" class="title"/>
+                        <ui:VisualElement name="PopUpGrid" class="tile-grid">
+                            <ui:VisualElement class="info-tile">
+                                <ui:Label text="🪙" class="tile-icon"/>
+                                <ui:Label text="Cost" class="tile-label"/>
+                                <ui:Label name="InfoCostValue" text="500" class="tile-value val-red"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="info-tile">
+                                <ui:Label text="💧" class="tile-icon"/>
+                                <ui:Label text="Uses" class="tile-label"/>
+                                <ui:Label name="InfoUsesValue" text="50" class="tile-value val-blue"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="info-tile">
+                                <ui:Label text="⚡" class="tile-icon"/>
+                                <ui:Label text="Yields" class="tile-label"/>
+                                <ui:Label name="InfoYieldsValue" text="120" class="tile-value val-green"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="info-tile">
+                                <ui:Label text="⭐" class="tile-icon"/>
+                                <ui:Label text="Level" class="tile-label"/>
+                                <ui:Label name="InfoLevelValue" text="1" class="tile-value val-orange"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="info-tile">
+                                <ui:Label text="⏱️" class="tile-icon"/>
+                                <ui:Label text="Time" class="tile-label"/>
+                                <ui:Label name="InfoTimeValue" text="10s" class="tile-value val-white"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="info-tile">
+                                <ui:Label text="🛡️" class="tile-icon"/>
+                                <ui:Label text="Armor" class="tile-label"/>
+                                <ui:Label name="InfoArmorValue" text="25" class="tile-value val-purple"/>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="description-box">
+                        <ui:Label name="BuildingDescription" text="Description" class="description"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:ScrollView name="BuildingsContainer" mode="Horizontal" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" touch-scroll-type="Clamped" focusable="false" class="centered-scroll-view buildings-scroll"/>
         </ui:VisualElement>
-        <ui:VisualElement name="StatsContainer" class="stats-container" style="position: absolute; align-items: center; aspect-ratio: 4.55; height: 100%; justify-content: space-between; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-content: auto; align-self: auto; margin-left: 10px;">
-            <ui:VisualElement class="stats-column">
-                <ui:VisualElement class="stat-card">
-                    <ui:Label text="💵" class="stat-icon"/>
-                    <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="MoneyValue" text="$X" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-card">
-                    <ui:Label text="👥" class="stat-icon"/>
-                    <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="PopulationValue" text="x" class="stat-value"/>
-                </ui:VisualElement>
+        <ui:VisualElement name="StatsContainer" class="stats-container">
+            <ui:VisualElement class="bar-tile">
+                <ui:Label text="💵" class="bar-icon"/>
+                <ui:Label text="Money" class="bar-label"/>
+                <ui:Label name="MoneyValue" text="$X" class="bar-value val-gold"/>
             </ui:VisualElement>
-            <ui:VisualElement class="stats-column">
-                <ui:VisualElement class="stat-card">
-                    <ui:Label text="⚡" class="stat-icon"/>
-                    <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="ElectricityValue" text="x/x" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-card">
-                    <ui:Label text="💧" class="stat-icon"/>
-                    <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="WaterValue" text="x/x" class="stat-value"/>
-                </ui:VisualElement>
+            <ui:VisualElement class="bar-tile">
+                <ui:Label text="👥" class="bar-icon"/>
+                <ui:Label text="Pop" class="bar-label"/>
+                <ui:Label name="PopulationValue" text="x" class="bar-value val-cyan"/>
             </ui:VisualElement>
-            <ui:VisualElement class="stats-column stats-column-bread">
-                <ui:VisualElement class="stat-card">
-                    <ui:Label text="🍞" class="stat-icon"/>
-                    <ui:Label text=":" class="stat-title"/>
-                    <ui:Label name="FoodValue" text="x" class="stat-value"/>
-                </ui:VisualElement>
+            <ui:VisualElement class="bar-tile">
+                <ui:Label text="⚡" class="bar-icon"/>
+                <ui:Label text="Power" class="bar-label"/>
+                <ui:Label name="ElectricityValue" text="x/x" class="bar-value val-green"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="bar-tile">
+                <ui:Label text="💧" class="bar-icon"/>
+                <ui:Label text="Water" class="bar-label"/>
+                <ui:Label name="WaterValue" text="x/x" class="bar-value val-blue"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="bar-tile">
+                <ui:Label text="🍞" class="bar-icon"/>
+                <ui:Label text="Food" class="bar-label"/>
+                <ui:Label name="FoodValue" text="x" class="bar-value val-orange"/>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="SelectorsContainer" class="selectors-container">
+            <ui:Button text="🏡" name="HousesSelector" class="bar-tile selector-btn"/>
+            <ui:Button text="💵" name="BusinessesSelector" class="bar-tile selector-btn"/>
+            <ui:Button text="🏭" name="IndustriesSelector" class="bar-tile selector-btn"/>
+            <ui:Button text="🍞" name="FoodSelector" class="bar-tile selector-btn"/>
+            <ui:Button text="⚡" name="ElectricitySelector" parse-escape-sequences="false" class="bar-tile selector-btn"/>
+            <ui:Button text="💧" name="WaterSelector" class="bar-tile selector-btn"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
     </ui:VisualElement>
-    <ui:VisualElement name="BuildingPopUp" style="flex-grow: 1; background-color: rgb(0, 0, 0); position: absolute; right: 2.5%; aspect-ratio: 0.75; width: 20%; align-self: auto; align-content: flex-start; top: 20%; bottom: auto; justify-content: space-between; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; align-items: center;">
-        <ui:Label text="Name" name="BuildingName" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 50px; color: rgb(255, 255, 255); -unity-text-align: upper-center; -unity-font-style: bold;"/>
-        <ui:VisualElement style="flex-grow: 1; flex-direction: row; right: auto; left: auto; padding-right: 0; padding-left: 0; padding-top: 0; padding-bottom: 0; justify-content: space-between; align-items: center; width: 75%; align-self: center;">
-            <ui:VisualElement name="ProductionValue" style="flex-grow: 0; -unity-background-image-tint-color: rgb(0, 0, 0); background-color: rgb(156, 29, 29); aspect-ratio: 1; height: auto; width: 45%; flex-shrink: 0; justify-content: space-between;">
-                <ui:Label text="Ress.Type" name="ProductionText" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold; flex-grow: 1;"/>
-                <ui:Label text="Ress.Type" name="ProductionText" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold;"/>
+    <ui:VisualElement name="BuildingPopUp" class="panel popup">
+        <ui:VisualElement class="popup-top">
+            <ui:Label name="PopUpBuildingName" text="⚡ Power Plant" class="title popup-title"/>
+            <ui:VisualElement class="popup-grid">
+                <ui:VisualElement class="popup-tile">
+                    <ui:Label text="🪙" class="popup-icon"/>
+                    <ui:Label text="Cost" class="popup-label"/>
+                    <ui:Label name="RessourceNeeded1Text" text="500" class="popup-value val-red"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="popup-tile">
+                    <ui:Label text="💧" class="popup-icon"/>
+                    <ui:Label text="Uses" class="popup-label"/>
+                    <ui:Label name="RessourceNeeded2Text" text="50" class="popup-value val-blue"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="popup-tile">
+                    <ui:Label text="⚡" class="popup-icon"/>
+                    <ui:Label text="Yields" class="popup-label"/>
+                    <ui:Label name="ProductionText" text="120" class="popup-value val-green"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="popup-tile">
+                    <ui:Label text="⭐" class="popup-icon"/>
+                    <ui:Label text="Level" class="popup-label"/>
+                    <ui:Label name="LevelText" text="1" class="popup-value val-orange"/>
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="" style="flex-grow: 0; background-color: rgb(202, 121, 121); aspect-ratio: 1; flex-shrink: 0; width: 45%;"/>
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; flex-direction: row; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; justify-content: space-between; align-items: center; align-content: auto; width: 75%; align-self: center;">
-            <ui:VisualElement name="RessourceNeeded1" style="flex-grow: 0; background-color: rgb(124, 30, 130); aspect-ratio: 1; flex-shrink: 0; width: 45%;">
-                <ui:Label text="Ress.Type" name="RessourceNeeded1Icon" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold; flex-grow: 1;"/>
-                <ui:Label text="Ress.Type" name="RessourceNeeded1Text" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold;"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="RessourceNeeded2" style="flex-grow: 0; background-color: rgb(209, 139, 203); aspect-ratio: 1; width: 45%; position: relative; flex-shrink: 0;">
-                <ui:Label text="Ress.Type" name="RessourceNeeded2Icon" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold; flex-grow: 1;"/>
-                <ui:Label text="Ress.Type" name="RessourceNeeded2Text" style="-unity-text-outline-color: rgb(255, 255, 255); font-size: 25px; color: rgb(255, 255, 255); -unity-text-align: middle-center; -unity-font-style: bold;"/>
-            </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; width: 100%; justify-content: center; padding-bottom: 10px; padding-top: 10px;">
-            <ui:Button text="Vendre" style="aspect-ratio: auto; -unity-font-style: bold; font-size: 30px; align-self: center; margin-bottom: 0; margin-top: 0; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(197, 36, 36); border-left-color: rgb(255, 203, 203); border-right-color: rgb(255, 203, 203); border-top-color: rgb(255, 203, 203); border-bottom-color: rgb(255, 203, 203); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; color: rgb(255, 255, 255); margin-right: 0; margin-left: 0; width: 75%;"/>
+        <ui:VisualElement class="popup-footer">
+            <ui:Button text="Vendre 💰" name="SellButton" class="sell-button"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

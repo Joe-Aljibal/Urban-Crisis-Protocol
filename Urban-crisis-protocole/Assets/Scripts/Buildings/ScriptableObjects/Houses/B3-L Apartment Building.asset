@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
   type: Population
   ressource: Population
+  buildingName: Large Apartment
   electricityNeeded: 15
   waterNeeded: 80
   population: 250
