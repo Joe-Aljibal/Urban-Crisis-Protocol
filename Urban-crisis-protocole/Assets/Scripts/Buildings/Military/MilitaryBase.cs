@@ -18,7 +18,24 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     {
         playerInfo.addWorkingPopulation(militaryBaseSO.population);
         playerInfo.electricityDependants.Add(this, 0);
-        playerInfo.ElectrifyBuildings();
+        RequestElectricity();
+
+        Debug.Log($"[Base militaire] Placee : {militaryBaseSO.population} soldats, " +
+                  $"electricite {electricityReceived}/{militaryBaseSO.electricityNeeded}");
+    }
+
+    // Meme role que PlayerInfo.ElectrifyBuildings(), mais sur une copie de la liste :
+    // une centrale vide se retire de electricityProviders pendant le parcours, ce qui
+    // fait planter l'original ("Collection was modified").
+    void RequestElectricity()
+    {
+        foreach (Electricity provider in new List<Electricity>(playerInfo.electricityProviders.Keys))
+        {
+            if (!playerInfo.electricityDependants.ContainsKey(this))
+                break;
+
+            provider.ElectrifyBuildings();
+        }
     }
 
     void Update()
@@ -62,6 +79,8 @@ public class MilitaryBase : MonoBehaviour, IBuilding
         activeBases.Remove(this);
         electricityReceived -= electricityLost;
         playerInfo.UseElectricity(-electricityLost);
+
+        Debug.Log($"[Base militaire] Desactivee : electricite {electricityReceived}/{militaryBaseSO.electricityNeeded}");
     }
 
     // Appele par Electricity quand la base a recu toute son electricite.
@@ -70,6 +89,9 @@ public class MilitaryBase : MonoBehaviour, IBuilding
         isActive = true;
         if (!activeBases.Contains(this))
             activeBases.Add(this);
+
+        Debug.Log($"[Base militaire] Active ! Bases actives : {activeBases.Count}, " +
+                  $"solde -{militaryBaseSO.upkeep} $/s");
     }
 
     public void UseElectricity(int electricity)
