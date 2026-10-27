@@ -2,6 +2,8 @@ using UnityEngine;
 
 public interface IBuilding
 {
+    public void DestroyScript();
+
     public string GetBuildingType();
     public string GetRessource();
     public void UseElectricity(int electricity);

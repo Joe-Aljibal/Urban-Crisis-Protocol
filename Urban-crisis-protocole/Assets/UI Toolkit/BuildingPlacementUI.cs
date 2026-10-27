@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
 
 public class BuildingPlacementUI : MonoBehaviour
@@ -31,8 +32,8 @@ public class BuildingPlacementUI : MonoBehaviour
     // Paths
     string housesPath = "Assets/Scripts/Buildings/ScriptableObjects/Houses";
     string businessesPath = "Assets/Scripts/Buildings/ScriptableObjects/Businesses";
-    string electricityPath = "Assets/Scripts/Buildings/ScriptableObjects/Electricity";
-    string waterPath = "Assets/Scripts/Buildings/ScriptableObjects/Water";
+    string electricityPath = "Assets/Scripts/Buildings/ScriptableObjects/Utilities/Electricity";
+    string waterPath = "Assets/Scripts/Buildings/ScriptableObjects/Utilities/Water";
 
     // ScriptableObject Arrays
     List<HousesSO> houses = new();
@@ -86,6 +87,7 @@ public class BuildingPlacementUI : MonoBehaviour
         }
     }
 
+
     private void BuildingsPlacementUI(PanelRenderer renderer, VisualElement rootElement, int version)
     {
         root = rootElement;
@@ -121,6 +123,14 @@ public class BuildingPlacementUI : MonoBehaviour
 
             newButton.style.width = 80;
             newButton.style.height = 80;
+            newButton.style.borderBottomLeftRadius = 10;
+            newButton.style.borderBottomRightRadius = 10;
+            newButton.style.borderTopLeftRadius = 10;
+            newButton.style.borderTopRightRadius = 10;
+            newButton.style.paddingBottom = 5;
+            newButton.style.paddingTop = 5;
+            newButton.style.paddingLeft = 5;
+            newButton.style.paddingRight = 5;
 
             IBuildingSO selectedBuilding = so;
 
@@ -181,16 +191,18 @@ public class BuildingPlacementUI : MonoBehaviour
 
     void ShowDescription(VisualElement rootElement, IBuildingSO so)
     {
+        Camera cam = GameObject.Find("3DModelViewCam").GetComponent<Camera>();
         // Handling 3d view model
         viewModelCamera.StartSpinning();
         foreach ( Transform child in viewModelPivot.transform ) { Destroy(child.gameObject); }
-        GameObject model = Instantiate(so.GetCard().meshPrefab, Vector3.zero, Quaternion.identity, viewModelPivot.transform);
+        GameObject model = Instantiate(so.GetCard().completPrefab, Vector3.zero, Quaternion.identity, viewModelPivot.transform);
         model.layer = LayerMask.NameToLayer("3DModelView");
+        model.GetComponent<IBuilding>().DestroyScript();
+        cam.GetComponent<ViewModelCam>().Frame(model);
         foreach(Transform child in model.transform)
         {
             child.gameObject.layer = LayerMask.NameToLayer("3DModelView");
         }
-        //model.transform.localScale = new Vector3(1,1,1);
 
         if (hidingDescCoroutine != null)
         {
@@ -310,9 +322,9 @@ public class BuildingPlacementUI : MonoBehaviour
         Label foodText = root.Q<Label>("FoodValue");
 
         moneyText.text = "$" + playerInfo.getMoney.ToString();
-        populationText.text = playerInfo.getPopulation.ToString();
-        electricityText.text = playerInfo.getElectricity.ToString();
-        waterText.text = playerInfo.getWater.ToString();
+        populationText.text = "<color=white>" + playerInfo.getWorkingPopulation.ToString() + "</color>/" + "/" + playerInfo.getPopulation.ToString();
+        electricityText.text = "<color=white>" + playerInfo.getElectricityUsed.ToString() + "</color>/" + playerInfo.getElectricity.ToString();
+        waterText.text = "<color=white>" + playerInfo.getWaterUsed.ToString() + "</color>/" + playerInfo.getWater.ToString();
         foodText.text = playerInfo.getFood.ToString();
     }
 

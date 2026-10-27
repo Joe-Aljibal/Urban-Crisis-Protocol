@@ -22,7 +22,7 @@ public class ElectricitySO : ScriptableObject, IBuildingSO
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>
     {
         new Dictionary<string, string> {
-            { "label" , "{rice" },
+            { "label" , "Price" },
             { "icon", "💵" },
             { "value", price.ToString() }
         },

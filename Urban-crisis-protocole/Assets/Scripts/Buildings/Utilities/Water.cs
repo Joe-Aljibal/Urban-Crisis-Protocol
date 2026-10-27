@@ -20,7 +20,7 @@ public class Water : MonoBehaviour, IBuilding
     }
 
     public IBuildingSO GetBuildingSO() => waterSO;
-    public bool CanPlace() => waterSO.price <= playerInfo.getMoney;
+    public bool CanPlace() => playerInfo.getMoney >= waterSO.price;
     public int GetElectricityNeeded() => waterSO.electricityNeeded;
     public int GetPrice() => waterSO.price;
     public string GetRessource() => waterSO.ressource;
@@ -52,4 +52,5 @@ public class Water : MonoBehaviour, IBuilding
     public int GetWorkersNeeded() => 0;
 
     public bool HasEnoughWorkers() => true;
+    public void DestroyScript() { Destroy(this); }
 }

@@ -11,12 +11,12 @@ public class PlayerInfo
         InitializeResources();
     }
 
-    int workingPopulation = 0;
     int population = 0;
-    int electricity = 0;
+    int workingPopulation = 0;
+    int electricityTotal = 0;
     int electricityUsed = 0;
-    int water = 0;
-    int waterUsed;
+    int waterTotal = 0;
+    int waterUsed = 0;
     int food = 0;
     float money = 2000;
 
@@ -47,28 +47,17 @@ public class PlayerInfo
     public int getWorkingPopulation => workingPopulation;
     public int getAvailablePopulation => population - workingPopulation;
 
-    public void addElectricity(int electricity)
-    {
-        if (electricity > 0)
-        {
-            this.electricity += electricity;
-        }
-        else
-        {
-            this.electricity += electricity;
-            electricityUsed = Mathf.Min(electricityUsed, this.electricity);
-        }
-    }
-    public int getElectricity => electricity;
+    public void addElectricity(int electricity) { this.electricityTotal += electricity; }
+    public int getElectricity => electricityTotal;
     public void UseElectricity(int electricity) { this.electricityUsed += electricity; }
     public int getElectricityUsed => electricityUsed;
-    public int getAvailableElectricity => electricity - electricityUsed;
+    public int getAvailableElectricity => electricityTotal - electricityUsed;
 
-    public void addWater(int water) { this.water += water; }
+    public void addWater(int water) { this.waterTotal += water; }
     public void useWater(int water) { this.waterUsed += water; }
-    public int getWater => water;
+    public int getWater => waterTotal;
     public int getWaterUsed => waterUsed;
-    public int getAvailableWater => water - waterUsed;
+    public int getAvailableWater => waterTotal - waterUsed;
 
     public void addFood(int food) { this.food += food; }
     public int getFood => food;
@@ -102,7 +91,7 @@ public class PlayerInfo
 
             provider.GetComponent<Electricity>().ElectrifyBuildings();
 
-            if(!provider.CanGiveElectricity())
+            if (!provider.CanGiveElectricity())
                 providersToRemove.Add(provider);
         }
 

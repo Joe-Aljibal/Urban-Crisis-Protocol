@@ -43,6 +43,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
             int amountToGive = Mathf.Min(electricityAvailable, electricityNeeded);
 
             dependant.UseElectricity(amountToGive);
+            playerInfo.UseElectricity(amountToGive);
             electricityGiven += amountToGive;
             electricityDependants.Add(dependant, amountToGive);
 
@@ -60,10 +61,6 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
     }
     public void DeleteButton()
     {
-        Destroy(gameObject);
-    }
-    private void OnDestroy()
-    {
         playerInfo.electricityProviders.Remove(this);
         playerInfo.addElectricity(-electricitySO.electricityOutput);
         foreach (var (dependant, amountReceived) in electricityDependants)
@@ -74,6 +71,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
                 playerInfo.electricityDependants.Add(dependant);
         }
         playerInfo.ElectrifyBuildings();
+        Destroy(gameObject);
     }
 
     public void Deactivate(int x, int y)
@@ -133,4 +131,5 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
            new UiDataModel(UiDataType.PRICE, electricitySO.price.ToString())
         };
     }
+    public void DestroyScript() { Destroy(this); }
 }

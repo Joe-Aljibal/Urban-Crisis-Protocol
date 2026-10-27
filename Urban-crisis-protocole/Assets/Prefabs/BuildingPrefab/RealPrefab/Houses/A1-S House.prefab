@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 459540565546621627, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_Name
-      value: Small House
+      value: A1-S House
       objectReference: {fileID: 0}
     - target: {fileID: 948936917133131777, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_LocalScale.x
@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7396310592507624209, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 42c1eabc0d32daf499923177163a5b6a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

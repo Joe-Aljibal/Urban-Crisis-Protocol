@@ -133,7 +133,9 @@ public class BuildingManager : MonoBehaviour
         {
             ChangeBuildingColor(materials[0]);
             // trouver si bouton
-            if (Mouse.current.leftButton.IsPressed() && !FindUiButtonUnderMouse())
+            if (Mouse.current.leftButton.IsPressed()
+                && !FindUiButtonUnderMouse()
+                && currentBuidlingCard.completPrefab.GetComponent<IBuilding>().CanPlace())
             {
                 movableGrid.SetActive(false);
                 Destroy(currentSelectedSlot);

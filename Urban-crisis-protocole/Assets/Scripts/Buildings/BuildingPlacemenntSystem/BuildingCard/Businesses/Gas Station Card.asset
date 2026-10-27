@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Gas Station Card
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
   prefabCurrentCaseSelection: {fileID: 7631688753224110343, guid: e7309b4fe602d0d4c9219c1192134d0e, type: 3}
-  completPrefab: {fileID: 5334596742684202292, guid: 45791baad3566154c967b39592c982c6, type: 3}
-  meshPrefab: {fileID: 5334596742684202292, guid: a75c764ce89b59c43bd6744273ee4b06, type: 3}
+  completPrefab: {fileID: 5552929884894778443, guid: 838dbc5da1527044bbde1cbd093783eb, type: 3}
+  meshPrefab: {fileID: 7843031677881636977, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
   placementRule: {fileID: 11400000, guid: 2e42c4fbc8a4ff64eb82db7061b87df4, type: 2}

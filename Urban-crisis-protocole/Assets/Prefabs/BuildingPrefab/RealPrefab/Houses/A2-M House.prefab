@@ -50,8 +50,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1047642385274722045, guid: 0299d881d1e90384780190e9431ba804, type: 3}
       propertyPath: m_Name
-      value: Medium House Variant
+      value: A2-M House
       objectReference: {fileID: 0}
+    - target: {fileID: 7241276272010678003, guid: 0299d881d1e90384780190e9431ba804, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 42c1eabc0d32daf499923177163a5b6a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

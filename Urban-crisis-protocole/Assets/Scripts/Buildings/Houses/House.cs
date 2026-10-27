@@ -30,8 +30,6 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
         playerInfo.workerProviders.Add(this);
         playerInfo.ElectrifyBuildings();
         playerInfo.EmployWorkers();
-
-
     }
     public void EmployWorkers()
     {
@@ -76,10 +74,6 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     }
     public void DeleteButton()
     {
-        Destroy(gameObject);
-    }
-    private void OnDestroy()
-    {
         playerInfo.addMoney(houseSO.price * .8f);
         // ! Might change this in the future to the exact same system as the electricity
         playerInfo.addPopulation(-houseSO.population);
@@ -92,7 +86,10 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
             if (!playerInfo.workerDependants.Contains(dependant))
                 playerInfo.workerDependants.Add(dependant);
         }
+
+        Destroy(gameObject);
     }
+
     public void Deactivate(int electricityLost, int workersLost)
     {
         electricityReceived -= electricityLost;
@@ -151,4 +148,5 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
            new UiDataModel(UiDataType.PRICE, houseSO.price.ToString())
         };
     }
+    public void DestroyScript() { Destroy(this); }
 }

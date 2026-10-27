@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1141408591127066532, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
+    - target: {fileID: 1864766236449384671, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
     - target: {fileID: 3549657202609362653, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -64,10 +72,26 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4091432398854781791, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
     - target: {fileID: 4181938358068464743, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
       propertyPath: m_Name
       value: Nuclear Plant Ghost
       objectReference: {fileID: 0}
+    - target: {fileID: 5024099566079743490, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
+    - target: {fileID: 6663558263674061929, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
+    - target: {fileID: 7684412214716639178, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
     m_RemovedComponents:
     - {fileID: 2455950522913375661, guid: 711ab95a65d63be4b81899b8652d66ea, type: 3}
     m_RemovedGameObjects: []

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d96b42292fadfb43ab47cb944b6a443, type: 3}
   m_Name: Small House
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
-  prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
+  prefabCurrentCaseSelection: {fileID: 7631688753224110343, guid: e7309b4fe602d0d4c9219c1192134d0e, type: 3}
   completPrefab: {fileID: 5347101977097726024, guid: 7ad49decd0506b54da74f03aa02fc6f9, type: 3}
   meshPrefab: {fileID: 459540565546621627, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
-  placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}
+  placementRule: {fileID: 11400000, guid: 2e42c4fbc8a4ff64eb82db7061b87df4, type: 2}

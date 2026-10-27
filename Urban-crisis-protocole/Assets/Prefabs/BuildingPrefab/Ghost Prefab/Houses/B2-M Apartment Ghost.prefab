@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1927645615371209911, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
+    - target: {fileID: 2868875675083866476, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
     - target: {fileID: 7239524929014894338, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_Name
       value: B2-M Apartment Ghost
