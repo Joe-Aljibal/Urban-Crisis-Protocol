@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb8c5e03bbf11b3469a2fe7f946759ac, type: 3}
-  m_Name: B1-S Apartment Building
+  m_Name: B3 Large Apartment Building
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
   type: Population
   ressource: Population
-  buildingName: Small Apartment
-  description: My neighboors re pretty cool
+  buildingType: 0
+  houseType: 5
+  buildingName: Large Apartment
+  description: 
   electricityNeeded: 15
-  waterNeeded: 50
-  population: 120
-  price: 2200
-  card: {fileID: 11400000, guid: abc8275586ce84b449993f9716ec3845, type: 2}
-  icon: {fileID: 21300000, guid: d852e46675061ad408a205816dc32276, type: 3}
+  waterNeeded: 80
+  population: 250
+  price: 5000
+  card: {fileID: 11400000, guid: df0222295077e97409403707232ae46a, type: 2}
+  icon: {fileID: 0}

@@ -35,4 +35,9 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
     {
         throw new System.NotImplementedException();
     }
+
+    public BuildingTypes GetBuildingType()
+    {
+        throw new System.NotImplementedException();
+    }
 }

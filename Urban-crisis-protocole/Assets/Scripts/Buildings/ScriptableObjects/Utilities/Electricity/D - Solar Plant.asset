@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SolarPanelSO
   type: Utility
   ressource: Electricity
+  buildingClass: 2
+  buildingType: 2
   buildingName: Solar Plant
   description: It's so hot in there...
   electricityOutput: 250

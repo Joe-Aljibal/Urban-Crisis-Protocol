@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,8 +10,9 @@ using UnityEngine.UIElements;
 
 public class BuildingPlacementUI : MonoBehaviour
 {
+    PlayerInfo playerInfo = PlayerInfo.Instance; 
     private PanelRenderer panelRenderer;
-    IBuildingSO[] buildingsSelected;
+    List<IBuildingSO> buildingsSelected;
     [SerializeField] GameObject gameManager;
 
     // UI Sections
@@ -17,10 +20,9 @@ public class BuildingPlacementUI : MonoBehaviour
     {
         Houses,
         Businesses,
-        Industries,
-        Food,
         Electricity,
         Water,
+        Military,
         None
     };
     Sections currentSection;
@@ -37,10 +39,10 @@ public class BuildingPlacementUI : MonoBehaviour
     string waterPath = "Assets/Scripts/Buildings/ScriptableObjects/Utilities/Water";
 
     // ScriptableObject Arrays
-    List<HousesSO> houses = new();
-    List<BusinessesSO> businesses = new();
-    List<ElectricitySO> electricity = new();
-    List<WaterSO> water = new();
+    List<IBuildingSO> houses = new();
+    List<IBuildingSO> businesses = new();
+    List<IBuildingSO> electricity = new();
+    List<IBuildingSO> water = new();
 
     VisualElement root;
     BuildingManager buildingManager;
@@ -59,31 +61,58 @@ public class BuildingPlacementUI : MonoBehaviour
         currentSection = Sections.None;
 
         buildingManager = gameManager.GetComponent<BuildingManager>();
+    }
 
-        string[] guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { housesPath, businessesPath, electricityPath, waterPath });
+    void UpdateOwnedBuildings(List<BuildingTypes> buildingsUnlocked, Sections section)
+    {
+        buildingsSelected.Clear();
 
-        foreach (var guid in guids)
+        string[] guids = new string[0];
+
+        switch (section)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
+            case Sections.Houses:
+                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { housesPath });
+                break;
+            case Sections.Businesses:
+                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { businessesPath });
+                break;
+            case Sections.Electricity:
+                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { electricityPath });
+                break;
+            case Sections.Water:
+                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { waterPath });
+                break;
+        }
 
-            switch (path)
+        foreach (var type in buildingsUnlocked)
+        {
+            foreach (var guid in guids)
             {
-                case var _ when path.Contains("Houses"):
-                    HousesSO asset1 = AssetDatabase.LoadAssetAtPath<HousesSO>(path);
-                    houses.Add(asset1);
-                    break;
-                case var _ when path.Contains("Businesses"):
-                    BusinessesSO asset2 = AssetDatabase.LoadAssetAtPath<BusinessesSO>(path);
-                    businesses.Add(asset2);
-                    break;
-                case var _ when path.Contains("Electricity"):
-                    ElectricitySO asset3 = AssetDatabase.LoadAssetAtPath<ElectricitySO>(path);
-                    electricity.Add(asset3);
-                    break;
-                case var _ when path.Contains("Water"):
-                    WaterSO asset4 = AssetDatabase.LoadAssetAtPath<WaterSO>(path);
-                    water.Add(asset4);
-                    break;
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                IBuildingSO asset = null;
+
+                switch (section)
+                {
+                    case Sections.Houses:
+                        asset = AssetDatabase.LoadAssetAtPath<HousesSO>(path);
+                        break;
+                    case Sections.Businesses:
+                        asset = AssetDatabase.LoadAssetAtPath<BusinessesSO>(path);
+                        break;
+                    case Sections.Electricity:
+                        asset = AssetDatabase.LoadAssetAtPath<ElectricitySO>(path);
+                        break;
+                    case Sections.Water:
+                        asset = AssetDatabase.LoadAssetAtPath<WaterSO>(path);
+                        break;
+                }
+
+                if (asset.GetBuildingType() == type)
+                {
+                    buildingsSelected.Add(asset);
+                    return;
+                }
             }
         }
     }
@@ -107,7 +136,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
         scroller.Clear();
 
-        if (buildingsSelected == null || buildingsSelected.Length < 1)
+        if (buildingsSelected == null || buildingsSelected.Count < 1)
             return;
 
         foreach (var so in buildingsSelected)
@@ -181,7 +210,15 @@ public class BuildingPlacementUI : MonoBehaviour
         }
 
         currentSection = section;
-        buildingsSelected = buildings.ToArray();
+        buildingsSelected = buildings.ToList();
+
+
+        
+        UpdateOwnedBuildings(
+            playerInfo.housesUnlocked,
+            section
+        );
+
         RefreshBuildingsSection(rootElement);
 
         if (!isPopUp)
@@ -282,7 +319,7 @@ public class BuildingPlacementUI : MonoBehaviour
         Debug.Log("Hiding");
         isPopUp = false;
         currentSection = Sections.None;
-        buildingsSelected = new IBuildingSO[] { };
+        buildingsSelected = new();
         RefreshBuildingsSection(rootElement);
 
         VisualElement scroller = rootElement.Q<ScrollView>("BuildingsContainer");

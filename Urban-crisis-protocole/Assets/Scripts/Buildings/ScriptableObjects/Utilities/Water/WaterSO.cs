@@ -7,6 +7,8 @@ public class WaterSO : ScriptableObject, IBuildingSO
 {
     public string type = "Utilities";
     public string ressource = "Water";
+    public BuildingClasses buildingClass = BuildingClasses.Water;
+    public BuildingTypes buildingType;
     public string buildingName;
     public string description;
     public int electricityNeeded = 0;
@@ -15,7 +17,7 @@ public class WaterSO : ScriptableObject, IBuildingSO
     public BuildingCard card;
     public Sprite icon;
 
-
+    public BuildingTypes GetBuildingType() => buildingType;
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;
     public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;

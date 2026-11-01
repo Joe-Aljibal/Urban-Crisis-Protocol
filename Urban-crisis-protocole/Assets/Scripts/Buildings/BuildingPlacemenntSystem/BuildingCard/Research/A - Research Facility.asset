@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: A - Research Facility
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
   prefabCurrentCaseSelection: {fileID: 0}
-  completPrefab: {fileID: 0}
-  meshPrefab: {fileID: 0}
+  completPrefab: {fileID: 1797890258821196734, guid: d379405d686889d49b09bcb1c822e1ec, type: 3}
+  meshPrefab: {fileID: 2844369255351296574, guid: 68a431b1b93812b4f8fc207a8a48ff03, type: 3}
   placementRule: {fileID: 0}

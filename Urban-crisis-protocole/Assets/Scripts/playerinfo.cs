@@ -14,6 +14,7 @@ public class PlayerInfo
     int waterUsed = 0;
     int food = 0;
     float money = 2000;
+    float researchPoint = 1;
 
     public Dictionary<ResourceType, int> resources = new();
     public List<IBuilding> electricityDependants = new();
@@ -22,6 +23,12 @@ public class PlayerInfo
     public List<IBuilding> workerDependants = new();
     public List<Water> waterProviders = new();
     public List<House> waterDependants = new();
+
+    public List<BuildingTypes> housesUnlocked = new() { BuildingTypes.SmallHouse };
+    public List<BuildingTypes> businessesUnlocked = new() { BuildingTypes.GasStation };
+    public List<BuildingTypes> electricityUnlocked = new() { BuildingTypes.SolarPanels };
+    public List<BuildingTypes> waterUnlocked = new() { BuildingTypes.WaterSilo };
+    public List<BuildingTypes> militaryUnlocked = new() { BuildingTypes.Tent };
 
     private PlayerInfo() { InitializeResources(); }
 
@@ -66,6 +73,9 @@ public class PlayerInfo
     public int GetStone => resources[ResourceType.Stone];
 
     public void AddResource(ResourceType type, int amount) { resources[type] += amount; }
+
+    public float GetResearchPoints() => researchPoint;
+    public void AddResearchPoints(float points) { researchPoint += points; }
 
     public void StartProvidingElectricity()
     {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IBuildingSO
 {
+    public BuildingTypes GetBuildingType();
     public Sprite GetIcon();
     public BuildingCard GetCard();
     public bool CanPlace();
