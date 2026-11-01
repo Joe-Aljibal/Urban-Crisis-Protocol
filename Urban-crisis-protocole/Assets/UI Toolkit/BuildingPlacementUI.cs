@@ -95,6 +95,7 @@ public class BuildingPlacementUI : MonoBehaviour
         RefreshBuildingsSection(rootElement);
         SelectionSection(rootElement);
         SetPopupPosition(rootElement);
+        rootElement.Q("background-zindex").SendToBack();
     }
 
     void RefreshBuildingsSection(VisualElement rootElement)
@@ -194,12 +195,11 @@ public class BuildingPlacementUI : MonoBehaviour
         Camera cam = GameObject.Find("3DModelViewCam").GetComponent<Camera>();
         // Handling 3d view model
         viewModelCamera.StartSpinning();
-        foreach ( Transform child in viewModelPivot.transform ) { Destroy(child.gameObject); }
-        GameObject model = Instantiate(so.GetCard().completPrefab, Vector3.zero, Quaternion.identity, viewModelPivot.transform);
+        foreach (Transform child in viewModelPivot.transform) { Destroy(child.gameObject); }
+        GameObject model = Instantiate(so.GetCard().meshPrefab, Vector3.zero, Quaternion.identity, viewModelPivot.transform);
         model.layer = LayerMask.NameToLayer("3DModelView");
-        model.GetComponent<IBuilding>().DestroyScript();
         cam.GetComponent<ViewModelCam>().Frame(model);
-        foreach(Transform child in model.transform)
+        foreach (Transform child in model.transform)
         {
             child.gameObject.layer = LayerMask.NameToLayer("3DModelView");
         }
@@ -218,7 +218,7 @@ public class BuildingPlacementUI : MonoBehaviour
         var buildingStats = so.GetStats();
 
         rootElement.Q("PopUpGrid").Clear();
-        foreach ( var stat in buildingStats )
+        foreach (var stat in buildingStats)
         {
             CreatePopUpGridElement(rootElement, stat);
         }
@@ -323,11 +323,11 @@ public class BuildingPlacementUI : MonoBehaviour
         Label waterText = root.Q<Label>("WaterValue");
         Label foodText = root.Q<Label>("FoodValue");
 
-        moneyText.text = "$" + playerInfo.getMoney.ToString();
-        populationText.text = "<color=white>" + playerInfo.getWorkingPopulation.ToString() + "</color>/" + playerInfo.getPopulation.ToString();
-        electricityText.text = "<color=white>" + playerInfo.getElectricityUsed.ToString() + "</color>/" + playerInfo.getElectricity.ToString();
-        waterText.text = "<color=white>" + playerInfo.getWaterUsed.ToString() + "</color>/" + playerInfo.getWater.ToString();
-        foodText.text = playerInfo.getFood.ToString();
+        moneyText.text = "$" + playerInfo.GetMoney.ToString();
+        populationText.text = "<color=white>" + playerInfo.GetWorkingPopulation.ToString() + "</color>/" + playerInfo.GetPopulation.ToString();
+        electricityText.text = "<color=white>" + playerInfo.GetElectricityUsed.ToString() + "</color>/" + playerInfo.GetElectricity.ToString();
+        waterText.text = "<color=white>" + playerInfo.GetWaterUsed.ToString() + "</color>/" + playerInfo.GetWater.ToString();
+        foodText.text = playerInfo.GetFood.ToString();
     }
 
     void OpenResearchPage()

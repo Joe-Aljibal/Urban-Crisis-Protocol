@@ -15,6 +15,7 @@ MonoBehaviour:
   type: Population
   ressource: Population
   buildingName: Medium Apartment
+  description: They need to stop smoking, seriously...
   electricityNeeded: 8
   waterNeeded: 12
   population: 12

@@ -15,7 +15,7 @@ MonoBehaviour:
   type: Business
   ressource: Money
   buildingName: Diner
-  description: 
+  description: Cozy local diner, loved by the neighborhood.
   icon: {fileID: 21300000, guid: 6bc4520914882be449879af0c2d9a811, type: 3}
   electricityNeeded: 6
   workersNeeded: 5

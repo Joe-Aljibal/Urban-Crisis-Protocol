@@ -17,19 +17,19 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     void Start()
     {
-        playerinfo.addMoney(-businessSO.price);
+        playerinfo.AddMoney(-businessSO.price);
 
         playerinfo.electricityDependants.Add(this);
         playerinfo.workerDependants.Add(this);
-        playerinfo.ElectrifyBuildings();
-        playerinfo.EmployWorkers();
+        playerinfo.StartProvidingElectricity();
+        playerinfo.StartProvidingWorkers();
     }
 
     void Update()
     {
         //electricityImage.color = HasEnoughElectricity() ? Color.green : Color.red;
         //workersImage.color = HasEnoughWorkers() ? Color.green : Color.red;
-        
+
         if (!isActive)
         {
             cooldown = 0;
@@ -38,15 +38,16 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
         if (cooldown >= 1)
         {
-            playerinfo.addMoney(businessSO.profit);
+            playerinfo.AddMoney(businessSO.profit);
             cooldown = 0;
+            return;
         }
-        cooldown = cooldown + Time.deltaTime;
+        cooldown += Time.deltaTime;
     }
 
     public void DeleteButton()
     {
-        playerinfo.addMoney(businessSO.price * .8f);
+        playerinfo.AddMoney(businessSO.price * .8f);
 
         playerinfo.UseElectricity(-businessSO.electricityNeeded);
         Destroy(gameObject);
@@ -76,10 +77,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         electricityReceived += electricity;
         playerinfo.UseElectricity(electricity);
 
-        if (electricityReceived == GetElectricityNeeded())
+        if (electricityReceived >= GetElectricityNeeded() && workersReceived >= GetWorkersNeeded())
         {
             Activate();
-            playerinfo.electricityDependants.Remove(this);
         }
     }
 
@@ -93,12 +93,17 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     public bool HasEnoughWorkers() => businessSO.workersNeeded <= workersReceived;
     public int GetElectricityReceived() => electricityReceived;
     public int GetProfit() => businessSO.profit;
-    public bool CanPlace() => playerinfo.getMoney >= businessSO.price;
+    public bool CanPlace() => playerinfo.GetMoney >= businessSO.price;
 
-    public void ReceiveWorkers(int workersReceived)
+    public void ReceiveWorkers(int workers)
     {
-        this.workersReceived += workersReceived;
-        playerinfo.addWorkingPopulation(workersReceived);
+        workersReceived += workers;
+        playerinfo.AddWorkingPopulation(workers);
+
+        if (workersReceived >= GetWorkersNeeded() && electricityReceived >= GetElectricityNeeded())
+        {
+            Activate();
+        }
     }
 
     public int GetWorkersNeeded() => businessSO.workersNeeded - workersReceived;

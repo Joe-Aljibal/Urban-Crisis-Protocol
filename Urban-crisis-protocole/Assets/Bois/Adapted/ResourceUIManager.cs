@@ -10,11 +10,11 @@ public class ResourceUIManager : MonoBehaviour
 
     private void UpdateWoodText()
     {
-        woodText.text = $"Wood: {playerInfo.getWood}";
+        woodText.text = $"Wood: {playerInfo.GetWood}";
     }
     private void UpdateStoneText()
     {
-        stoneText.text = $"Stone: {playerInfo.getStone}";
+        stoneText.text = $"Stone: {playerInfo.GetStone}";
     }
     void Update()
     {

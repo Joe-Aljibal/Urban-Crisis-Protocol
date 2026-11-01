@@ -50,6 +50,7 @@
             <ui:Button text="💧" name="WaterSelector" class="bar-tile selector-btn"/>
             <ui:Button text="🪖" name="MilitarySelector" class="bar-tile selector-btn"/>
             <ui:Button text="🔍" name="ResearchSelector" class="bar-tile selector-btn"/>
+            <ui:VisualElement name="background-zindex" style="flex-grow: 1; position: absolute; align-self: center; z-index: -1; width: 200px; height: 120px; background-color: rgb(45, 45, 48); opacity: 1; visibility: visible; display: flex;"/>
         </ui:VisualElement>
         <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
     </ui:VisualElement>

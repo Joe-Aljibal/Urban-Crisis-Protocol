@@ -15,8 +15,9 @@ MonoBehaviour:
   type: Population
   ressource: Population
   buildingName: Medium House
+  description: So much space in here
   electricityNeeded: 8
-  waterNeeded: 12
+  waterNeeded: 0
   population: 12
   price: 550
   card: {fileID: 11400000, guid: f9c4e300173e9054d9cc94a6db82a59c, type: 2}

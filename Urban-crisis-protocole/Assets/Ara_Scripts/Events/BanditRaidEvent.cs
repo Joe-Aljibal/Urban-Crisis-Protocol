@@ -85,10 +85,10 @@ public class BanditRaidEvent : MonoBehaviour
 
     public float StealMoney(MoneyBuilding target)
     {
-        float availableMoney = Mathf.Max(0, PlayerInfo.Instance.getMoney);
+        float availableMoney = Mathf.Max(0, PlayerInfo.Instance.GetMoney);
         float stolenMoney = Mathf.Min(moneyPerBandit, availableMoney);
 
-        PlayerInfo.Instance.addMoney(-stolenMoney);
+        PlayerInfo.Instance.AddMoney(-stolenMoney);
         totalStolen += stolenMoney;
 
         message = target.building.name + " : " + stolenMoney + " $ volés.";
@@ -112,7 +112,7 @@ public class BanditRaidEvent : MonoBehaviour
         GUILayout.BeginArea(new Rect(15, 15, 330, 200), GUI.skin.box);
 
         GUILayout.Label("RAID DES BANDITS");
-        GUILayout.Label("Argent : " + PlayerInfo.Instance.getMoney + " $");
+        GUILayout.Label("Argent : " + PlayerInfo.Instance.GetMoney + " $");
         GUILayout.Label("Argent volé : " + totalStolen + " $");
         GUILayout.Label("Bandits restants : " + remainingBandits);
         GUILayout.Label(message);

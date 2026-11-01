@@ -20,7 +20,7 @@ public class BuildingManager : MonoBehaviour
 
     private UiManager uiManager;
 
-     
+
     void Start()
     {
         gridComponent = gridPlateform.GetComponent<Grid>();
@@ -29,8 +29,13 @@ public class BuildingManager : MonoBehaviour
 
     }
 
+    float cooldown = 0;
+
     void Update()
     {
+        if (cooldown >= 1) { PlayerInfo.Instance.AddMoney(50); cooldown = 0; }
+        else cooldown += Time.deltaTime;
+
         if (currentBuidlingCard != null)
         {
             MoveGridAround(FindMousePositionOnGrid());
@@ -140,7 +145,7 @@ public class BuildingManager : MonoBehaviour
                 movableGrid.SetActive(false);
                 Destroy(currentSelectedSlot);
                 GameObject newBuilding = Instantiate(currentBuidlingCard.completPrefab, currentSelectedBuildingClone.transform.position, currentSelectedBuildingClone.transform.rotation);
-                
+
 
                 // !! special section (hut)
                 /*
@@ -150,7 +155,7 @@ public class BuildingManager : MonoBehaviour
                  }
                 */
 
-                
+
                 Destroy(currentSelectedBuildingClone);
                 currentSelectedBuildingClone = null;
                 currentBuidlingCard = null;
