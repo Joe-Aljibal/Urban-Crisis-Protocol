@@ -3,7 +3,7 @@
     <ui:VisualElement name="Container" class="bottom-bar">
         <ui:VisualElement name="AboveBar" picking-mode="Ignore" class="above-bar">
             <ui:VisualElement name="BuildingInfo" class="panel building-info">
-                <ui:VisualElement name="ModelContainer" class="model-container" style="background-image: url(&quot;project://database/Assets/Scenes/New%20Render%20Texture.renderTexture?fileID=8400000&amp;guid=91287b08afaea5a4eb7085e59cc09460&amp;type=2#New Render Texture&quot;);"/>
+                <ui:VisualElement name="ModelContainer" class="model-container" style="background-image: url(&quot;project://database/Assets/Scenes/ViewModel%20Render.renderTexture?fileID=8400000&amp;guid=91287b08afaea5a4eb7085e59cc09460&amp;type=2#ViewModel Render&quot;);"/>
                 <ui:VisualElement name="DetailsContainer" class="details">
                     <ui:VisualElement>
                         <ui:Label name="BuildingName" text="⚡ Power Plant" class="title"/>
@@ -50,6 +50,7 @@
             <ui:Button text="🍞" name="FoodSelector" class="bar-tile selector-btn"/>
             <ui:Button text="⚡" name="ElectricitySelector" parse-escape-sequences="false" class="bar-tile selector-btn"/>
             <ui:Button text="💧" name="WaterSelector" class="bar-tile selector-btn"/>
+            <ui:VisualElement name="background-zindex" style="flex-grow: 1; position: absolute; align-self: center; z-index: -1; width: 200px; height: 120px; background-color: rgb(45, 45, 48); opacity: 1; visibility: visible; display: flex;"/>
         </ui:VisualElement>
         <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
     </ui:VisualElement>

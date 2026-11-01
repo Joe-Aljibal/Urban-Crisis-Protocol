@@ -14,7 +14,7 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
 
     public Sprite GetIcon() => null;
     public BuildingCard GetCard() => null;
-    public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
+    public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;
 
     public string GetBuildingName()
     {

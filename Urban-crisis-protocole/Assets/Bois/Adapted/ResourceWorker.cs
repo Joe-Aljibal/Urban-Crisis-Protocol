@@ -103,7 +103,7 @@ public class ResourceWorker : Worker
 
     private void HandleResourceBroughtBack()
     {
-        playerInfo.addResource(cachedResourceType, 1);
+        playerInfo.AddResource(cachedResourceType, 1);
     }
 
     private void GoToNextResource()

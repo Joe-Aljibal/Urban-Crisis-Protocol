@@ -3,20 +3,20 @@ using UnityEngine;
 public interface IBuilding
 {
     public void DestroyScript();
-
+    public bool CanPlace();
+    public int GetPrice();
+    public IBuildingSO GetBuildingSO();
     public string GetBuildingType();
     public string GetRessource();
-    public void UseElectricity(int electricity);
-    public int GetElectricityReceived();
-    public int GetElectricityNeeded();
-    public bool HasEnoughElectricity();
-    public int GetPrice();
-    public bool CanPlace();
-    public IBuildingSO GetBuildingSO();
 
     public bool IsActive();
-    public void Deactivate(int electricityLost, int workersLost);
     public void Activate();
+    public void Deactivate(int electricityLost, int workersLost);
+
+    public void UseElectricity(int electricity);
+    public int GetElectricityNeeded();
+    public int GetElectricityReceived();
+    public bool HasEnoughElectricity();
 
     public void ReceiveWorkers(int workers);
     public int GetWorkersNeeded();

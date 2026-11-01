@@ -65,12 +65,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7918335002988649766, guid: 7c15e4dddfa95b24089f40ff5f3a8b1f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7918335002988649766, guid: 7c15e4dddfa95b24089f40ff5f3a8b1f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
     - target: {fileID: -7029948723529949830, guid: 7c15e4dddfa95b24089f40ff5f3a8b1f, type: 3}
       propertyPath: m_Name
-      value: Floot
+      value: Floor
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7c15e4dddfa95b24089f40ff5f3a8b1f, type: 3}
       propertyPath: m_Name
@@ -83,7 +87,7 @@ PrefabInstance:
     - target: {fileID: 6170364737530096044, guid: 7c15e4dddfa95b24089f40ff5f3a8b1f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: fbede9c566943264c8f02f7f93a7d195, type: 2}
+      objectReference: {fileID: 2100000, guid: 75dc23b3b70046a42b15ddb3a1532bbe, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

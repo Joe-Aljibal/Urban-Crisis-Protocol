@@ -14,7 +14,7 @@ public class CollectResourceOnClick : MonoBehaviour
             if (hit.transform.TryGetComponent(out StaticResource r) && Mouse.current.leftButton.wasPressedThisFrame
             && r.IsAvailable)
             {
-                playerInfo.addResource(r.ResourceType, 1);
+                playerInfo.AddResource(r.ResourceType, 1);
             }
         }
     }

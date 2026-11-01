@@ -19,7 +19,7 @@ public class BusinessesSO : ScriptableObject, IBuildingSO
 
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;
-    public bool CanPlace() => price <= PlayerInfo.Instance.getMoney;
+    public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;
     public string GetBuildingName() => "💵 " + buildingName;
 
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>

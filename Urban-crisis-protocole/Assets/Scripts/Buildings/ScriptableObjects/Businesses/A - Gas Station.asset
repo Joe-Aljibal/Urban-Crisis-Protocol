@@ -15,7 +15,7 @@ MonoBehaviour:
   type: Business
   ressource: Money
   buildingName: Gas Station
-  description: 
+  description: Cheap roadside gas station.
   icon: {fileID: 21300000, guid: ac65d9e202347444c973bdadc0e48720, type: 3}
   electricityNeeded: 20
   workersNeeded: 3

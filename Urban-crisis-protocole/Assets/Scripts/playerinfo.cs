@@ -6,11 +6,6 @@ public class PlayerInfo
 {
     public static PlayerInfo Instance { get; } = new PlayerInfo();
 
-    private PlayerInfo()
-    {
-        InitializeResources();
-    }
-
     int population = 0;
     int workingPopulation = 0;
     int electricityTotal = 0;
@@ -21,105 +16,90 @@ public class PlayerInfo
     float money = 2000;
 
     public Dictionary<ResourceType, int> resources = new();
+    public List<IBuilding> electricityDependants = new();
+    public List<Electricity> electricityProviders = new();
+    public List<House> workerProviders = new();
+    public List<IBuilding> workerDependants = new();
+    public List<Water> waterProviders = new();
+    public List<House> waterDependants = new();
+
+    private PlayerInfo() { InitializeResources(); }
 
     private void InitializeResources()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
-        {
             resources[type] = 0;
-        }
     }
 
-    public void addPopulation(int population)
+    public void AddPopulation(int population)
     {
-        if (population > 0)
-        {
-            this.population += population;
-        }
-        else
-        {
-            this.population += population;
-            workingPopulation = Mathf.Min(workingPopulation, population);
-        }
+        this.population += population;
+        if (population <= 0) workingPopulation = Mathf.Min(workingPopulation, population);
     }
-    public int getPopulation => population;
-    public void addWorkingPopulation(int population) { this.workingPopulation += population; }
-    public int getWorkingPopulation => workingPopulation;
-    public int getAvailablePopulation => population - workingPopulation;
+    public int GetPopulation => population;
+    public void AddWorkingPopulation(int population) { this.workingPopulation += population; }
+    public int GetWorkingPopulation => workingPopulation;
+    public int GetAvailablePopulation => population - workingPopulation;
 
-    public void addElectricity(int electricity) { this.electricityTotal += electricity; }
-    public int getElectricity => electricityTotal;
-    public void UseElectricity(int electricity) { this.electricityUsed += electricity; }
-    public int getElectricityUsed => electricityUsed;
-    public int getAvailableElectricity => electricityTotal - electricityUsed;
+    public void AddElectricity(int electricity) { electricityTotal += electricity; }
+    public void UseElectricity(int electricity) { electricityUsed += electricity; }
+    public int GetElectricity => electricityTotal;
+    public int GetElectricityUsed => electricityUsed;
+    public int GetAvailableElectricity => electricityTotal - electricityUsed;
 
-    public void addWater(int water) { this.waterTotal += water; }
-    public void useWater(int water) { this.waterUsed += water; }
-    public int getWater => waterTotal;
-    public int getWaterUsed => waterUsed;
-    public int getAvailableWater => waterTotal - waterUsed;
+    public void AddWater(int water) { waterTotal += water; }
+    public void UseWater(int water) { waterUsed += water; }
+    public int GetWater => waterTotal;
+    public int GetWaterUsed => waterUsed;
+    public int GetAvailableWater => waterTotal - waterUsed;
 
-    public void addFood(int food) { this.food += food; }
-    public int getFood => food;
+    public void AddFood(int food) { this.food += food; }
+    public int GetFood => food;
 
-    public void addMoney(float money) { this.money += money; }
-    public float getMoney => money;
+    public void AddMoney(float money) { this.money += money; }
+    public float GetMoney => money;
 
-    public void addWood(int wood) { resources[ResourceType.Wood] += wood; }
-    public int getWood => resources[ResourceType.Wood];
+    public void AddWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public int GetWood => resources[ResourceType.Wood];
 
-    public void addStone(int stone) { resources[ResourceType.Stone] += stone; }
-    public int getStone => resources[ResourceType.Stone];
+    public void AddStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public int GetStone => resources[ResourceType.Stone];
 
-    public void addResource(ResourceType type, int amount)
-    {
-        resources[type] += amount;
-    }
+    public void AddResource(ResourceType type, int amount) { resources[type] += amount; }
 
-    // The building that needs electricit and how much more it needs
-    public List<IBuilding> electricityDependants = new();
-    // The providers available to give out electricity
-    public List<Electricity> electricityProviders = new();
-
-    public void ElectrifyBuildings()
+    public void StartProvidingElectricity()
     {
         List<Electricity> providersToRemove = new();
         foreach (var provider in electricityProviders)
         {
-            if (electricityDependants.Count < 1)
-                break;
-
-            provider.GetComponent<Electricity>().ElectrifyBuildings();
-
-            if (!provider.CanGiveElectricity())
-                providersToRemove.Add(provider);
+            if (electricityDependants.Count < 1) break;
+            provider.ProvideElectricity();
+            if (!provider.HasAvailableElectricity()) providersToRemove.Add(provider);
         }
-
-        foreach (Electricity provider in providersToRemove)
-            electricityProviders.Remove(provider);
+        foreach (Electricity provider in providersToRemove) electricityProviders.Remove(provider);
     }
 
-    // The building that needs workers
-    public List<IBuilding> workerDependants = new();
-    // The houses available to give out workers
-    public List<House> workerProviders = new();
-
-    public void EmployWorkers()
+    public void StartProvidingWorkers()
     {
         List<House> providersToRemove = new();
-
         foreach (var provider in workerProviders)
         {
-            if (workerDependants.Count < 1)
-                break;
-
-            provider.GetComponent<House>().EmployWorkers();
-
-            if (!provider.HasEnoughWorkers())
-                providersToRemove.Add(provider);
+            if (workerDependants.Count < 1) break;
+            provider.ProvideWorkers();
+            if (!provider.HasEnoughWorkers()) providersToRemove.Add(provider);
         }
+        foreach (var provider in providersToRemove) workerProviders.Remove(provider);
+    }
 
-        foreach (var provider in providersToRemove)
-            workerProviders.Remove(provider);
+    public void StartProvidingWater()
+    {
+        List<Water> providersToRemove = new();
+        foreach (Water provider in waterProviders)
+        {
+            if (waterDependants.Count < 1) break;
+            provider.ProvideWater();
+            if (!provider.HasAvailableWater()) providersToRemove.Add(provider);
+        }
+        foreach (Water provider in providersToRemove) waterProviders.Remove(provider);
     }
 }

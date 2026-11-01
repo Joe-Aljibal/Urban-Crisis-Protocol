@@ -15,6 +15,7 @@ MonoBehaviour:
   type: Population
   ressource: Population
   buildingName: Small Apartment
+  description: My neighboors re pretty cool
   electricityNeeded: 15
   waterNeeded: 50
   population: 120

@@ -15,6 +15,7 @@ MonoBehaviour:
   type: Business
   ressource: Money
   buildingName: Fast Food
+  description: Price? cheap, quality? eh... not sure the meat is real..
   icon: {fileID: 21300000, guid: f0a7671597c05444ab08da871f7e5034, type: 3}
   electricityNeeded: 120
   workersNeeded: 15

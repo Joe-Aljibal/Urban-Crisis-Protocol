@@ -15,8 +15,8 @@ MonoBehaviour:
   type: Utility
   ressource: Electricity
   buildingName: Coal Power Station
-  description: 
+  description: Dirties the air, but quite capable
   electricityOutput: 1200
-  price: 7500
+  price: 750
   card: {fileID: 11400000, guid: aa12a41ab49296b47bae6d365399a469, type: 2}
   icon: {fileID: 21300000, guid: 4c41ab7745009b940905e781a9624762, type: 3}

@@ -15,7 +15,7 @@ MonoBehaviour:
   type: Utility
   ressource: Electricity
   buildingName: Solar Plant
-  description: 
+  description: It's so hot in there...
   electricityOutput: 250
   price: 2000
   card: {fileID: 11400000, guid: 3c55df36a3f301643a870932893a2dba, type: 2}

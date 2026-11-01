@@ -11,9 +11,9 @@ public class MainCanvasUI : MonoBehaviour
     PlayerInfo playerInfo = PlayerInfo.Instance;
     void Update()
     {
-        moneyText.text = "Money: "  + playerInfo.getMoney.ToString();
-        electricityText.text =  "Electricity: " + playerInfo.getElectricity.ToString() + $" <color=yellow> {playerInfo.getElectricityUsed}</color>";
-        populationText.text = "Population: " + playerInfo.getPopulation.ToString() + $" <color=red> {playerInfo.getWorkingPopulation}</color>";
-        waterText.text = "Water: " + playerInfo.getWater.ToString() + $" <color=blue> {playerInfo.getWaterUsed}</color>";
+        moneyText.text = "Money: "  + playerInfo.GetMoney.ToString();
+        electricityText.text =  "Electricity: " + playerInfo.GetElectricity.ToString() + $" <color=yellow> {playerInfo.GetElectricityUsed}</color>";
+        populationText.text = "Population: " + playerInfo.GetPopulation.ToString() + $" <color=red> {playerInfo.GetWorkingPopulation}</color>";
+        waterText.text = "Water: " + playerInfo.GetWater.ToString() + $" <color=blue> {playerInfo.GetWaterUsed}</color>";
     }
 }

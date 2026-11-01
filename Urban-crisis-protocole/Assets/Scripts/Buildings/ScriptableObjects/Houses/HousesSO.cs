@@ -21,8 +21,8 @@ public class HousesSO : ScriptableObject, IBuildingSO
     PlayerInfo playerInfo = PlayerInfo.Instance;
     public string GetBuildingName() => "🏡 " + buildingName; 
      public bool CanPlace() =>
-        playerInfo.getMoney >= price &&
-        playerInfo.getAvailableElectricity >= electricityNeeded;  // !! water 
+        playerInfo.GetMoney >= price &&
+        playerInfo.GetAvailableElectricity >= electricityNeeded;  // !! water 
 
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>
     {
