@@ -271,9 +271,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CamMouvement
   minHeightCam: 4
   maxHeightCam: 8
-  zommingSpeed: 40
-  movingSpeed: 20
-  rotateSpeed: 20
+  zoomStep: 0.5
+  rotateSpeed: 0.2
+  groundHeight: 0
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,6 +749,7 @@ GameObject:
   - component: {fileID: 905338339}
   - component: {fileID: 905338338}
   - component: {fileID: 905338340}
+  - component: {fileID: 905338341}
   m_Layer: 5
   m_Name: PanelRenderer
   m_TagString: Untagged
@@ -843,6 +844,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   gameManager: {fileID: 1957280982}
   viewModelPivot: {fileID: 994404344}
+--- !u!114 &905338341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905338337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b313dbc51815d14083b9ccfbbeb8c24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResearchTreeUI
 --- !u!1 &994404344
 GameObject:
   m_ObjectHideFlags: 0

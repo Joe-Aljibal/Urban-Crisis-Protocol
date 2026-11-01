@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4200bdcc0afd69440a1a77be885dcabd, type: 3}
-  m_Name: Water Plant
+  m_Name: C - Water Treatment Plant
   m_EditorClassIdentifier: Assembly-CSharp::WaterSiloSO
   type: Utilities
   ressource: Water
   buildingName: Water Plant
   description: 
   electricityNeeded: 0
-  water: 10
-  price: 25
-  card: {fileID: 0}
-  icon: {fileID: 0}
+  water: 500
+  price: 2500
+  card: {fileID: 11400000, guid: 70c3f917bcbf5da498a7bbb64e099a4d, type: 2}
+  icon: {fileID: 21300000, guid: 274295063cecd604984c03dad67ce019, type: 3}

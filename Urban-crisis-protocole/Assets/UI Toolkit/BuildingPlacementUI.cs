@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
 
@@ -94,7 +95,6 @@ public class BuildingPlacementUI : MonoBehaviour
         RefreshBuildingsSection(rootElement);
         SelectionSection(rootElement);
         SetPopupPosition(rootElement);
-        StartCoroutine(HideDescriptionCoroutine(rootElement));
     }
 
     void RefreshBuildingsSection(VisualElement rootElement)
@@ -175,7 +175,7 @@ public class BuildingPlacementUI : MonoBehaviour
     {
         if (isPopUp && currentSection == section)
         {
-            ClosePopUp(rootElement);
+            HideBuildings(rootElement);
             return;
         }
 
@@ -185,7 +185,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
         if (!isPopUp)
         {
-            ShowPopUp(rootElement);
+            ShowBuildings(rootElement);
         }
     }
 
@@ -225,7 +225,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
         descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
         descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
-        descWindow.style.translate = new Translate(0, 0);
+        descWindow.style.translate = new Translate(0, -600);
         descWindow.style.scale = new Scale(new Vector2(1, 1));
     }
 
@@ -259,25 +259,27 @@ public class BuildingPlacementUI : MonoBehaviour
 
         descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
         descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
-        descWindow.style.translate = new Translate(0, 320);
+        descWindow.style.translate = new Translate(0, 0);
         descWindow.style.scale = new Scale(new Vector2(0.1f, 0.1f));
 
         viewModelCamera.StopSpinning();
     }
 
-    void ShowPopUp(VisualElement rootElement)
+    void ShowBuildings(VisualElement rootElement)
     {
+        Debug.Log("Showing");
         isPopUp = true;
 
         VisualElement scroller = rootElement.Q<ScrollView>("BuildingsContainer");
 
         scroller.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
         scroller.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate") };
-        scroller.style.translate = new Translate(0, 0);
+        scroller.style.translate = new Translate(0, -120);
     }
 
-    void ClosePopUp(VisualElement rootElement)
+    void HideBuildings(VisualElement rootElement)
     {
+        Debug.Log("Hiding");
         isPopUp = false;
         currentSection = Sections.None;
         buildingsSelected = new IBuildingSO[] { };
@@ -287,7 +289,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
         scroller.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
         scroller.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate") };
-        scroller.style.translate = new Translate(0, 120);
+        scroller.style.translate = new Translate(0, 0);
     }
 
     void SetPopupPosition(VisualElement rootElement)
@@ -322,14 +324,28 @@ public class BuildingPlacementUI : MonoBehaviour
         Label foodText = root.Q<Label>("FoodValue");
 
         moneyText.text = "$" + playerInfo.getMoney.ToString();
-        populationText.text = "<color=white>" + playerInfo.getWorkingPopulation.ToString() + "</color>/" + "/" + playerInfo.getPopulation.ToString();
+        populationText.text = "<color=white>" + playerInfo.getWorkingPopulation.ToString() + "</color>/" + playerInfo.getPopulation.ToString();
         electricityText.text = "<color=white>" + playerInfo.getElectricityUsed.ToString() + "</color>/" + playerInfo.getElectricity.ToString();
         waterText.text = "<color=white>" + playerInfo.getWaterUsed.ToString() + "</color>/" + playerInfo.getWater.ToString();
         foodText.text = playerInfo.getFood.ToString();
     }
 
-    private void Update()
+    void OpenResearchPage()
     {
+        VisualElement treePage = root.Q("skill-tree-root");
+        
+        treePage.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
+        treePage.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate") };
+        treePage.style.translate = new Translate(1920, 0);
+    }
+
+    void Update()
+    {
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            OpenResearchPage();
+        }
+
         UpdateInfoUI();
     }
 }

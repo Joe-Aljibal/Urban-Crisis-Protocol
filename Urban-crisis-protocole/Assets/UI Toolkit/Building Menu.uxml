@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI%20Toolkit/USS/BuildingMenu.uss?fileID=7433441132597879392&amp;guid=3cb5ceb7f3cd2d34d94432acf88269d1&amp;type=3#BuildingMenu"/>
     <ui:VisualElement name="Container" class="bottom-bar">
         <ui:VisualElement name="AboveBar" picking-mode="Ignore" class="above-bar">
-            <ui:VisualElement name="BuildingInfo" class="panel building-info">
+            <ui:VisualElement name="BuildingInfo" class="panel building-info" style="bottom: -460px;">
                 <ui:VisualElement name="ModelContainer" class="model-container" style="background-image: url(&quot;project://database/Assets/Scenes/New%20Render%20Texture.renderTexture?fileID=8400000&amp;guid=91287b08afaea5a4eb7085e59cc09460&amp;type=2#New Render Texture&quot;);"/>
                 <ui:VisualElement name="DetailsContainer" class="details">
                     <ui:VisualElement>
@@ -14,7 +14,7 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:ScrollView name="BuildingsContainer" mode="Horizontal" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" touch-scroll-type="Clamped" focusable="false" class="centered-scroll-view buildings-scroll"/>
+            <ui:ScrollView name="BuildingsContainer" mode="Horizontal" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" touch-scroll-type="Clamped" focusable="false" class="centered-scroll-view buildings-scroll" style="position: absolute; bottom: -120px;"/>
         </ui:VisualElement>
         <ui:VisualElement name="StatsContainer" class="stats-container">
             <ui:VisualElement class="bar-tile">
@@ -46,10 +46,10 @@
         <ui:VisualElement name="SelectorsContainer" class="selectors-container">
             <ui:Button text="🏡" name="HousesSelector" class="bar-tile selector-btn"/>
             <ui:Button text="💵" name="BusinessesSelector" class="bar-tile selector-btn"/>
-            <ui:Button text="🏭" name="IndustriesSelector" class="bar-tile selector-btn"/>
-            <ui:Button text="🍞" name="FoodSelector" class="bar-tile selector-btn"/>
             <ui:Button text="⚡" name="ElectricitySelector" parse-escape-sequences="false" class="bar-tile selector-btn"/>
             <ui:Button text="💧" name="WaterSelector" class="bar-tile selector-btn"/>
+            <ui:Button text="🪖" name="MilitarySelector" class="bar-tile selector-btn"/>
+            <ui:Button text="🔍" name="ResearchSelector" class="bar-tile selector-btn"/>
         </ui:VisualElement>
         <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
     </ui:VisualElement>
@@ -82,5 +82,31 @@
         <ui:VisualElement class="popup-footer">
             <ui:Button text="Vendre 💰" name="SellButton" class="sell-button"/>
         </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="skill-tree-root" style="flex-grow: 1; background-color: rgb(136, 204, 255); left: -1920px;">
+        <ui:VisualElement name="tree-canvas" picking-mode="Ignore" style="position: absolute; left: 50%; top: 50%; width: 0; height: 0;">
+            <ui:VisualElement name="military-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: -90deg; background-color: rgb(90, 90, 90);"/>
+            <ui:VisualElement name="business-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: -18deg; background-color: rgb(90, 90, 90);"/>
+            <ui:VisualElement name="electricity-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: 54deg; background-color: rgb(90, 90, 90);"/>
+            <ui:VisualElement name="water-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: 126deg; background-color: rgb(90, 90, 90);"/>
+            <ui:VisualElement name="housing-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: 198deg; background-color: rgb(90, 90, 90);"/>
+            <ui:Button name="unlock-node" text="UNLOCK" style="position: absolute; left: 0; top: 0; width: 96px; height: 96px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 48px; border-width: 4px; border-color: rgb(255, 204, 0); background-color: rgb(40, 40, 40); color: rgb(255, 204, 0); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="military-1" text="I" enabled="false" style="position: absolute; left: 0; top: -110px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="military-2" text="II" enabled="false" style="position: absolute; left: 0; top: -200px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="military-3" text="III" enabled="false" style="position: absolute; left: 0; top: -290px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="business-1" text="I" enabled="false" style="position: absolute; left: 105px; top: -34px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="business-2" text="II" enabled="false" style="position: absolute; left: 190px; top: -62px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="business-3" text="III" enabled="false" style="position: absolute; left: 276px; top: -90px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="electricity-1" text="I" enabled="false" style="position: absolute; left: 65px; top: 89px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="electricity-2" text="II" enabled="false" style="position: absolute; left: 118px; top: 162px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="electricity-3" text="III" enabled="false" style="position: absolute; left: 170px; top: 235px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="water-1" text="I" enabled="false" style="position: absolute; left: -65px; top: 89px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="water-2" text="II" enabled="false" style="position: absolute; left: -118px; top: 162px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="water-3" text="III" enabled="false" style="position: absolute; left: -170px; top: 235px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="housing-1" text="I" enabled="false" style="position: absolute; left: -105px; top: -34px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="housing-2" text="II" enabled="false" style="position: absolute; left: -190px; top: -62px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+            <ui:Button name="housing-3" text="III" enabled="false" style="position: absolute; left: -276px; top: -90px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+        </ui:VisualElement>
+        <ui:Button name="close-button" text="Close" style="position: absolute; top: 10px; right: 10px; width: 120px; height: 44px; margin: 0; padding: 0; border-radius: 8px; border-width: 2px; border-color: rgb(120, 30, 30); background-color: rgb(200, 60, 60); color: rgb(255, 255, 255); font-size: 20px; -unity-font-style: bold;"/>
     </ui:VisualElement>
 </ui:UXML>

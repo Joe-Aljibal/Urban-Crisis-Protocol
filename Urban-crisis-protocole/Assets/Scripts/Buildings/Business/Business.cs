@@ -102,7 +102,6 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     }
 
     public int GetWorkersNeeded() => businessSO.workersNeeded - workersReceived;
-    public string GetType() => businessSO.type;
     public int GetPopulation() => businessSO.workersNeeded;
     public int GetElectricityNeeded() => businessSO.electricityNeeded;
 

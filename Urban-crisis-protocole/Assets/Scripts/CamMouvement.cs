@@ -1,80 +1,91 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
 public class CamMouvement : MonoBehaviour
 {
-    private InputAction mouse;
-    void Start()
-    {
-
-        mouse = InputSystem.actions.FindAction("Look");
-    }
-
-
-    void Update()
-    {
-        MoveAroundWithMouse();
-    }
-
-    // !! can change :  right click to move around, scroll button to rotate
-
-    // zomming variable
     [SerializeField] private float minHeightCam = 4f;
     [SerializeField] private float maxHeightCam = 8f;
-    [SerializeField] private float zommingSpeed = 2;
+    [SerializeField] private float zoomStep = 0.5f;
+    [SerializeField] private float rotateSpeed = 0.2f;
+    [SerializeField] private float groundHeight = 0f;
 
-    // player mouvement variable
-    [SerializeField] private float movingSpeed = 2;
+    private Camera cam;
+    private Vector3 dragAnchor;
+    private bool isDragging;
 
-    // player rotation variable
-    [SerializeField] private float rotateSpeed = 2;
-
-
-
-    void MoveAroundWithMouse()
+    private void Awake()
     {
-        // Action : zoom will scrolling 
+        cam = GetComponent<Camera>();
+        if (cam == null) cam = Camera.main;
+    }
 
-        float scrollValue = Mouse.current.scroll.ReadValue().y;
+    private void Update()
+    {
+        Mouse mouse = Mouse.current;
+        if (mouse == null) return;
 
-        if (scrollValue != 0)
+        Zoom(mouse.scroll.ReadValue().y);
+        Drag(mouse);
+        Orbit(mouse);
+    }
+
+    private bool TryGetGroundPoint(Vector2 screenPoint, out Vector3 point)
+    {
+        Plane ground = new Plane(Vector3.up, new Vector3(0f, groundHeight, 0f));
+        Ray ray = cam.ScreenPointToRay(screenPoint);
+
+        if (ground.Raycast(ray, out float distance))
         {
-
-            Vector3 mouvementMade = scrollValue > 0 ? transform.forward : -transform.forward;
-            mouvementMade *= Time.deltaTime * zommingSpeed;
-            Vector3 testVector = mouvementMade + transform.position;
-
-            if (testVector.y >= minHeightCam && testVector.y <= maxHeightCam)
-            {
-                transform.position = testVector;
-            }
+            point = ray.GetPoint(distance);
+            return true;
         }
 
+        point = default;
+        return false;
+    }
 
-        Vector2 mouseMouvement = mouse.ReadValue<Vector2>();
+    private void Zoom(float scroll)
+    {
+        if (Mathf.Approximately(scroll, 0f)) return;
 
+        Vector3 target = transform.position + transform.forward * (Mathf.Sign(scroll) * zoomStep);
 
-        // Action : right click to move around  
-        // !! min and max to prevent the player from going to far , optional : add a timer to prevent the player from click without stopping
-
-        Vector2 nextMove = mouseMouvement;
-        nextMove = -nextMove.normalized;
-        nextMove *= movingSpeed * Time.deltaTime;
-
-        if (Mouse.current.rightButton.IsPressed())
+        if (target.y >= minHeightCam && target.y <= maxHeightCam)
         {
-            transform.position += nextMove.x * transform.right + nextMove.y * new Vector3(transform.forward.x, 0, transform.forward.z);
+            transform.position = target;
+        }
+    }
 
+    private void Drag(Mouse mouse)
+    {
+        Vector2 cursor = mouse.position.ReadValue();
+
+        if (mouse.rightButton.wasPressedThisFrame)
+        {
+            isDragging = TryGetGroundPoint(cursor, out dragAnchor);
         }
 
-
-
-        // Action : rotate aroung while pressing the scrolling button
-        Vector2 nextRotation = mouseMouvement;
-        if (Mouse.current.middleButton.IsPressed())
+        if (mouse.rightButton.wasReleasedThisFrame)
         {
-            transform.Rotate(0, -nextRotation.x * Time.deltaTime * rotateSpeed, 0, Space.World);
+            isDragging = false;
+        }
+
+        if (isDragging && mouse.rightButton.isPressed && TryGetGroundPoint(cursor, out Vector3 current))
+        {
+            transform.position += dragAnchor - current;
+        }
+    }
+
+    private void Orbit(Mouse mouse)
+    {
+        if (!mouse.middleButton.isPressed) return;
+
+        Vector2 center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+
+        if (TryGetGroundPoint(center, out Vector3 pivot))
+        {
+            float angle = mouse.delta.ReadValue().x * rotateSpeed;
+            transform.RotateAround(pivot, Vector3.up, angle);
         }
     }
 }

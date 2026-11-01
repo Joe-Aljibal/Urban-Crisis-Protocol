@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Water Silo", menuName = "ScriptableObjects/Water Silo")]
+[CreateAssetMenu(fileName = "Water", menuName = "ScriptableObjects/Water")]
 public class WaterSO : ScriptableObject, IBuildingSO
 {
     public string type = "Utilities";

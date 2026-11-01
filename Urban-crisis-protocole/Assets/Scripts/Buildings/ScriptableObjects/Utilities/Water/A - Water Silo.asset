@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4200bdcc0afd69440a1a77be885dcabd, type: 3}
-  m_Name: Water Silo
+  m_Name: A - Water Silo
   m_EditorClassIdentifier: Assembly-CSharp::WaterSiloSO
   type: Utilities
   ressource: Water
@@ -19,5 +19,5 @@ MonoBehaviour:
   electricityNeeded: 0
   water: 10
   price: 25
-  card: {fileID: 0}
-  icon: {fileID: 0}
+  card: {fileID: 11400000, guid: cf17868bc44cbd94f9d32c7ca53a7a79, type: 2}
+  icon: {fileID: 21300000, guid: cd2111fa0af235749aa53c6034f0532c, type: 3}
