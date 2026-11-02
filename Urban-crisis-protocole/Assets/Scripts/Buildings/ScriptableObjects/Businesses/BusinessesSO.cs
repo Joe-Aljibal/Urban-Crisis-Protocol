@@ -10,6 +10,7 @@ public class BusinessesSO : ScriptableObject, IBuildingSO
     public string ressource = "Money";
     public BuildingClasses buildingClass = BuildingClasses.Business;
     public BuildingTypes buildingType;
+    public int researchPrice;
     public string buildingName;
     public string description;
     public Sprite icon;
@@ -19,6 +20,7 @@ public class BusinessesSO : ScriptableObject, IBuildingSO
     public int profit;
     public BuildingCard card;
 
+    public int GetResearchPrice() => researchPrice;
     public BuildingTypes GetBuildingType() => buildingType;
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;

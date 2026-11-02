@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
   type: Population
   ressource: Population
-  buildingType: 0
-  houseType: 2
+  buildingClass: 0
+  buildingType: 2
+  researchPrice: 0
   buildingName: Large House
   description: 
   electricityNeeded: 15

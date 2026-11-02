@@ -14,7 +14,7 @@ public class PlayerInfo
     int waterUsed = 0;
     int food = 0;
     float money = 2000;
-    float researchPoint = 1;
+    float researchPoint = 20;
 
     public Dictionary<ResourceType, int> resources = new();
     public List<IBuilding> electricityDependants = new();

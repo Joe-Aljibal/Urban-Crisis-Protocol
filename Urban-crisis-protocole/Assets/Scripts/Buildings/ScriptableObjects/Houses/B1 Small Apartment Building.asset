@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
   type: Population
   ressource: Population
-  buildingType: 0
-  houseType: 3
+  buildingClass: 0
+  buildingType: 3
+  researchPrice: 0
   buildingName: Small Apartment
   description: My neighboors re pretty cool
   electricityNeeded: 15

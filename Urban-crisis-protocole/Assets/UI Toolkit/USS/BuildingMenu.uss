@@ -295,3 +295,180 @@ font-size: 15px; margin-bottom: 1px; }
 
 .sell-button:hover  { background-color: var(--danger-hv); }
 .sell-button:active { background-color: var(--danger-ac); }
+
+    /* ================= RESEARCH TREE ================= */
+.research-root {
+    --rt-bg:       rgb(14, 17, 24);
+    --rt-ring:     rgb(32, 38, 50);
+    --rt-link:     rgb(52, 60, 76);
+    --rt-locked:   rgb(62, 66, 78);
+    --rt-unlocked: rgb(60, 200, 100);
+    --accent:      rgb(160, 160, 165);
+    background-color: var(--rt-bg);
+}
+
+/* Branch colors */
+.branch-military    { --accent: rgb(230, 100, 100); }
+.branch-business    { --accent: rgb(255, 205, 70); }
+.branch-electricity { --accent: rgb(100, 230, 120); }
+.branch-water       { --accent: rgb(100, 180, 240); }
+.branch-housing     { --accent: rgb(255, 170, 90); }
+
+/* Header */
+.rt-header {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 64px;
+    padding: 0 24px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(22, 26, 35);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border);
+}
+.rt-title { font-size: 24px; color: var(--text); -unity-font-style: bold; }
+.rt-header-right { flex-direction: row; align-items: center; }
+.rt-points {
+    margin-right: 14px;
+    padding: 6px 14px;
+    font-size: 16px;
+    color: rgb(150, 150, 255);
+    -unity-font-style: bold;
+    background-color: var(--bg-tile);
+    border-color: var(--border);
+    border-width: 1px;
+    border-radius: 16px;
+}
+.rt-close {
+    width: 40px; height: 40px;
+    margin: 0; padding: 0;
+    font-size: 18px;
+    color: var(--text);
+    -unity-font-style: bold;
+    background-color: var(--danger);
+    border-color: rgb(255, 120, 120);
+    border-width: 1px;
+    border-radius: 10px;
+}
+.rt-close:hover  { background-color: var(--danger-hv); }
+.rt-close:active { background-color: var(--danger-ac); }
+
+/* Decorations */
+.rt-ring {
+    position: absolute;
+    translate: -50% -50%;
+    border-width: 1px;
+    border-color: var(--rt-ring);
+}
+.rt-ring-1 { width: 360px; height: 360px; border-radius: 180px; }
+.rt-ring-2 { width: 700px; height: 700px; border-radius: 350px; }
+
+.rt-link {
+    position: absolute;
+    height: 4px;
+    border-radius: 2px;
+    transform-origin: left center;
+    background-color: var(--rt-link);
+}
+.rt-link.active { background-color: var(--accent); }
+
+.rt-tag {
+    position: absolute;
+    translate: -50% -50%;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--accent);
+    -unity-font-style: bold;
+    background-color: rgb(20, 24, 32);
+    border-color: var(--accent);
+    border-width: 1px;
+    border-radius: 12px;
+}
+
+/* Core node */
+.research-root .core-node {
+    position: absolute;
+    translate: -50% -50%;
+    width: 96px; height: 96px;
+    margin: 0; padding: 0;
+    border-radius: 48px;
+    border-width: 4px;
+    border-color: rgb(68, 210, 33);
+    background-color: rgb(28, 40, 30);
+    color: rgb(68, 210, 33);
+    font-size: 16px;
+    -unity-font-style: bold;
+    transition-property: scale, background-color;
+    transition-duration: 0.12s;
+}
+.research-root .core-node:hover  { scale: 1.06 1.06; background-color: rgb(36, 56, 38); }
+.research-root .core-node:active { scale: 0.96 0.96; }
+
+/* Skill nodes */
+.research-root .node {
+    position: absolute;
+    translate: -50% -50%;
+    width: 64px; height: 64px;
+    margin: 0; padding: 0;
+    border-radius: 32px;
+    border-width: 3px;
+    border-color: var(--accent);
+    background-color: rgb(30, 34, 44);
+    color: var(--text);
+    font-size: 26px;
+    opacity: 1;
+    -unity-text-align: middle-center;
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    transition-property: scale, background-color, border-color;
+    transition-duration: 0.12s;
+}
+.research-root .node:hover  { scale: 1.12 1.12; background-color: rgb(44, 50, 64); }
+.research-root .node:active { scale: 0.96 0.96; }
+
+/* Locked: dim, grey ring, no hover. Beats the theme's 50% disabled fade. */
+.research-root .node:disabled {
+    opacity: 1;
+    border-color: var(--rt-locked);
+    background-color: rgb(22, 25, 33);
+    color: rgb(100, 100, 108);
+    -unity-background-image-tint-color: rgb(85, 85, 92);
+}
+.research-root .node:disabled:hover { scale: 1 1; background-color: rgb(22, 25, 33); }
+
+/* Unlocked: green ring and tinted fill (toggle the "unlocked" class from C#) */
+.research-root .node.unlocked,
+.research-root .node.unlocked:disabled {
+    border-color: var(--rt-unlocked);
+    background-color: rgb(22, 56, 36);
+    color: var(--text);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.node-label {
+    position: absolute;
+    left: -31px;
+    top: 62px;
+    width: 120px;
+    margin: 0; padding: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    white-space: normal;
+}
+
+/* Legend */
+.rt-legend {
+    position: absolute;
+    left: 0; right: 0; bottom: 20px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.rt-dot { width: 12px; height: 12px; border-radius: 6px; border-width: 2px; margin-right: 6px; }
+.rt-dot-locked    { border-color: var(--rt-locked);   background-color: rgb(22, 25, 33); }
+.rt-dot-available { border-color: rgb(255, 205, 70);  background-color: rgb(30, 34, 44); }
+.rt-dot-unlocked  { border-color: var(--rt-unlocked); background-color: rgb(22, 56, 36); }
+.rt-legend-text   { margin-right: 20px; font-size: 12px; color: var(--text-muted); }

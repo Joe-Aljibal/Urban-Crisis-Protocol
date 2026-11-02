@@ -2,8 +2,8 @@
     <Style src="project://database/Assets/UI%20Toolkit/USS/BuildingMenu.uss?fileID=7433441132597879392&amp;guid=3cb5ceb7f3cd2d34d94432acf88269d1&amp;type=3#BuildingMenu"/>
     <ui:VisualElement name="Container" class="bottom-bar">
         <ui:VisualElement name="AboveBar" picking-mode="Ignore" class="above-bar">
-            <ui:VisualElement name="BuildingInfo" class="panel building-info" style="bottom: -460px;">
-                <ui:VisualElement name="ModelContainer" class="model-container" style="background-image: url(&quot;project://database/Assets/Scenes/New%20Render%20Texture.renderTexture?fileID=8400000&amp;guid=91287b08afaea5a4eb7085e59cc09460&amp;type=2#New Render Texture&quot;);"/>
+            <ui:VisualElement name="BuildingInfo" class="panel building-info" style="bottom: auto; top: auto; position: absolute;">
+                <ui:VisualElement name="ModelContainer" class="model-container" style="background-image: url(&quot;project://database/Assets/Scenes/ViewModel%20Render.renderTexture?fileID=8400000&amp;guid=91287b08afaea5a4eb7085e59cc09460&amp;type=2#ViewModel Render&quot;);"/>
                 <ui:VisualElement name="DetailsContainer" class="details">
                     <ui:VisualElement>
                         <ui:Label name="BuildingName" text="⚡ Power Plant" class="title"/>
@@ -49,10 +49,11 @@
             <ui:Button text="⚡" name="ElectricitySelector" parse-escape-sequences="false" class="bar-tile selector-btn"/>
             <ui:Button text="💧" name="WaterSelector" class="bar-tile selector-btn"/>
             <ui:Button text="🪖" name="MilitarySelector" class="bar-tile selector-btn"/>
-            <ui:Button text="🔍" name="ResearchSelector" class="bar-tile selector-btn"/>
+            <ui:Button text="🔬" name="ResearchSelector" class="bar-tile selector-btn"/>
             <ui:VisualElement name="background-zindex" style="flex-grow: 1; position: absolute; align-self: center; z-index: -1; width: 200px; height: 120px; background-color: rgb(45, 45, 48); opacity: 1; visibility: visible; display: flex;"/>
         </ui:VisualElement>
         <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
+        <ui:Button text="🌳" name="ResearchTreeButton" class="bar-tile selector-btn"/>
     </ui:VisualElement>
     <ui:VisualElement name="BuildingPopUp" class="panel popup">
         <ui:VisualElement class="popup-top">
@@ -84,30 +85,99 @@
             <ui:Button text="Vendre 💰" name="SellButton" class="sell-button"/>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="skill-tree-root" style="flex-grow: 1; background-color: rgb(136, 204, 255); left: -1920px;">
-        <ui:VisualElement name="tree-canvas" picking-mode="Ignore" style="position: absolute; left: 50%; top: 50%; width: 0; height: 0;">
-            <ui:VisualElement name="military-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: -90deg; background-color: rgb(90, 90, 90);"/>
-            <ui:VisualElement name="business-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: -18deg; background-color: rgb(90, 90, 90);"/>
-            <ui:VisualElement name="electricity-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: 54deg; background-color: rgb(90, 90, 90);"/>
-            <ui:VisualElement name="water-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: 126deg; background-color: rgb(90, 90, 90);"/>
-            <ui:VisualElement name="housing-line" picking-mode="Ignore" style="position: absolute; left: 0; top: -2px; width: 290px; height: 4px; transform-origin: left center; rotate: 198deg; background-color: rgb(90, 90, 90);"/>
-            <ui:Button name="unlock-node" text="UNLOCK" style="position: absolute; left: 0; top: 0; width: 96px; height: 96px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 48px; border-width: 4px; border-color: rgb(255, 204, 0); background-color: rgb(40, 40, 40); color: rgb(255, 204, 0); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="military-1" text="I" enabled="false" style="position: absolute; left: 0; top: -110px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="military-2" text="II" enabled="false" style="position: absolute; left: 0; top: -200px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="military-3" text="III" enabled="false" style="position: absolute; left: 0; top: -290px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="business-1" text="I" enabled="false" style="position: absolute; left: 105px; top: -34px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="business-2" text="II" enabled="false" style="position: absolute; left: 190px; top: -62px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="business-3" text="III" enabled="false" style="position: absolute; left: 276px; top: -90px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="electricity-1" text="I" enabled="false" style="position: absolute; left: 65px; top: 89px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="electricity-2" text="II" enabled="false" style="position: absolute; left: 118px; top: 162px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="electricity-3" text="III" enabled="false" style="position: absolute; left: 170px; top: 235px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="water-1" text="I" enabled="false" style="position: absolute; left: -65px; top: 89px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="water-2" text="II" enabled="false" style="position: absolute; left: -118px; top: 162px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="water-3" text="III" enabled="false" style="position: absolute; left: -170px; top: 235px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="housing-1" text="I" enabled="false" style="position: absolute; left: -105px; top: -34px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="housing-2" text="II" enabled="false" style="position: absolute; left: -190px; top: -62px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
-            <ui:Button name="housing-3" text="III" enabled="false" style="position: absolute; left: -276px; top: -90px; width: 64px; height: 64px; translate: -50% -50%; margin: 0; padding: 0; border-radius: 32px; border-width: 3px; border-color: rgb(120, 120, 120); background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); font-size: 16px; -unity-font-style: bold;"/>
+    <ui:VisualElement name="research-tree-root" class="research-root" style="flex-grow: 1; left: -1920px;">
+        <ui:VisualElement class="rt-header">
+            <ui:Label text="🔬 Research Tree" class="rt-title"/>
+            <ui:VisualElement class="rt-header-right">
+                <ui:Label name="ResearchPoints" text="🧪 " class="rt-points"/>
+                <ui:Button name="close-button" text="✕" class="rt-close"/>
+            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:Button name="close-button" text="Close" style="position: absolute; top: 10px; right: 10px; width: 120px; height: 44px; margin: 0; padding: 0; border-radius: 8px; border-width: 2px; border-color: rgb(120, 30, 30); background-color: rgb(200, 60, 60); color: rgb(255, 255, 255); font-size: 20px; -unity-font-style: bold;"/>
+        <ui:VisualElement name="tree-canvas" picking-mode="Ignore" style="position: absolute; left: 50%; top: 50%; width: 0; height: 0;">
+            <ui:VisualElement picking-mode="Ignore" class="rt-ring rt-ring-1" style="left: 0; top: 0;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-ring rt-ring-2" style="left: 0; top: 0;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-military" style="left: 0; top: -2px; width: 300px; rotate: -90deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-business" style="left: 0; top: -2px; width: 480px; rotate: -18deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-electricity" style="left: 0; top: 28px; width: 470px; rotate: 45deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-water" style="left: 0; top: -2px; width: 300px; rotate: 126deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-housing" style="left: 0; top: -2px; width: 104px; rotate: 196.7deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-housing" style="left: -100px; top: -32px; width: 85px; rotate: 135deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-housing" style="left: -160px; top: 28px; width: 90px; rotate: 180deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-housing" style="left: -100px; top: -32px; width: 85px; rotate: 225deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-housing" style="left: -160px; top: -92px; width: 85px; rotate: 225deg;"/>
+            <ui:VisualElement picking-mode="Ignore" class="rt-link branch-housing" style="left: -220px; top: -152px; width: 85px; rotate: 225deg;"/>
+            <ui:Label text="🪖 MILITARY" picking-mode="Ignore" class="rt-tag branch-military" style="left: 0; top: -350px;"/>
+            <ui:Label text="💵 BUSINESS" picking-mode="Ignore" class="rt-tag branch-business" style="left: 560px; top: -180px;"/>
+            <ui:Label text="⚡ ELECTRICITY" picking-mode="Ignore" class="rt-tag branch-electricity" style="left: 400px; top: 420px;"/>
+            <ui:Label text="💧 WATER" picking-mode="Ignore" class="rt-tag branch-water" style="left: -255px; top: 310px;"/>
+            <ui:Label text="🏡 HOUSING" picking-mode="Ignore" class="rt-tag branch-housing" style="left: -350px; top: -270px;"/>
+            <ui:Button name="unlock-node" text="UNLOCK" class="core-node" style="left: 0; top: 0;"/>
+            <ui:Button name="military-1" text="🪖" enabled="true" class="node branch-military unlocked" style="left: 0; top: -110px;">
+                <ui:Label text="Tent" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="military-2" text="🪖" enabled="false" class="node branch-military" style="left: 0; top: -200px;">
+                <ui:Label text="Barracks" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="military-3" text="🪖" enabled="false" class="node branch-military" style="left: 0; top: -290px;">
+                <ui:Label text="Fort" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="gas-station" enabled="true" class="node branch-business unlocked" style="left: 105px; top: -34px; background-image: url(&quot;project://database/Assets/Img/Businesses/Gas%20Station%20Icon.png?fileID=21300000&amp;guid=ac65d9e202347444c973bdadc0e48720&amp;type=3#Gas Station Icon&quot;);">
+                <ui:Label text="Gas Station" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="diner" enabled="false" class="node branch-business" style="left: 190px; top: -62px; background-image: url(&quot;project://database/Assets/Img/Businesses/Diner%20Icon.png?fileID=21300000&amp;guid=6bc4520914882be449879af0c2d9a811&amp;type=3#Diner Icon&quot;);">
+                <ui:Label text="Diner" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="fast-food" enabled="false" class="node branch-business" style="left: 276px; top: -90px; background-image: url(&quot;project://database/Assets/Img/Businesses/Fast%20Food%20Icon.png?fileID=21300000&amp;guid=f0a7671597c05444ab08da871f7e5034&amp;type=3#Fast Food Icon&quot;);">
+                <ui:Label text="Fast Food" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="office" enabled="false" class="node branch-business" style="left: 362px; top: -118px; background-image: url(&quot;project://database/Assets/Img/Businesses/Office%20Building%20Icon.png?fileID=21300000&amp;guid=d1fb30e4c7b45234fb084bc9f601a3fe&amp;type=3#Office Building Icon&quot;);">
+                <ui:Label text="Office" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="super-market" text="🛒" enabled="false" class="node branch-business" style="left: 448px; top: -146px;">
+                <ui:Label text="Supermarket" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="solar-panels" enabled="true" class="node branch-electricity unlocked" style="left: 60px; top: 90px; background-image: url(&quot;project://database/Assets/Img/Electricity/Solar%20Panels%20Icon.png?fileID=21300000&amp;guid=5bac290a4392b474ba0db6e53f13cc8b&amp;type=3#Solar Panels Icon&quot;);">
+                <ui:Label text="Solar Panels" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="wind-turbines" enabled="false" class="node branch-electricity" style="left: 120px; top: 150px; background-image: url(&quot;project://database/Assets/Img/Capture%20d%E2%80%99%C3%A9cran%202026-09-10%20221316.png?fileID=21300000&amp;guid=92004c4d2174d2346885c6d083a24762&amp;type=3#Capture d’écran 2026-09-10 221316&quot;);">
+                <ui:Label text="Wind Turbines" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="coal-power-station" enabled="false" class="node branch-electricity" style="left: 180px; top: 210px; background-image: url(&quot;project://database/Assets/Img/Electricity/Coal%20Power%20Plant%20Icon.png?fileID=21300000&amp;guid=4c41ab7745009b940905e781a9624762&amp;type=3#Coal Power Plant Icon&quot;);">
+                <ui:Label text="Coal Plant" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="solar-plant" enabled="false" class="node branch-electricity" style="left: 240px; top: 270px; background-image: url(&quot;project://database/Assets/Img/Electricity/Solar%20Plant%20Icon.png?fileID=21300000&amp;guid=d561793fb0ea7c34680d6e4e4b54602d&amp;type=3#Solar Plant Icon&quot;);">
+                <ui:Label text="Solar Plant" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="nuclear-plant" enabled="false" class="node branch-electricity" style="left: 300px; top: 330px; background-image: url(&quot;project://database/Assets/Img/Electricity/Nuclear%20Plant%20Icon.png?fileID=21300000&amp;guid=b413602fcc73e554e8646fcd0d68f6a2&amp;type=3#Nuclear Plant Icon&quot;);">
+                <ui:Label text="Nuclear Plant" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="water-silo" enabled="true" class="node branch-water unlocked" style="left: -65px; top: 89px; background-image: url(&quot;project://database/Assets/Img/Water/A%20-%20Water%20Silo%20Icon.png?fileID=21300000&amp;guid=cd2111fa0af235749aa53c6034f0532c&amp;type=3#A - Water Silo Icon&quot;);">
+                <ui:Label text="Water Silo" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="water-reservoir" enabled="false" class="node branch-water" style="left: -118px; top: 162px; background-image: url(&quot;project://database/Assets/Img/Water/B%20-%20Water%20Reservoir%20Icon.png?fileID=21300000&amp;guid=6fd13784ececa234d9ac1d7c2bd77280&amp;type=3#B - Water Reservoir Icon&quot;);">
+                <ui:Label text="Reservoir" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="water-treatment-plant" enabled="false" class="node branch-water" style="left: -170px; top: 235px; background-image: url(&quot;project://database/Assets/Img/Water/C%20-%20Water%20Treatment%20Plant%20Icon.png?fileID=21300000&amp;guid=274295063cecd604984c03dad67ce019&amp;type=3#C - Water Treatment Plant Icon&quot;);">
+                <ui:Label text="Treatment Plant" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="house-1" enabled="true" class="node branch-housing unlocked" style="left: -100px; top: -30px; background-image: url(&quot;project://database/Assets/Img/Houses/Small%20House%20Icon.png?fileID=21300000&amp;guid=13e84c67b3dc17e4791e126d74e9409c&amp;type=3#Small House Icon&quot;);">
+                <ui:Label text="Small House" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="house-2" enabled="false" class="node branch-housing" style="left: -160px; top: 30px; background-image: url(&quot;project://database/Assets/Img/Houses/House%202%20Icon.png?fileID=21300000&amp;guid=f0f9a9d5ef390f54c9a7fd5515f23fa1&amp;type=3#House 2 Icon&quot;);">
+                <ui:Label text="Medium House" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="house-3" text="🏠" enabled="false" class="node branch-housing" style="left: -250px; top: 30px;">
+                <ui:Label text="Large House" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="apartment-1" enabled="false" class="node branch-housing" style="left: -160px; top: -90px; background-image: url(&quot;project://database/Assets/Img/Houses/Small%20Apartment%20Icon.png?fileID=21300000&amp;guid=d852e46675061ad408a205816dc32276&amp;type=3#Small Apartment Icon&quot;);">
+                <ui:Label text="Small Apartment" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="apartment-2" enabled="false" class="node branch-housing" style="left: -220px; top: -150px; background-image: url(&quot;project://database/Assets/Img/Houses/Medium%20Apartment%20Icon.png?fileID=21300000&amp;guid=3ea25dc4a42d9b34cb5e3615bf29cebf&amp;type=3#Medium Apartment Icon&quot;);">
+                <ui:Label text="Medium Apartment" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+            <ui:Button name="apartment-3" text="🏢" enabled="false" class="node branch-housing" style="left: -280px; top: -210px;">
+                <ui:Label text="Large Apartment" picking-mode="Ignore" class="node-label"/>
+            </ui:Button>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
   type: Population
   ressource: Population
-  buildingType: 0
-  houseType: 1
+  buildingClass: 0
+  buildingType: 1
+  researchPrice: 0
   buildingName: Medium House
   description: So much space in here
   electricityNeeded: 8

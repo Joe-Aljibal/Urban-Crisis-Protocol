@@ -12,7 +12,7 @@ public class BuildingPlacementUI : MonoBehaviour
 {
     PlayerInfo playerInfo = PlayerInfo.Instance; 
     private PanelRenderer panelRenderer;
-    List<IBuildingSO> buildingsSelected;
+    List<IBuildingSO> buildingsSelected = new();
     [SerializeField] GameObject gameManager;
 
     // UI Sections
@@ -33,6 +33,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
 
     // Paths
+    string mainPath = "Assets/Scripts/Buildings/ScriptableObjects";
     string housesPath = "Assets/Scripts/Buildings/ScriptableObjects/Houses";
     string businessesPath = "Assets/Scripts/Buildings/ScriptableObjects/Businesses";
     string electricityPath = "Assets/Scripts/Buildings/ScriptableObjects/Utilities/Electricity";
@@ -52,6 +53,10 @@ public class BuildingPlacementUI : MonoBehaviour
     EventCallback<ClickEvent> electricityCallback;
     EventCallback<ClickEvent> waterCallback;
 
+    // Research UI
+    ResearchTreeUI researchTreeUI;
+    EventCallback<ClickEvent> researchCallback;
+
     private void Awake()
     {
         viewModelCamera = FindAnyObjectByType<ViewModelCam>();
@@ -61,60 +66,101 @@ public class BuildingPlacementUI : MonoBehaviour
         currentSection = Sections.None;
 
         buildingManager = gameManager.GetComponent<BuildingManager>();
+        researchTreeUI = FindAnyObjectByType<ResearchTreeUI>();
     }
 
-    void UpdateOwnedBuildings(List<BuildingTypes> buildingsUnlocked, Sections section)
+    void UpdateOwnedBuildings(Sections section)
     {
         buildingsSelected.Clear();
 
-        string[] guids = new string[0];
+        List<BuildingTypes> unlocked = SelectList(section);
+        string folder = SelectFolder(section);
 
-        switch (section)
+        string[] guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { folder });
+        List<IBuildingSO> buildingSOs = new();
+
+        foreach (string guid in guids)
         {
-            case Sections.Houses:
-                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { housesPath });
-                break;
-            case Sections.Businesses:
-                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { businessesPath });
-                break;
-            case Sections.Electricity:
-                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { electricityPath });
-                break;
-            case Sections.Water:
-                guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { waterPath });
-                break;
+            IBuildingSO so = AssetDatabase.LoadAssetAtPath<ScriptableObject>(AssetDatabase.GUIDToAssetPath(guid)) as IBuildingSO;
+            if (so != null) buildingSOs.Add(so);
         }
 
-        foreach (var type in buildingsUnlocked)
+        foreach(var type in unlocked)
         {
-            foreach (var guid in guids)
+            Debug.Log("here");
+            var so = buildingSOs.FirstOrDefault(building => building.GetBuildingType() == type);
+            if (so != null)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                IBuildingSO asset = null;
-
-                switch (section)
-                {
-                    case Sections.Houses:
-                        asset = AssetDatabase.LoadAssetAtPath<HousesSO>(path);
-                        break;
-                    case Sections.Businesses:
-                        asset = AssetDatabase.LoadAssetAtPath<BusinessesSO>(path);
-                        break;
-                    case Sections.Electricity:
-                        asset = AssetDatabase.LoadAssetAtPath<ElectricitySO>(path);
-                        break;
-                    case Sections.Water:
-                        asset = AssetDatabase.LoadAssetAtPath<WaterSO>(path);
-                        break;
-                }
-
-                if (asset.GetBuildingType() == type)
-                {
-                    buildingsSelected.Add(asset);
-                    return;
-                }
+                buildingsSelected.Add(so);
+                Debug.Log("AAdded");
             }
         }
+        Debug.Log($"[{section}] folderValid={AssetDatabase.IsValidFolder(folder)} " +
+          $"guids={guids.Length} SOs={buildingSOs.Count} unlocked={unlocked.Count} " +
+          $"selected={buildingsSelected.Count}");
+
+        foreach (var b in buildingSOs) Debug.Log($"   found SO '{((ScriptableObject)b).name}' type={b.GetBuildingType()}");
+        foreach (var t in unlocked) Debug.Log($"   unlocked: {t}");
+
+        //foreach (var type in buildingsUnlocked)
+        //{
+        //    Debug.Log("Type at : " + type);
+        //    foreach (var guid in guids)
+        //    {
+        //        string path = AssetDatabase.GUIDToAssetPath(guid);
+        //        IBuildingSO asset = null;
+
+        //        switch (section)
+        //        {
+        //            case Sections.Houses:
+        //                asset = AssetDatabase.LoadAssetAtPath<HousesSO>(path);
+        //                break;
+        //            case Sections.Businesses:
+        //                asset = AssetDatabase.LoadAssetAtPath<BusinessesSO>(path);
+        //                break;
+        //            case Sections.Electricity:
+        //                asset = AssetDatabase.LoadAssetAtPath<ElectricitySO>(path);
+        //                break;
+        //            case Sections.Water:
+        //                asset = AssetDatabase.LoadAssetAtPath<WaterSO>(path);
+        //                break;
+        //        }
+        //        Debug.Log("Asset Type : " + asset.GetBuildingType());
+        //        if (asset.GetBuildingType() == type)
+        //        {
+        //            Debug.Log(type);
+        //            buildingsSelected.Add(asset);
+        //            break;
+        //        }
+        //    }
+        //    Debug.Log("index " + i++);
+        //}
+    }
+
+    List<BuildingTypes> SelectList(Sections section)
+    {
+        PlayerInfo p = PlayerInfo.Instance;
+
+        return section switch
+        {
+            Sections.Houses => p.housesUnlocked,
+            Sections.Businesses => p.businessesUnlocked,
+            Sections.Electricity => p.electricityUnlocked,
+            Sections.Water => p.waterUnlocked,
+            _ => null
+        };
+    }
+
+    string SelectFolder(Sections section)
+    {
+        return section switch
+        {
+            Sections.Houses => housesPath,
+            Sections.Businesses => businessesPath,
+            Sections.Electricity => electricityPath,
+            Sections.Water => waterPath,
+            _ => null
+        };
     }
 
 
@@ -125,6 +171,7 @@ public class BuildingPlacementUI : MonoBehaviour
         SelectionSection(rootElement);
         SetPopupPosition(rootElement);
         rootElement.Q("background-zindex").SendToBack();
+        StartCoroutine(HideDescriptionCoroutine(rootElement));
     }
 
     void RefreshBuildingsSection(VisualElement rootElement)
@@ -177,6 +224,7 @@ public class BuildingPlacementUI : MonoBehaviour
         Button businessesButton = rootElement.Q<Button>("BusinessesSelector");
         Button electricityButton = rootElement.Q<Button>("ElectricitySelector");
         Button waterButton = rootElement.Q<Button>("WaterSelector");
+        Button researchButton = rootElement.Q<Button>("ResearchTreeButton");
 
         if (housesCallback != null)
             housesButton.UnregisterCallback(housesCallback);
@@ -190,19 +238,25 @@ public class BuildingPlacementUI : MonoBehaviour
         if (waterCallback != null)
             waterButton.UnregisterCallback(waterCallback);
 
+        if (researchCallback != null)
+            researchButton.UnregisterCallback(researchCallback);
+
         housesCallback = _ => SelectorPressed(rootElement, Sections.Houses, houses);
         businessesCallback = _ => SelectorPressed(rootElement, Sections.Businesses, businesses);
         electricityCallback = _ => SelectorPressed(rootElement, Sections.Electricity, electricity);
         waterCallback = _ => SelectorPressed(rootElement, Sections.Water, water);
+        researchCallback = _ => researchTreeUI.ToggleResearchPage();
 
         housesButton.RegisterCallback(housesCallback);
         businessesButton.RegisterCallback(businessesCallback);
         electricityButton.RegisterCallback(electricityCallback);
         waterButton.RegisterCallback(waterCallback);
+        researchButton.RegisterCallback(researchCallback);
     }
 
     void SelectorPressed(VisualElement rootElement, Sections section, IEnumerable<IBuildingSO> buildings)
     {
+        Debug.Log("Selector Pressed");
         if (isPopUp && currentSection == section)
         {
             HideBuildings(rootElement);
@@ -211,13 +265,8 @@ public class BuildingPlacementUI : MonoBehaviour
 
         currentSection = section;
         buildingsSelected = buildings.ToList();
-
-
         
-        UpdateOwnedBuildings(
-            playerInfo.housesUnlocked,
-            section
-        );
+        UpdateOwnedBuildings(section);
 
         RefreshBuildingsSection(rootElement);
 
@@ -262,7 +311,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
         descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
         descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
-        descWindow.style.translate = new Translate(0, -600);
+        descWindow.style.translate = new Translate(0, -460);
         descWindow.style.scale = new Scale(new Vector2(1, 1));
     }
 
@@ -297,14 +346,13 @@ public class BuildingPlacementUI : MonoBehaviour
         descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
         descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
         descWindow.style.translate = new Translate(0, 0);
-        descWindow.style.scale = new Scale(new Vector2(0.1f, 0.1f));
+        descWindow.style.scale = new Scale(new Vector2(0, 0));
 
         viewModelCamera.StopSpinning();
     }
 
     void ShowBuildings(VisualElement rootElement)
     {
-        Debug.Log("Showing");
         isPopUp = true;
 
         VisualElement scroller = rootElement.Q<ScrollView>("BuildingsContainer");
@@ -316,7 +364,6 @@ public class BuildingPlacementUI : MonoBehaviour
 
     void HideBuildings(VisualElement rootElement)
     {
-        Debug.Log("Hiding");
         isPopUp = false;
         currentSection = Sections.None;
         buildingsSelected = new();
@@ -359,28 +406,21 @@ public class BuildingPlacementUI : MonoBehaviour
         Label electricityText = root.Q<Label>("ElectricityValue");
         Label waterText = root.Q<Label>("WaterValue");
         Label foodText = root.Q<Label>("FoodValue");
+        Label researchText = root.Q<Label>("ResearchPoints");
 
         moneyText.text = "$" + playerInfo.GetMoney.ToString();
         populationText.text = "<color=white>" + playerInfo.GetWorkingPopulation.ToString() + "</color>/" + playerInfo.GetPopulation.ToString();
         electricityText.text = "<color=white>" + playerInfo.GetElectricityUsed.ToString() + "</color>/" + playerInfo.GetElectricity.ToString();
         waterText.text = "<color=white>" + playerInfo.GetWaterUsed.ToString() + "</color>/" + playerInfo.GetWater.ToString();
         foodText.text = playerInfo.GetFood.ToString();
-    }
-
-    void OpenResearchPage()
-    {
-        VisualElement treePage = root.Q("skill-tree-root");
-        
-        treePage.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
-        treePage.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate") };
-        treePage.style.translate = new Translate(1920, 0);
+        researchText.text = "🧪 " + playerInfo.GetResearchPoints();
     }
 
     void Update()
     {
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            OpenResearchPage();
+            researchTreeUI.ToggleResearchPage();
         }
 
         UpdateInfoUI();

@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
   type: Population
   ressource: Population
-  buildingType: 0
-  houseType: 4
+  buildingClass: 0
+  buildingType: 4
+  researchPrice: 0
   buildingName: Medium Apartment
   description: They need to stop smoking, seriously...
   electricityNeeded: 8

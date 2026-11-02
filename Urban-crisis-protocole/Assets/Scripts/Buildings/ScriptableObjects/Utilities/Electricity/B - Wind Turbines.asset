@@ -15,7 +15,8 @@ MonoBehaviour:
   type: Utility
   ressource: Electricity
   buildingClass: 2
-  buildingType: 2
+  buildingType: 12
+  researchPrice: 0
   buildingName: Wind Turbines
   description: They're so high up...
   electricityOutput: 20

@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterSiloSO
   type: Utilities
   ressource: Water
+  buildingClass: 3
+  buildingType: 16
+  researchPrice: 0
   buildingName: Water Silo
   description: 
   electricityNeeded: 0

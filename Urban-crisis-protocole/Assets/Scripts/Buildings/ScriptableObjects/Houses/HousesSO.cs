@@ -8,6 +8,7 @@ public class HousesSO : ScriptableObject, IBuildingSO
     public string ressource = "Population";
     public BuildingClasses buildingClass = BuildingClasses.House;
     public BuildingTypes buildingType;
+    public int researchPrice;
     public string buildingName;
     public string description;
     public int electricityNeeded;
@@ -17,6 +18,7 @@ public class HousesSO : ScriptableObject, IBuildingSO
     public BuildingCard card;
     public Sprite icon;
 
+    public int GetResearchPrice() => researchPrice;
     public BuildingTypes GetBuildingType() => buildingType;
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;

@@ -15,7 +15,8 @@ MonoBehaviour:
   type: Utilities
   ressource: Water
   buildingClass: 3
-  buildingType: 3
+  buildingType: 18
+  researchPrice: 0
   buildingName: Water Plant
   description: 
   electricityNeeded: 0
