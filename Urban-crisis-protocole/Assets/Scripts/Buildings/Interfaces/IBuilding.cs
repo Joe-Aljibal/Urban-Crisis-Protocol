@@ -2,11 +2,9 @@ using UnityEngine;
 
 public interface IBuilding
 {
-    public void DestroyScript();
     public bool CanPlace();
     public int GetPrice();
     public IBuildingSO GetBuildingSO();
-    public string GetBuildingType();
     public string GetRessource();
 
     public bool IsActive();

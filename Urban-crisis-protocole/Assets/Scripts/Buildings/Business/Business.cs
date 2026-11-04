@@ -1,12 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] BusinessesSO businessSO;
-    //[SerializeField] Image workersImage;
-    //[SerializeField] Image electricityImage;
     PlayerInfo playerinfo = PlayerInfo.Instance;
 
     int electricityReceived = 0;
@@ -14,10 +11,11 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     float cooldown = 0;
     bool isActive = false;
+    bool isFirstActivation = true;
 
     void Start()
     {
-        playerinfo.AddMoney(-businessSO.price);
+        playerinfo.AddMoney(-businessSO.GetPrice());
 
         playerinfo.electricityDependants.Add(this);
         playerinfo.workerDependants.Add(this);
@@ -27,9 +25,6 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     void Update()
     {
-        //electricityImage.color = HasEnoughElectricity() ? Color.green : Color.red;
-        //workersImage.color = HasEnoughWorkers() ? Color.green : Color.red;
-
         if (!isActive)
         {
             cooldown = 0;
@@ -38,7 +33,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
         if (cooldown >= 1)
         {
-            playerinfo.AddMoney(businessSO.profit);
+            playerinfo.AddMoney(businessSO.GetProfit());
             cooldown = 0;
             return;
         }
@@ -47,9 +42,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     public void DeleteButton()
     {
-        playerinfo.AddMoney(businessSO.price * .8f);
+        playerinfo.AddMoney(businessSO.GetPrice() * .8f);
 
-        playerinfo.UseElectricity(-businessSO.electricityNeeded);
+        playerinfo.UseElectricity(-businessSO.GetElectricityNeeded());
         Destroy(gameObject);
     }
 
@@ -70,6 +65,12 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         {
             isActive = true;
         }
+
+        if (isFirstActivation)
+        {
+            playerinfo.AddResearchPoints(businessSO.GetResearchOutput());
+            isFirstActivation = false;
+        }
     }
 
     public void UseElectricity(int electricity)
@@ -85,15 +86,14 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     public bool IsActive() => isActive;
     public IBuildingSO GetBuildingSO() => businessSO;
-    public string GetBuildingType() => businessSO.type;
-    public string GetRessource() => businessSO.ressource;
+    public string GetRessource() => businessSO.GetRessource();
     public int GetWorkerPopulation() => workersReceived;
-    public int GetPrice() => businessSO.price;
-    public bool HasEnoughElectricity() => businessSO.electricityNeeded <= electricityReceived;
-    public bool HasEnoughWorkers() => businessSO.workersNeeded <= workersReceived;
+    public int GetPrice() => businessSO.GetPrice();
+    public bool HasEnoughElectricity() => businessSO.GetElectricityNeeded() <= electricityReceived;
+    public bool HasEnoughWorkers() => businessSO.GetWorkersNeeded() <= workersReceived;
     public int GetElectricityReceived() => electricityReceived;
-    public int GetProfit() => businessSO.profit;
-    public bool CanPlace() => playerinfo.GetMoney >= businessSO.price;
+    public int GetProfit() => businessSO.GetProfit();
+    public bool CanPlace() => playerinfo.GetMoney >= businessSO.GetPrice();
 
     public void ReceiveWorkers(int workers)
     {
@@ -106,9 +106,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         }
     }
 
-    public int GetWorkersNeeded() => businessSO.workersNeeded - workersReceived;
-    public int GetPopulation() => businessSO.workersNeeded;
-    public int GetElectricityNeeded() => businessSO.electricityNeeded;
+    public int GetWorkersNeeded() => businessSO.GetWorkersNeeded() - workersReceived;
+    public int GetPopulation() => businessSO.GetWorkersNeeded();
+    public int GetElectricityNeeded() => businessSO.GetElectricityNeeded();
 
     public List<UiDataModel> GetUiDataList()
     {
@@ -116,10 +116,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         
         return new List<UiDataModel>
         { 
-           new UiDataModel(UiDataType.NAME, businessSO.type),
-           new UiDataModel(UiDataType.PRICE, businessSO.price.ToString())
+           new UiDataModel(UiDataType.NAME, "businessSO.type"),
+           new UiDataModel(UiDataType.PRICE, businessSO.GetPrice().ToString())
         };
     }
 
-    public void DestroyScript() { Destroy(this); }
 }

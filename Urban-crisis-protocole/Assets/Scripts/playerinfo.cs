@@ -14,7 +14,7 @@ public class PlayerInfo
     int waterUsed = 0;
     int food = 0;
     float money = 2000;
-    float researchPoint = 20;
+    float researchPoints = 20;
 
     public Dictionary<ResourceType, int> resources = new();
     public List<IBuilding> electricityDependants = new();
@@ -74,8 +74,8 @@ public class PlayerInfo
 
     public void AddResource(ResourceType type, int amount) { resources[type] += amount; }
 
-    public float GetResearchPoints() => researchPoint;
-    public void AddResearchPoints(float points) { researchPoint += points; }
+    public float GetResearchPoints() => researchPoints;
+    public void AddResearchPoints(float points) { researchPoints += points; }
 
     public void StartProvidingElectricity()
     {

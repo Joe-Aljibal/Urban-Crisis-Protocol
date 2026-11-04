@@ -65,7 +65,6 @@ public class Water : MonoBehaviour, IBuilding
 
     public void Activate() { }
     public void Deactivate(int electricityLost, int workersLost) { throw new System.NotImplementedException(); }
-    public void DestroyScript() { Destroy(this); }
 
     public void UseElectricity(int electricity) { }
     public void ReceiveWorkers(int workers) { }

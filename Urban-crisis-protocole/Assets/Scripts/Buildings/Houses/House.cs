@@ -154,7 +154,6 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
            new UiDataModel(UiDataType.PRICE, houseSO.price.ToString())
         };
     }
-    public void DestroyScript() { Destroy(this); }
     public int GetWaterNeeded() => houseSO.waterNeeded - waterReceived;
     public bool HasEnoughWater() => waterReceived >= houseSO.waterNeeded;
 }

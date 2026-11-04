@@ -51,7 +51,6 @@
     background-color: var(--bg-panel);
     border-top-width: 1px;
     border-top-color: var(--border);
-    z-index: 0;
 }
 
 .above-bar {
@@ -120,7 +119,8 @@
 /* Left / center / right zones (left & right are equal width = centered middle) */
 .stats-container,
 .bar-spacer {
-    width: 480px;
+    height: 50px;
+    width: 280px;
     flex-shrink: 0;
 }
 
@@ -166,7 +166,6 @@
     padding: 12px;
     margin-bottom: 10px;
     flex-shrink: 0;
-    z-index: -1;
 }
 
 .model-container {

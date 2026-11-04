@@ -38,9 +38,9 @@
                 <ui:Label name="WaterValue" text="x/x" class="bar-value val-blue"/>
             </ui:VisualElement>
             <ui:VisualElement class="bar-tile">
-                <ui:Label text="🍞" class="bar-icon"/>
-                <ui:Label text="Food" class="bar-label"/>
-                <ui:Label name="FoodValue" text="x" class="bar-value val-orange"/>
+                <ui:Label text="⚗️" class="bar-icon"/>
+                <ui:Label text="RP" class="bar-label"/>
+                <ui:Label name="ResearchPointsValue" text="x" class="bar-value val-orange"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="SelectorsContainer" class="selectors-container">
@@ -53,7 +53,7 @@
             <ui:VisualElement name="background-zindex" style="flex-grow: 1; position: absolute; align-self: center; z-index: -1; width: 200px; height: 120px; background-color: rgb(45, 45, 48); opacity: 1; visibility: visible; display: flex;"/>
         </ui:VisualElement>
         <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
-        <ui:Button text="🌳" name="ResearchTreeButton" class="bar-tile selector-btn"/>
+        <ui:Button text="👩🏿‍🔬" name="ResearchTreeButton" class="bar-tile selector-btn"/>
     </ui:VisualElement>
     <ui:VisualElement name="BuildingPopUp" class="panel popup">
         <ui:VisualElement class="popup-top">

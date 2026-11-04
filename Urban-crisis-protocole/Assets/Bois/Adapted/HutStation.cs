@@ -58,7 +58,6 @@ public class HutStation : MonoBehaviour, IBuilding
     public int GetWorkersNeeded() => 0;
 
     public bool HasAvailableWorkers() => true;
-    public void DestroyScript() { enabled = false; }
 
   public bool HasEnoughWorkers()
   {

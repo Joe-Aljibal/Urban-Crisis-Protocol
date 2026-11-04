@@ -120,5 +120,4 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
            new UiDataModel(UiDataType.PRICE, electricitySO.price.ToString())
         };
     }
-    public void DestroyScript() { Destroy(this); }
 }
