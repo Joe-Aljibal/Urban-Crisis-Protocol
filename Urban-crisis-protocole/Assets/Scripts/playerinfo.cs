@@ -21,12 +21,14 @@ public class PlayerInfo
     float money = 2000;
 
     public Dictionary<ResourceType, int> resources = new();
+    private Dictionary<ResourceType, int> exploitedResources = new();
 
     private void InitializeResources()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
         {
             resources[type] = 0;
+            exploitedResources[type] = 0;
         }
     }
 
@@ -76,15 +78,28 @@ public class PlayerInfo
     public void addMoney(float money) { this.money += money; }
     public float getMoney => money;
 
-    public void addWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public void addWood(int wood) { addResource(ResourceType.Wood, wood); }
     public int getWood => resources[ResourceType.Wood];
 
-    public void addStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public void addStone(int stone) { addResource(ResourceType.Stone, stone); }
     public int getStone => resources[ResourceType.Stone];
+
+    public int getCoal => resources[ResourceType.Coal];
+
+    public int getExploitedWood => exploitedResources[ResourceType.Wood];
+    public int getExploitedStone => exploitedResources[ResourceType.Stone];
+    public int getExploitedCoal => exploitedResources[ResourceType.Coal];
+    public int getTotalExploited =>
+        getExploitedWood + getExploitedStone + getExploitedCoal;
 
     public void addResource(ResourceType type, int amount)
     {
         resources[type] += amount;
+
+        if (amount > 0)
+        {
+            exploitedResources[type] += amount;
+        }
     }
 
     // The dependant and how much it more needs

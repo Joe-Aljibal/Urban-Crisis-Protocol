@@ -97,13 +97,13 @@ public class ResourceWorker : Worker
         if (currentResource == null) return;
         cachedResourceType = GetCurrentResourceScript().ResourceType;
         GetCurrentResourceScript().Disable();
-        GetCurrentResourceScript().IsAvailable = true;
         currentResource = null;
     }
 
     private void HandleResourceBroughtBack()
     {
         playerInfo.addResource(cachedResourceType, 1);
+        TownResourceStatistics.AddResource(TownType.Human, cachedResourceType, 1);
     }
 
     private void GoToNextResource()

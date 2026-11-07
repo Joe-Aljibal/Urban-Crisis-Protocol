@@ -1,10 +1,8 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class StaticResource : MonoBehaviour
 {
-    [SerializeField] private float respawnTime = 2.0f;
     [SerializeField] private ResourceType resourceType;
     
     public ResourceType ResourceType => resourceType;
@@ -18,29 +16,48 @@ public class StaticResource : MonoBehaviour
 
     public void Disable()
     {
+        if (!IsActiveResource)
+            return;
+
         IsActiveResource = false;
+        IsAvailable = false;
         DisableComponents();
-        StartCoroutine(RespawnCoroutine());
     }
 
-    private IEnumerator RespawnCoroutine()
+    public void Configure(ResourceType type)
     {
-        yield return new WaitForSeconds(respawnTime);
-        ActivateComponents();
-    }
+        ResourceManager.UnregisterResource(resourceType, transform);
 
-    private void ActivateComponents()
-    {
-        gameObject.GetComponent<MeshRenderer>().enabled = true;
-        gameObject.GetComponent<MeshRenderer>().enabled = true;
-        gameObject.GetComponent<NavMeshObstacle>().enabled = true;
-        IsActiveResource = true;
+        resourceType = type;
+
+        ResourceManager.RegisterResource(resourceType, transform);
     }
 
     private void DisableComponents()
     {
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        gameObject.GetComponent<NavMeshObstacle>().enabled = false;
+        SetComponentsEnabled(false);
+    }
+
+    private void SetComponentsEnabled(bool value)
+    {
+        foreach (Renderer resourceRenderer in GetComponentsInChildren<Renderer>())
+        {
+            resourceRenderer.enabled = value;
+        }
+
+        foreach (Collider resourceCollider in GetComponentsInChildren<Collider>())
+        {
+            resourceCollider.enabled = value;
+        }
+
+        foreach (NavMeshObstacle resourceObstacle in GetComponentsInChildren<NavMeshObstacle>())
+        {
+            resourceObstacle.enabled = value;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        ResourceManager.UnregisterResource(resourceType, transform);
     }
 }

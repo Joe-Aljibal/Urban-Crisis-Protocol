@@ -18,6 +18,14 @@ public static class ResourceManager
         }
         resources[type].Add(transform);
     }
+
+    public static void UnregisterResource(ResourceType type, Transform transform)
+    {
+        if (resources.TryGetValue(type, out List<Transform> resourceTransforms))
+        {
+            resourceTransforms.Remove(transform);
+        }
+    }
    
 
     // Return array for the resources of parameter type
