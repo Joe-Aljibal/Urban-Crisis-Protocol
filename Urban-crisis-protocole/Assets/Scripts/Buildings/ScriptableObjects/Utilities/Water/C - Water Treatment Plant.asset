@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4200bdcc0afd69440a1a77be885dcabd, type: 3}
   m_Name: C - Water Treatment Plant
   m_EditorClassIdentifier: Assembly-CSharp::WaterSiloSO
+  buildingName: Water Plant
+  description: 
+  icon: {fileID: 21300000, guid: 274295063cecd604984c03dad67ce019, type: 3}
+  card: {fileID: 11400000, guid: 70c3f917bcbf5da498a7bbb64e099a4d, type: 2}
   type: Utilities
   ressource: Water
   buildingClass: 3
   buildingType: 18
-  researchPrice: 0
-  buildingName: Water Plant
-  description: 
-  electricityNeeded: 0
-  water: 500
   price: 2500
-  card: {fileID: 11400000, guid: 70c3f917bcbf5da498a7bbb64e099a4d, type: 2}
-  icon: {fileID: 21300000, guid: 274295063cecd604984c03dad67ce019, type: 3}
+  water: 500
+  researchPrice: 0
+  researchOutput: 3
+  electricityNeeded: 0

@@ -14,12 +14,14 @@ public class Water : MonoBehaviour, IBuilding
     {
         playerInfo.waterProviders.Add(this);
         playerInfo.StartProvidingWater();
+
+        playerInfo.AddWater(waterSO.GetWaterOutput());
     }
 
     public void DeleteButton()
     {
-        playerInfo.AddMoney(waterSO.price * .8f);
-        playerInfo.AddWater(-waterSO.water);
+        playerInfo.AddMoney(waterSO.GetPrice() * .8f);
+        playerInfo.AddWater(-waterSO.GetWaterOutput());
         Destroy(gameObject);
     }
 
@@ -54,13 +56,13 @@ public class Water : MonoBehaviour, IBuilding
     public void SetActive()
     {
         isActive = true;
-        playerInfo.AddWater(waterSO.water);
+        playerInfo.AddWater(waterSO.GetWaterOutput());
     }
 
     public void Deactivate()
     {
         isActive = false;
-        playerInfo.AddWater(-waterSO.water);
+        playerInfo.AddWater(-waterSO.GetWaterOutput());
     }
 
     public void Activate() { }
@@ -69,21 +71,21 @@ public class Water : MonoBehaviour, IBuilding
     public void UseElectricity(int electricity) { }
     public void ReceiveWorkers(int workers) { }
 
-    public bool CanPlace() => playerInfo.GetMoney >= waterSO.price;
-    public int GetPrice() => waterSO.price;
+    public bool CanPlace() => playerInfo.GetMoney >= waterSO.GetPrice();
+    public int GetPrice() => waterSO.GetPrice();
     public IBuildingSO GetBuildingSO() => waterSO;
-    public string GetBuildingType() => waterSO.type;
-    public string GetRessource() => waterSO.ressource;
+    public string GetBuildingType() => waterSO.GetBuildingType().ToString();
+    public string GetRessource() => waterSO.GetRessource();
 
     public bool IsActive() => isActive;
 
-    public int GetElectricityNeeded() => waterSO.electricityNeeded;
+    public int GetElectricityNeeded() => waterSO.GetElectricityNeeded();
     public int GetElectricityReceived() => 0;
     public bool HasEnoughElectricity() => true;
 
     public int GetWorkersNeeded() => 0;
     public bool HasEnoughWorkers() => true;
 
-    public int GetWaterOutput() => waterSO.water;
-    public bool HasAvailableWater() => waterGiven < waterSO.water;
+    public int GetWaterOutput() => waterSO.GetWaterOutput();
+    public bool HasAvailableWater() => waterGiven < waterSO.GetWaterOutput();
 }

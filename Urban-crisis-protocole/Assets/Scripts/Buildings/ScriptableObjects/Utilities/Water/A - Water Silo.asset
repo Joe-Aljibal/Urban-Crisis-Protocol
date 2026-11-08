@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4200bdcc0afd69440a1a77be885dcabd, type: 3}
   m_Name: A - Water Silo
   m_EditorClassIdentifier: Assembly-CSharp::WaterSiloSO
+  buildingName: Water Silo
+  description: 
+  icon: {fileID: 21300000, guid: cd2111fa0af235749aa53c6034f0532c, type: 3}
+  card: {fileID: 11400000, guid: cf17868bc44cbd94f9d32c7ca53a7a79, type: 2}
   type: Utilities
   ressource: Water
   buildingClass: 3
   buildingType: 16
-  researchPrice: 0
-  buildingName: Water Silo
-  description: 
-  electricityNeeded: 0
-  water: 10
   price: 25
-  card: {fileID: 11400000, guid: cf17868bc44cbd94f9d32c7ca53a7a79, type: 2}
-  icon: {fileID: 21300000, guid: cd2111fa0af235749aa53c6034f0532c, type: 3}
+  water: 10
+  researchPrice: 0
+  researchOutput: 0.3
+  electricityNeeded: 0

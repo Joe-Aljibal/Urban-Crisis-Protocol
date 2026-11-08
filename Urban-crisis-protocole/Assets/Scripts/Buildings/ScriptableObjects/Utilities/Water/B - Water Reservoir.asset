@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4200bdcc0afd69440a1a77be885dcabd, type: 3}
   m_Name: B - Water Reservoir
   m_EditorClassIdentifier: Assembly-CSharp::WaterSO
+  buildingName: 
+  description: 
+  icon: {fileID: 21300000, guid: 6fd13784ececa234d9ac1d7c2bd77280, type: 3}
+  card: {fileID: 11400000, guid: 938d46728ed630141a672e4081fbf0a0, type: 2}
   type: Utilities
   ressource: Water
   buildingClass: 3
   buildingType: 17
-  researchPrice: 0
-  buildingName: 
-  description: 
-  electricityNeeded: 0
-  water: 50
   price: 300
-  card: {fileID: 11400000, guid: 938d46728ed630141a672e4081fbf0a0, type: 2}
-  icon: {fileID: 21300000, guid: 6fd13784ececa234d9ac1d7c2bd77280, type: 3}
+  water: 50
+  researchPrice: 0
+  researchOutput: 1
+  electricityNeeded: 0

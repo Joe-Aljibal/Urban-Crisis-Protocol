@@ -4,53 +4,69 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "House", menuName = ("ScriptableObjects/House"))]
 public class HousesSO : ScriptableObject, IBuildingSO
 {
-    public string type = "Population";
-    public string ressource = "Population";
-    public BuildingClasses buildingClass = BuildingClasses.House;
-    public BuildingTypes buildingType;
-    public int researchPrice;
-    public string buildingName;
-    public string description;
-    public int electricityNeeded;
-    public int waterNeeded;
-    public int population;
-    public int price;
-    public BuildingCard card;
-    public Sprite icon;
+    // Identity & Metadata
+    [SerializeField] string buildingName;
+    [SerializeField] public string description;
+    [SerializeField] Sprite icon;
+    [SerializeField] BuildingCard card;
 
-    public int GetResearchPrice() => researchPrice;
-    public BuildingTypes GetBuildingType() => buildingType;
+    // Classification
+    [SerializeField] string type = "Population";
+    [SerializeField] string ressource = "Population";
+    [SerializeField] BuildingClasses buildingClass = BuildingClasses.House;
+    [SerializeField] BuildingTypes buildingType;
+
+    // Economics & Costs
+    [SerializeField] int price;
+    [SerializeField] int population;
+    [SerializeField] int researchPrice;
+    [SerializeField] float researchOutput;
+
+    // Requirements & Operations
+    [SerializeField] int electricityNeeded;
+    [SerializeField] int waterNeeded;
+
+    // Interface Implementation
+    public string GetBuildingName() => "🏡 " + buildingName;
+    public string GetDescription() => description;
+    public int GetPrice() => price;
+    public int GetPopulation() => population;
+    public int GetElectricityNeeded() => electricityNeeded;
+    public int GetWaterNeeded() => waterNeeded;
+    public string GetRessource() => ressource;
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;
+    public BuildingTypes GetBuildingType() => buildingType;
+    public int GetResearchPrice() => researchPrice;
+    public float GetResearchOutput() => researchOutput;
 
     PlayerInfo playerInfo = PlayerInfo.Instance;
-    public string GetBuildingName() => "🏡 " + buildingName; 
-     public bool CanPlace() =>
+
+    public bool CanPlace() =>
         playerInfo.GetMoney >= price &&
         playerInfo.GetAvailableElectricity >= electricityNeeded;  // !! water 
 
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>
     {
         new Dictionary<string, string> {
-            { "label" , "Price" },
+            { "label", "Price" },
             { "icon", "💵" },
             { "value", price.ToString() }
         },
         new Dictionary<string, string> {
-            { "label" , "Population" },
+            { "label", "Population" },
             { "icon", "🏡" },
             { "value", population.ToString() }
         },
         new Dictionary<string, string> {
-            { "label" , "Consumes" },
+            { "label", "Consumes" },
             { "icon", "⚡" },
             { "value", electricityNeeded.ToString() }
         },
         new Dictionary<string, string> {
-            { "label" , "Consumes" },
+            { "label", "Consumes" },
             { "icon", "💧" },
             { "value", waterNeeded.ToString() }
-        },
+        }
     };
-    public string GetDescription() => description;
 }

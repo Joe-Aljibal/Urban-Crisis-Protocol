@@ -14,7 +14,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
 
     private void Start()
     {
-        playerInfo.AddElectricity(electricitySO.electricityOutput);
+        playerInfo.AddElectricity(electricitySO.GetElectricityOutput());
         playerInfo.electricityProviders.Add(this);
         ProvideElectricity();
     }
@@ -31,7 +31,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
             if (!HasAvailableElectricity())
                 break;
 
-            int electricityAvailable = electricitySO.electricityOutput - electricityGiven;
+            int electricityAvailable = electricitySO.GetElectricityOutput() - electricityGiven;
             int electricityNeeded = dependant.GetElectricityNeeded();
             int amountToGive = Mathf.Min(electricityAvailable, electricityNeeded);
 
@@ -51,7 +51,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
     public void DeleteButton()
     {
         playerInfo.electricityProviders.Remove(this);
-        playerInfo.AddElectricity(-electricitySO.electricityOutput);
+        playerInfo.AddElectricity(-electricitySO.GetElectricityOutput());
         foreach (var (dependant, amountReceived) in electricityDependants)
         {
             dependant.Deactivate(amountReceived, 0);
@@ -66,7 +66,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
     public void Deactivate(int x, int y)
     {
         isActive = false;
-        playerInfo.AddElectricity(-electricitySO.electricityOutput);
+        playerInfo.AddElectricity(-electricitySO.GetElectricityOutput());
         electricityGiven = 0;
         foreach (var (dependant, amountReceived) in electricityDependants)
         {
@@ -80,18 +80,18 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
     public void Activate()
     {
         isActive = true;
-        playerInfo.AddElectricity(electricitySO.electricityOutput);
+        playerInfo.AddElectricity(electricitySO.GetElectricityOutput());
         ProvideElectricity();
     }
-    public string GetBuildingType() => electricitySO.type;
-    public string GetRessource() => electricitySO.ressource;
+    public string GetBuildingType() => "";
+    public string GetRessource() => electricitySO.GetRessource();
     // Tracks if it can still give out elecrticity
     public bool HasEnoughElectricity() => true;
-    public bool HasAvailableElectricity() => electricityGiven < electricitySO.electricityOutput;
+    public bool HasAvailableElectricity() => electricityGiven < electricitySO.GetElectricityOutput();
     public int GetElectricityReceived() => 0;
     public int GetElectricityNeeded() => 0;
-    public int GetPrice() => electricitySO.price;
-    public bool CanPlace() => playerInfo.GetMoney >= electricitySO.price;
+    public int GetPrice() => electricitySO.GetPrice();
+    public bool CanPlace() => playerInfo.GetMoney >= electricitySO.GetPrice();
     public bool IsActive() => isActive;
     public void UseElectricity(int x) { }
 
@@ -101,7 +101,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
     public void SetActive() {}
     public void Deactivate() {
         isActive = false;
-        playerInfo.AddElectricity(-electricitySO.electricityOutput);
+        playerInfo.AddElectricity(-electricitySO.GetElectricityOutput());
         foreach (var (dependant, amountToGive) in electricityDependants)
         {
             dependant.Deactivate(amountToGive, 0);
@@ -116,8 +116,8 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
         
         return new List<UiDataModel>
         { 
-           new UiDataModel(UiDataType.NAME, electricitySO.type),
-           new UiDataModel(UiDataType.PRICE, electricitySO.price.ToString())
+           new UiDataModel(UiDataType.NAME, electricitySO.GetBuildingType().ToString()),
+           new UiDataModel(UiDataType.PRICE, electricitySO.GetPrice().ToString())
         };
     }
 }

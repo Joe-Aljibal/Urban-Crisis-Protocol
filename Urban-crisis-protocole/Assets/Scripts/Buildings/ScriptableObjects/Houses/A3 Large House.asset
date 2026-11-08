@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8c5e03bbf11b3469a2fe7f946759ac, type: 3}
   m_Name: A3 Large House
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
+  buildingName: Large House
+  description: 
+  icon: {fileID: 0}
+  card: {fileID: 11400000, guid: fd550e57c48b5754eb4de91f6c1063e3, type: 2}
   type: Population
   ressource: Population
   buildingClass: 0
   buildingType: 2
+  price: 1300
+  population: 30
   researchPrice: 0
-  buildingName: Large House
-  description: 
+  researchOutput: 1.5
   electricityNeeded: 15
   waterNeeded: 20
-  population: 30
-  price: 1300
-  card: {fileID: 11400000, guid: fd550e57c48b5754eb4de91f6c1063e3, type: 2}
-  icon: {fileID: 0}

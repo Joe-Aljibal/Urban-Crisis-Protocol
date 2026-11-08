@@ -79,13 +79,13 @@ public class ResearchTreeUI : MonoBehaviour
 
     IEnumerator CreateBorder(VisualElement button)
     {
-        button.style.borderRightColor = new StyleColor(Color.whiteSmoke);
+        button.style.borderRightColor = new StyleColor(Color.green);
         yield return new WaitForSeconds(.05f);
-        button.style.borderBottomColor = new StyleColor(Color.whiteSmoke);
+        button.style.borderBottomColor = new StyleColor(Color.green);
         yield return new WaitForSeconds(.05f);
-        button.style.borderLeftColor = new StyleColor(Color.whiteSmoke);
+        button.style.borderLeftColor = new StyleColor(Color.green);
         yield return new WaitForSeconds(.05f);
-        button.style.borderTopColor = new StyleColor(Color.whiteSmoke);
+        button.style.borderTopColor = new StyleColor(Color.green);
         yield return new WaitForSeconds(.05f);
 
         Debug.Log("askjd");
@@ -98,10 +98,10 @@ public class ResearchTreeUI : MonoBehaviour
 
         if (list.Contains(type))
         {
-            btn.style.borderRightColor = Color.whiteSmoke;
-            btn.style.borderBottomColor = Color.whiteSmoke;
-            btn.style.borderLeftColor = Color.whiteSmoke;
-            btn.style.borderTopColor = Color.whiteSmoke;
+            btn.style.borderRightColor = Color.green;
+            btn.style.borderBottomColor = Color.green;
+            btn.style.borderLeftColor = Color.green;
+            btn.style.borderTopColor = Color.green;
             btn.SetEnabled(true);
 
             foreach (var b in nextButtons)

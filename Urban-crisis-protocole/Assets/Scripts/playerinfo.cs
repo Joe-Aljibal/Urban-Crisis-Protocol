@@ -12,7 +12,6 @@ public class PlayerInfo
     int electricityUsed = 0;
     int waterTotal = 0;
     int waterUsed = 0;
-    int food = 0;
     float money = 2000;
     float researchPoints = 20;
 
@@ -30,6 +29,8 @@ public class PlayerInfo
     public List<BuildingTypes> waterUnlocked = new() { BuildingTypes.WaterSilo };
     public List<BuildingTypes> militaryUnlocked = new() { BuildingTypes.Tent };
 
+    public event Action<string, string> addStat;
+
     private PlayerInfo() { InitializeResources(); }
 
     private void InitializeResources()
@@ -41,6 +42,7 @@ public class PlayerInfo
     public void AddPopulation(int population)
     {
         this.population += population;
+        addStat?.Invoke("PopulationValue", $"{population}");
         if (population <= 0) workingPopulation = Mathf.Min(workingPopulation, population);
     }
     public int GetPopulation => population;
@@ -48,22 +50,32 @@ public class PlayerInfo
     public int GetWorkingPopulation => workingPopulation;
     public int GetAvailablePopulation => population - workingPopulation;
 
-    public void AddElectricity(int electricity) { electricityTotal += electricity; }
+    public void AddElectricity(int electricity)
+    {
+        electricityTotal += electricity;
+        addStat?.Invoke("ElectricityValue", $"{electricity}");
+    }
     public void UseElectricity(int electricity) { electricityUsed += electricity; }
     public int GetElectricity => electricityTotal;
     public int GetElectricityUsed => electricityUsed;
     public int GetAvailableElectricity => electricityTotal - electricityUsed;
 
-    public void AddWater(int water) { waterTotal += water; }
+    public void AddWater(int water)
+    {
+        waterTotal += water;
+        addStat?.Invoke("WaterValue", $"{water}");
+    }
     public void UseWater(int water) { waterUsed += water; }
     public int GetWater => waterTotal;
     public int GetWaterUsed => waterUsed;
     public int GetAvailableWater => waterTotal - waterUsed;
 
-    public void AddFood(int food) { this.food += food; }
-    public int GetFood => food;
 
-    public void AddMoney(float money) { this.money += money; }
+    public void AddMoney(float money)
+    {
+        this.money += money;
+        addStat?.Invoke("MoneyValue", $"{money}");
+    }
     public float GetMoney => money;
 
     public void AddWood(int wood) { resources[ResourceType.Wood] += wood; }
@@ -75,7 +87,11 @@ public class PlayerInfo
     public void AddResource(ResourceType type, int amount) { resources[type] += amount; }
 
     public float GetResearchPoints() => researchPoints;
-    public void AddResearchPoints(float points) { researchPoints += points; }
+    public void AddResearchPoints(float points)
+    {
+        researchPoints += points;
+        addStat?.Invoke("ResearchPointsValue", $"{points}");
+    }
 
     public void StartProvidingElectricity()
     {

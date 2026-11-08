@@ -17,9 +17,6 @@ public class BuildingPlacementUI : MonoBehaviour
 
     BuildingClasses currentSection;
     bool isPopUp = false;
-    ViewModelCam viewModelCamera;
-    [SerializeField] GameObject viewModelPivot;
-
 
     // Paths
     string housesPath = "Assets/Scripts/Buildings/ScriptableObjects/Houses";
@@ -47,7 +44,6 @@ public class BuildingPlacementUI : MonoBehaviour
 
     private void Awake()
     {
-        viewModelCamera = FindAnyObjectByType<ViewModelCam>();
 
         panelRenderer = GetComponent<PanelRenderer>();
         panelRenderer.RegisterUIReloadCallback(BuildingsPlacementUI);
@@ -75,7 +71,6 @@ public class BuildingPlacementUI : MonoBehaviour
 
         foreach(var type in unlocked)
         {
-            Debug.Log("here");
             var so = buildingSOs.FirstOrDefault(building => building.GetBuildingType() == type);
             if (so != null)
             {
@@ -117,11 +112,13 @@ public class BuildingPlacementUI : MonoBehaviour
         RefreshBuildingsSection(rootElement);
         SelectionSection(rootElement);
         SetPopupPosition(rootElement);
-        rootElement.Q("background-zindex").SendToBack();
+        rootElement.Q("BuildingInfo").SendToBack();
     }
 
     void RefreshBuildingsSection(VisualElement rootElement)
     {
+        BuildingDescriptionUI uiScript = FindAnyObjectByType<BuildingDescriptionUI>();
+
         VisualElement scroller = rootElement.Q("BuildingsContainer");
 
         if (scroller == null)
@@ -132,15 +129,16 @@ public class BuildingPlacementUI : MonoBehaviour
         if (buildingsSelected == null || buildingsSelected.Count < 1)
             return;
 
-        foreach (var so in buildingsSelected)
+        foreach (var building in buildingsSelected)
         {
-            Button newButton = new Button();
-            newButton.RegisterCallback<MouseEnterEvent>(e => { ShowDescription(rootElement, so); });
-            newButton.RegisterCallback<MouseLeaveEvent>(e => { HideDescription(rootElement); });
 
-            if (so.GetIcon() != null)
+            Button newButton = new Button();
+            newButton.RegisterCallback<MouseEnterEvent>(e => { uiScript.ShowDescription(rootElement, building); });
+            newButton.RegisterCallback<MouseLeaveEvent>(e => { uiScript.HideDescription(rootElement); });
+
+            if (building.GetIcon() != null)
             {
-                newButton.style.backgroundImage = new StyleBackground(so.GetIcon());
+                newButton.style.backgroundImage = new StyleBackground(building.GetIcon());
                 newButton.style.backgroundColor = new Color(0, 0, 0, 0);
             }
 
@@ -155,7 +153,7 @@ public class BuildingPlacementUI : MonoBehaviour
             newButton.style.paddingLeft = 5;
             newButton.style.paddingRight = 5;
 
-            IBuildingSO selectedBuilding = so;
+            IBuildingSO selectedBuilding = building;
 
             newButton.clicked += () =>
                 buildingManager.ChangeCurrentBuildingCard(selectedBuilding.GetCard());
@@ -202,7 +200,6 @@ public class BuildingPlacementUI : MonoBehaviour
 
     void SelectorPressed(VisualElement rootElement, BuildingClasses section, IEnumerable<IBuildingSO> buildings)
     {
-        Debug.Log("Selector Pressed");
         if (isPopUp && currentSection == section)
         {
             HideBuildings(rootElement);
@@ -220,85 +217,6 @@ public class BuildingPlacementUI : MonoBehaviour
         {
             ShowBuildings(rootElement);
         }
-    }
-
-    void ShowDescription(VisualElement rootElement, IBuildingSO so)
-    {
-        Camera cam = GameObject.Find("3DModelViewCam").GetComponent<Camera>();
-        // Handling 3d view model
-        viewModelCamera.StartSpinning();
-        foreach (Transform child in viewModelPivot.transform) { Destroy(child.gameObject); }
-        GameObject model = Instantiate(so.GetCard().meshPrefab, Vector3.zero, Quaternion.identity, viewModelPivot.transform);
-        model.layer = LayerMask.NameToLayer("3DModelView");
-        cam.GetComponent<ViewModelCam>().Frame(model);
-        foreach (Transform child in model.transform)
-        {
-            child.gameObject.layer = LayerMask.NameToLayer("3DModelView");
-        }
-
-        VisualElement descWindow = rootElement.Q("BuildingInfo");
-
-        //descWindow.Q("ModelContainer").style.backgroundImage = new StyleBackground(so.GetIcon());
-        descWindow.Q<Label>("BuildingName").text = so.GetBuildingName();
-        descWindow.Q<Label>("BuildingDescription").text = so.GetDescription();
-        var buildingStats = so.GetStats();
-
-        rootElement.Q("PopUpGrid").Clear();
-        foreach (var stat in buildingStats)
-        {
-            CreatePopUpGridElement(rootElement, stat);
-        }
-
-        descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
-        descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
-        descWindow.style.translate = new Translate(0, -460);
-        descWindow.style.scale = new Scale(new Vector2(1, 1));
-
-        hideDescriptionCooldown = 0;
-    }
-
-    VisualElement CreatePopUpGridElement(VisualElement rootElement, Dictionary<string, string> stat)
-    {
-        VisualElement parent = new VisualElement();
-        parent.AddToClassList("info-tile");
-
-        Label icon = new Label(stat["icon"]);
-        icon.AddToClassList("tile-icon");
-
-        Label label = new Label(stat["label"]);
-        label.AddToClassList("tile-label");
-
-        Label value = new Label(stat["value"]);
-        value.AddToClassList("tile-value");
-
-        parent.Add(icon);
-        parent.Add(label);
-        parent.Add(value);
-        rootElement.Q("PopUpGrid").Add(parent);
-
-        return parent;
-    }
-
-    float hideDescriptionCooldown = 0;
-    void HideDescription(VisualElement rootElement)
-    {
-
-        if (hideDescriptionCooldown < .25f)
-        {
-            hideDescriptionCooldown += Time.deltaTime;
-            return;
-        }
-        hideDescriptionCooldown = 0;
-        Debug.Log("Got Here");
-
-        VisualElement descWindow = rootElement.Q("BuildingInfo");
-
-        descWindow.style.transitionDuration = new List<TimeValue> { new TimeValue(150, TimeUnit.Millisecond) };
-        descWindow.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("translate"), new StylePropertyName("scale") };
-        descWindow.style.translate = new Translate(0, 0);
-        descWindow.style.scale = new Scale(new Vector2(0, 0));
-
-        viewModelCamera.StopSpinning();
     }
 
     void ShowBuildings(VisualElement rootElement)

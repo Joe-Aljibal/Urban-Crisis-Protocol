@@ -20,8 +20,8 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     void Start()
     {
         //elecMissingImage.color = Color.blueViolet;
-        playerInfo.AddMoney(-houseSO.price);
-        playerInfo.AddPopulation(houseSO.population);
+        playerInfo.AddMoney(-houseSO.GetPrice());
+        playerInfo.AddPopulation(houseSO.GetPopulation());
 
         playerInfo.electricityDependants.Add(this);
         playerInfo.workerProviders.Add(this);
@@ -30,6 +30,8 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
         playerInfo.StartProvidingElectricity();
         playerInfo.StartProvidingWorkers();
         playerInfo.StartProvidingWater();
+
+        playerInfo.AddResearchPoints(houseSO.GetResearchOutput());
     }
     public void ProvideWorkers()
     {
@@ -50,7 +52,7 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
                 break;
             }
 
-            int workersAvailable = houseSO.population - workersGiven;
+            int workersAvailable = houseSO.GetPopulation() - workersGiven;
             int workersNeeded = dependant.GetWorkersNeeded();
             int amountToGive = Mathf.Min(workersAvailable, workersNeeded);
 
@@ -71,7 +73,7 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
             playerInfo.workerDependants.Remove(building);
         }
     }
-    public void     ReceiveWater(int water)
+    public void ReceiveWater(int water)
     {
         waterReceived += water;
         playerInfo.UseWater(water);
@@ -83,11 +85,11 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     }
     public void DeleteButton()
     {
-        playerInfo.AddMoney(houseSO.price * .8f);
+        playerInfo.AddMoney(houseSO.GetPrice() * .8f);
         // ! Might change this in the future to the exact same system as the electricity
-        playerInfo.AddPopulation(-houseSO.population);
-        playerInfo.UseElectricity(-houseSO.electricityNeeded);
-        playerInfo.UseWater(-houseSO.waterNeeded);
+        playerInfo.AddPopulation(-houseSO.GetPopulation());
+        playerInfo.UseElectricity(-houseSO.GetElectricityNeeded());
+        playerInfo.UseWater(-houseSO.GetWaterNeeded());
 
         foreach (var (dependant, amountGiven) in workerDependants)
         {
@@ -102,7 +104,7 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     public void Deactivate(int electricityLost, int workersLost)
     {
         electricityReceived -= electricityLost;
-        playerInfo.AddWorkingPopulation(-houseSO.population);
+        playerInfo.AddWorkingPopulation(-houseSO.GetPopulation());
 
         foreach (var (dependant, amountReceived) in workerDependants)
         {
@@ -124,26 +126,26 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     }
 
     public IBuildingSO GetBuildingSO() => houseSO;
-    public string GetBuildingType() => houseSO.type;
-    public string GetRessource() => houseSO.ressource;
-    public int GetPopulation() => houseSO.population;
-    public int GetPrice() => houseSO.price;
+    public string GetBuildingType() => "";
+    public string GetRessource() => houseSO.GetRessource();
+    public int GetPopulation() => houseSO.GetPopulation();
+    public int GetPrice() => houseSO.GetPrice();
     public int GetElectricityReceived() => electricityReceived;
-    public int GetElectricityNeeded() => houseSO.electricityNeeded - electricityReceived;
-    public bool CanPlace() => playerInfo.GetMoney >= houseSO.price;
+    public int GetElectricityNeeded() => houseSO.GetElectricityNeeded() - electricityReceived;
+    public bool CanPlace() => playerInfo.GetMoney >= houseSO.GetPrice();
     public bool IsActive() => isActive;
-    public bool HasEnoughElectricity() => electricityReceived >= houseSO.electricityNeeded;
-    public bool HasEnoughWorkers() => workersGiven < houseSO.population;
+    public bool HasEnoughElectricity() => electricityReceived >= houseSO.GetElectricityNeeded();
+    public bool HasEnoughWorkers() => workersGiven < houseSO.GetPopulation();
     public void ReceiveWorkers(int workers) { }
     public int GetWorkersNeeded() => 0;
     public void SetActive() {
         isActive = true;
-        playerInfo.AddPopulation(houseSO.population);
+        playerInfo.AddPopulation(houseSO.GetPopulation());
     }
     public void Deactivate()
     {
         isActive = false;
-        playerInfo.AddPopulation(-houseSO.population);
+        playerInfo.AddPopulation(-houseSO.GetPopulation());
     }
 
     public List<UiDataModel> GetUiDataList()
@@ -151,9 +153,9 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
         return new List<UiDataModel>
         { 
            new UiDataModel(UiDataType.NAME, "House"),
-           new UiDataModel(UiDataType.PRICE, houseSO.price.ToString())
+           new UiDataModel(UiDataType.PRICE, houseSO.GetPrice().ToString())
         };
     }
-    public int GetWaterNeeded() => houseSO.waterNeeded - waterReceived;
-    public bool HasEnoughWater() => waterReceived >= houseSO.waterNeeded;
+    public int GetWaterNeeded() => houseSO.GetWaterNeeded() - waterReceived;
+    public bool HasEnoughWater() => waterReceived >= houseSO.GetWaterNeeded();
 }

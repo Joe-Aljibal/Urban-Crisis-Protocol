@@ -5,29 +5,45 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Water", menuName = "ScriptableObjects/Water")]
 public class WaterSO : ScriptableObject, IBuildingSO
 {
-    public string type = "Utilities";
-    public string ressource = "Water";
-    public BuildingClasses buildingClass = BuildingClasses.Water;
-    public BuildingTypes buildingType;
-    public int researchPrice;
-    public string buildingName;
-    public string description;
-    public int electricityNeeded = 0;
-    public int water = 10;
-    public int price = 25;
-    public BuildingCard card;
-    public Sprite icon;
+    // Identity & Metadata
+    [SerializeField] string buildingName;
+    [SerializeField] public string description;
+    [SerializeField] Sprite icon;
+    [SerializeField] BuildingCard card;
 
-    public int GetResearchPrice() => researchPrice;
-    public BuildingTypes GetBuildingType() => buildingType;
+    // Classification
+    [SerializeField] string type = "Utilities";
+    [SerializeField] string ressource = "Water";
+    [SerializeField] BuildingClasses buildingClass = BuildingClasses.Water;
+    [SerializeField] BuildingTypes buildingType;
+
+    // Economics & Costs
+    [SerializeField] int price = 25;
+    [SerializeField] int water = 10;
+    [SerializeField] int researchPrice;
+    [SerializeField] float researchOutput;
+
+    // Requirements & Operations
+    [SerializeField] int electricityNeeded = 0;
+
+    // Interface Implementation
+    public string GetBuildingName() => "💧 " + buildingName;
+    public string GetDescription() => description;
+    public int GetPrice() => price;
+    public int GetWaterOutput() => water;
+    public int GetElectricityNeeded() => electricityNeeded;
+    public string GetRessource() => ressource;
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;
+    public BuildingTypes GetBuildingType() => buildingType;
+    public int GetResearchPrice() => researchPrice;
+    public float GetResearchOutput() => researchOutput;
+
     public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;
-    public string GetBuildingName() => "💧 " + buildingName;
 
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>> {
         new Dictionary<string, string> {
-            { "label" , "Price" },
+            { "label", "Price" },
             { "icon", "💵" },
             { "value", price.ToString() }
         },
@@ -35,7 +51,6 @@ public class WaterSO : ScriptableObject, IBuildingSO
             { "label", "Output" },
             { "icon", "💧" },
             { "value", water.ToString() }
-        },
+        }
     };
-    public string GetDescription() => description;
 }

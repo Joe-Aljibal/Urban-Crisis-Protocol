@@ -12,13 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8c5e03bbf11b3469a2fe7f946759ac, type: 3}
   m_Name: A1 Small House
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
-  type: Population
-  ressource: Population
   buildingName: Small House
   description: It's better than nothing.
+  icon: {fileID: 21300000, guid: 13e84c67b3dc17e4791e126d74e9409c, type: 3}
+  card: {fileID: 11400000, guid: 1d98668df6c052e41a1e771b5b53cc03, type: 2}
+  type: Population
+  ressource: Population
+  buildingClass: 1
+  buildingType: 0
+  price: 200
+  population: 5
+  researchPrice: 0
+  researchOutput: 0.3
   electricityNeeded: 6
   waterNeeded: 0
-  population: 5
-  price: 200
-  card: {fileID: 11400000, guid: 1d98668df6c052e41a1e771b5b53cc03, type: 2}
-  icon: {fileID: 21300000, guid: 13e84c67b3dc17e4791e126d74e9409c, type: 3}

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] BusinessesSO businessSO;
-    PlayerInfo playerinfo = PlayerInfo.Instance;
+    PlayerInfo playerInfo = PlayerInfo.Instance;
 
     int electricityReceived = 0;
     public int workersReceived = 0;
@@ -15,12 +15,14 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     void Start()
     {
-        playerinfo.AddMoney(-businessSO.GetPrice());
+        playerInfo.AddMoney(-businessSO.GetPrice());
 
-        playerinfo.electricityDependants.Add(this);
-        playerinfo.workerDependants.Add(this);
-        playerinfo.StartProvidingElectricity();
-        playerinfo.StartProvidingWorkers();
+        playerInfo.electricityDependants.Add(this);
+        playerInfo.workerDependants.Add(this);
+        playerInfo.StartProvidingElectricity();
+        playerInfo.StartProvidingWorkers();
+
+        playerInfo.AddResearchPoints(businessSO.GetResearchOutput());
     }
 
     void Update()
@@ -33,7 +35,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
         if (cooldown >= 1)
         {
-            playerinfo.AddMoney(businessSO.GetProfit());
+            playerInfo.AddMoney(businessSO.GetProfit());
             cooldown = 0;
             return;
         }
@@ -42,9 +44,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     public void DeleteButton()
     {
-        playerinfo.AddMoney(businessSO.GetPrice() * .8f);
+        playerInfo.AddMoney(businessSO.GetPrice() * .8f);
 
-        playerinfo.UseElectricity(-businessSO.GetElectricityNeeded());
+        playerInfo.UseElectricity(-businessSO.GetElectricityNeeded());
         Destroy(gameObject);
     }
 
@@ -54,10 +56,10 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         workersReceived -= workersLost;
 
         if (electricityLost > 0)
-            playerinfo.electricityDependants.Add(this);
+            playerInfo.electricityDependants.Add(this);
 
         if (workersLost > 0)
-            playerinfo.workerDependants.Add(this);
+            playerInfo.workerDependants.Add(this);
     }
     public void Activate() {
 
@@ -68,7 +70,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
         if (isFirstActivation)
         {
-            playerinfo.AddResearchPoints(businessSO.GetResearchOutput());
+            playerInfo.AddResearchPoints(businessSO.GetResearchOutput());
             isFirstActivation = false;
         }
     }
@@ -76,7 +78,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     public void UseElectricity(int electricity)
     {
         electricityReceived += electricity;
-        playerinfo.UseElectricity(electricity);
+        playerInfo.UseElectricity(electricity);
 
         if (electricityReceived >= GetElectricityNeeded() && workersReceived >= GetWorkersNeeded())
         {
@@ -93,12 +95,12 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     public bool HasEnoughWorkers() => businessSO.GetWorkersNeeded() <= workersReceived;
     public int GetElectricityReceived() => electricityReceived;
     public int GetProfit() => businessSO.GetProfit();
-    public bool CanPlace() => playerinfo.GetMoney >= businessSO.GetPrice();
+    public bool CanPlace() => playerInfo.GetMoney >= businessSO.GetPrice();
 
     public void ReceiveWorkers(int workers)
     {
         workersReceived += workers;
-        playerinfo.AddWorkingPopulation(workers);
+        playerInfo.AddWorkingPopulation(workers);
 
         if (workersReceived >= GetWorkersNeeded() && electricityReceived >= GetElectricityNeeded())
         {

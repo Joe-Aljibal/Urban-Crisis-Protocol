@@ -22,7 +22,7 @@ public class BusinessesSO : ScriptableObject, IBuildingSO
     [SerializeField] int price;
     [SerializeField] int profit;
     [SerializeField] int researchPrice;
-    [SerializeField] int researchOutput;
+    [SerializeField] float researchOutput;
 
     // Requirements & Operations
     [SerializeField] int electricityNeeded;
@@ -40,7 +40,7 @@ public class BusinessesSO : ScriptableObject, IBuildingSO
     public BuildingCard GetCard() => card;
     public BuildingTypes GetBuildingType() => buildingType;
     public int GetResearchPrice() => researchPrice;
-    public int GetResearchOutput() => researchOutput;
+    public float GetResearchOutput() => researchOutput;
     public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;
 
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>

@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8c5e03bbf11b3469a2fe7f946759ac, type: 3}
   m_Name: B1 Small Apartment Building
   m_EditorClassIdentifier: Assembly-CSharp::HousesSO
+  buildingName: Small Apartment
+  description: My neighboors re pretty cool
+  icon: {fileID: 21300000, guid: d852e46675061ad408a205816dc32276, type: 3}
+  card: {fileID: 11400000, guid: abc8275586ce84b449993f9716ec3845, type: 2}
   type: Population
   ressource: Population
   buildingClass: 0
   buildingType: 3
+  price: 2200
+  population: 120
   researchPrice: 0
-  buildingName: Small Apartment
-  description: My neighboors re pretty cool
+  researchOutput: 0.5
   electricityNeeded: 15
   waterNeeded: 50
-  population: 120
-  price: 2200
-  card: {fileID: 11400000, guid: abc8275586ce84b449993f9716ec3845, type: 2}
-  icon: {fileID: 21300000, guid: d852e46675061ad408a205816dc32276, type: 3}
