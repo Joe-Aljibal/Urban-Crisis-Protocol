@@ -24,6 +24,13 @@ public class StaticResource : MonoBehaviour
         DisableComponents();
     }
 
+    public void Restore()
+    {
+        IsActiveResource = true;
+        IsAvailable = true;
+        SetComponentsEnabled(true);
+    }
+
     public void Configure(ResourceType type)
     {
         ResourceManager.UnregisterResource(resourceType, transform);
