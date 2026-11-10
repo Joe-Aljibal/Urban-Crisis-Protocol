@@ -12,10 +12,10 @@ public class CollectResourceOnClick : MonoBehaviour
 
     private void CollectResourceClick()
     {
-        if (ResourceUIManager.IsPointerOverDashboard)
+        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel || CityConstruction.IsPointerOverPanel)
             return;
 
-        if (!Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame)
             return;
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
