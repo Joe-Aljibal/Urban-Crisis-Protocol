@@ -43,6 +43,9 @@ public class TownCameraController : MonoBehaviour
     private float zoomSpeed = 2f;
 
     [SerializeField]
+    private float rotationSpeed = 0.25f;
+
+    [SerializeField]
     private float minimumZoom = 8f;
 
     [SerializeField]
@@ -71,13 +74,25 @@ public class TownCameraController : MonoBehaviour
     {
         HandleCameraSwitchButtons();
         HandleZoom();
+        HandleRotation();
         HandleMouseDrag();
         MoveCamera();
+    }
+
+    private void HandleRotation()
+    {
+        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
+            return;
+
+        Mouse mouse = Mouse.current;
+        if (mouse != null && mouse.rightButton.isPressed)
+            yaw += mouse.delta.ReadValue().x * rotationSpeed;
     }
 
     private void HandleCameraSwitchButtons()
     {
         Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
         CameraView previousView = currentView;
 
         if (keyboard.digit1Key.wasPressedThisFrame)
@@ -110,6 +125,7 @@ public class TownCameraController : MonoBehaviour
     private void HandleMouseDrag()
     {
         Mouse mouse = Mouse.current;
+        if (mouse == null) return;
 
         Vector2 currentMousePosition = mouse.position.ReadValue();
         if (mouse.middleButton.wasPressedThisFrame)
@@ -145,10 +161,11 @@ public class TownCameraController : MonoBehaviour
 
     private void HandleZoom()
     {
-        if (ResourceUIManager.IsPointerOverDashboard)
+        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
             return;
 
         Mouse mouse = Mouse.current;
+        if (mouse == null) return;
 
         float mouseWheel = mouse.scroll.ReadValue().y;
 
