@@ -20,18 +20,25 @@ public class BuildingManager : MonoBehaviour
 
     private UiManager uiManager;
 
+    public void Configure(GameObject platform, GameObject previewGrid, Material valid, Material invalid)
+    {
+        gridPlateform = platform;
+        movableGrid = previewGrid;
+        materials = new[] { valid, invalid };
+    }
+
      
     void Start()
     {
         gridComponent = gridPlateform.GetComponent<Grid>();
         uiManager = GetComponent<UiManager>();
-        uiManager.OnInteractWithMenu += ResetDefaultBuilding;
+        if (uiManager != null) uiManager.OnInteractWithMenu += ResetDefaultBuilding;
 
     }
 
     void Update()
     {
-        if (currentBuidlingCard != null)
+        if (currentBuidlingCard != null && Mouse.current != null && Keyboard.current != null)
         {
             MoveGridAround(FindMousePositionOnGrid());
         }
@@ -166,6 +173,8 @@ public class BuildingManager : MonoBehaviour
 
     bool FindUiButtonUnderMouse()
     {
+        if (CityFireEvent.IsPointerOverPanel || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel) return true;
+        if (EventSystem.current == null) return false;
         PointerEventData data = new PointerEventData(EventSystem.current);
         data.position = Input.mousePosition;
 
@@ -235,6 +244,13 @@ public class BuildingManager : MonoBehaviour
             movableGrid.SetActive(false);
             currentBuidlingCard = null;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (uiManager != null) uiManager.OnInteractWithMenu -= ResetDefaultBuilding;
+        if (currentSelectedBuildingClone != null) Destroy(currentSelectedBuildingClone);
+        if (currentSelectedSlot != null) Destroy(currentSelectedSlot);
     }
 
 
