@@ -9,32 +9,31 @@ using UnityEngine.UI;
 public class Electricity : MonoBehaviour, IBuilding, IBuildingUiData, ISellable
 {
     [SerializeField] ElectricitySO electricitySO;
-    PlayerInfo playerInfo = PlayerInfo.Instance;
-
+    CityData cityData;
     int electricityGiven = 0;
     bool isActive = true;
     // The building and how much it received from this script
     Dictionary<IBuilding, int> electricityDependants = new();
 
-    private void Start()
+    void Start()
     {
-        playerInfo.addElectricity(electricitySO.electricityOutput);
-        playerInfo.electricityProviders.Add(this);
+        cityData.addElectricity(electricitySO.electricityOutput);
+        cityData.electricityProviders.Add(this);
         ElectrifyBuildings();
     }
 
-public void ElectrifyBuildings()
+    public void ElectrifyBuildings()
     {
         List<IBuilding> buildingsToRemove = new();
 
-        foreach (var dependant in playerInfo.electricityDependants)
+        foreach (var dependant in cityData.electricityDependants)
         {
             if (electricityDependants.ContainsKey(dependant))
                 continue;
 
             if (!CanGiveElectricity())
             {
-                playerInfo.electricityProviders.Remove(this);
+                cityData.electricityProviders.Remove(this);
                 Debug.Log("No more electricity left");
                 break;
             }
@@ -56,7 +55,7 @@ public void ElectrifyBuildings()
 
         foreach (IBuilding building in buildingsToRemove)
         {
-            playerInfo.electricityDependants.Remove(building);
+            cityData.electricityDependants.Remove(building);
         }
     }
     public void Sell()
@@ -65,28 +64,28 @@ public void ElectrifyBuildings()
     }
     private void OnDestroy()
     {
-        playerInfo.electricityProviders.Remove(this);
-        playerInfo.addElectricity(-electricitySO.electricityOutput);
+        cityData.electricityProviders.Remove(this);
+        cityData.addElectricity(-electricitySO.electricityOutput);
         foreach (var (dependant, amountReceived) in electricityDependants)
         {
             dependant.Deactivate(amountReceived, 0);
 
-            if (!playerInfo.electricityDependants.Contains(dependant))
-                playerInfo.electricityDependants.Add(dependant);
+            if (!cityData.electricityDependants.Contains(dependant))
+                cityData.electricityDependants.Add(dependant);
         }
-        playerInfo.ElectrifyBuildings();
+        cityData.ElectrifyBuildings();
     }
 
     public void Deactivate(int x, int y)
     {
         isActive = false;
-        playerInfo.addElectricity(-electricitySO.electricityOutput);
+        cityData.addElectricity(-electricitySO.electricityOutput);
         electricityGiven = 0;
         foreach (var (dependant, amountReceived) in electricityDependants)
         {
             dependant.Deactivate(amountReceived, 0);
-            if (!playerInfo.electricityDependants.Contains(dependant))
-                playerInfo.electricityDependants.Add(dependant);
+            if (!cityData.electricityDependants.Contains(dependant))
+                cityData.electricityDependants.Add(dependant);
         }
     }
 
@@ -94,8 +93,13 @@ public void ElectrifyBuildings()
     public void Activate()
     {
         isActive = true;
-        playerInfo.addElectricity(electricitySO.electricityOutput);
+        cityData.addElectricity(electricitySO.electricityOutput);
         ElectrifyBuildings();
+    }
+
+    public void SetCityData(CityData cityData)
+    {
+        this.cityData = cityData;
     }
     public string GetBuildingType() => electricitySO.type;
     public string GetRessource() => electricitySO.ressource;
@@ -105,26 +109,27 @@ public void ElectrifyBuildings()
     public int GetElectricityReceived() => 0;
     public int GetElectricityNeeded() => 0;
     public int GetPrice() => electricitySO.price;
-    public bool CanPlace() => playerInfo.getMoney >= electricitySO.price;
+    public bool CanPlace() => cityData.getMoney >= electricitySO.price;
     public bool IsActive() => isActive;
-    public void SetActive() {}
-    public void Deactivate() {
+    public void SetActive() { }
+    public void Deactivate()
+    {
         isActive = false;
-        playerInfo.addElectricity(-electricitySO.electricityOutput);
+        cityData.addElectricity(-electricitySO.electricityOutput);
         foreach (var (dependant, amountGiven) in electricityDependants)
         {
             dependant.Deactivate(amountGiven, 0);
-            playerInfo.electricityDependants.Add(dependant);
+            cityData.electricityDependants.Add(dependant);
         }
     }
-    
+
 
     // clean later same thing everywhere use parent of sciprtableobject
-     public List<UiDataText> GetUiTextList()
+    public List<UiDataText> GetUiTextList()
     {
-        
+
         return new List<UiDataText>
-        { 
+        {
            new UiDataText(UiDataType.NAME, electricitySO.type),
            new UiDataText(UiDataType.PRICE, electricitySO.price.ToString())
         };

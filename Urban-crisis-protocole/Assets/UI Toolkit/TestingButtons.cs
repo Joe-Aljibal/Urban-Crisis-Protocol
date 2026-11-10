@@ -37,7 +37,7 @@ public class TestingButtons : MonoBehaviour
     List<WaterSO> water = new();
 
     VisualElement root;
-    BuildingManager buildingManager;
+    PlayerController controller;
 
     EventCallback<ClickEvent> housesCallback;
     EventCallback<ClickEvent> businessesCallback;
@@ -50,7 +50,7 @@ public class TestingButtons : MonoBehaviour
         panelRenderer.RegisterUIReloadCallback(BuildingsPlacementUI);
         currentSection = Sections.None;
 
-        buildingManager = gameManager.GetComponent<BuildingManager>();
+        controller = gameManager.GetComponent<PlayerController>();
 
         string[] guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { housesPath, businessesPath, electricityPath, waterPath });
 
@@ -116,7 +116,7 @@ public class TestingButtons : MonoBehaviour
             IBuildingSO selectedBuilding = so;
 
             newButton.clicked += () =>
-                buildingManager.ChangeCurrentBuildingCard(selectedBuilding.GetCard());
+                controller.ChangeCurrentBuildingCard(selectedBuilding.GetCard());
 
             scroller.Add(newButton);
         }

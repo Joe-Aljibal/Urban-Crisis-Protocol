@@ -3,6 +3,7 @@ using UnityEngine;
 public class HutStation : MonoBehaviour, IBuilding
 {
     private readonly HutStationsSO woodHutStationSO;
+    CityData cityData;
 
     PlayerInfo playerInfo = PlayerInfo.Instance;
 
@@ -20,6 +21,11 @@ public class HutStation : MonoBehaviour, IBuilding
     public bool HasEnoughElectricity() => true;
 
     public bool IsActive() => isActive;
+
+    public void SetCityData(CityData cityData)
+    {
+        this.cityData = cityData;
+    }
 
     public void SetActive()
     {

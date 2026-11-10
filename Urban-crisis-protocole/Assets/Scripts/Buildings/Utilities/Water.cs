@@ -4,24 +4,24 @@ using UnityEngine;
 public class Water : MonoBehaviour, IBuilding , IBuildingUiData, ISellable
 {
     [SerializeField] WaterSO waterSO;
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData cityData;
     bool isActive = true;
     
     void Start()
     {
-        playerInfo.addWater(waterSO.water);
+        cityData.addWater(waterSO.water);
     }
 
     public void DeleteButton()
     {
-        playerInfo.addMoney(waterSO.price * .8f);
-        playerInfo.addWater(-waterSO.water);
+        cityData.addMoney(waterSO.price * .8f);
+        cityData.addWater(-waterSO.water);
 
         Destroy(gameObject);
     }
 
     public IBuildingSO GetBuildingSO() => waterSO;
-    public bool CanPlace() => waterSO.price <= playerInfo.getMoney;
+    public bool CanPlace() => waterSO.price <= cityData.getMoney;
     public int GetElectricityNeeded() => waterSO.electricityNeeded;
     public int GetPrice() => waterSO.price;
     public string GetRessource() => waterSO.ressource;
@@ -33,12 +33,17 @@ public class Water : MonoBehaviour, IBuilding , IBuildingUiData, ISellable
     public void SetActive()
     {
         isActive = true;
-        playerInfo.addWater(waterSO.water);
+        cityData.addWater(waterSO.water);
+    }
+
+    public void SetCityData(CityData cityData)
+    {
+        this.cityData = cityData;
     }
 
     public void Deactivate() {
         isActive = false;
-        playerInfo.addWater(-waterSO.water);
+        cityData.addWater(-waterSO.water);
     }
 
     public int GetElectricityReceived() => 0;

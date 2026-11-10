@@ -7,8 +7,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
     [SerializeField] BusinessesSO businessesSO;
     [SerializeField] Image workersImage;
     [SerializeField] Image electricityImage;
-    PlayerInfo playerinfo = PlayerInfo.Instance;
-
+    
+    
+    CityData cityData;
     int electricityReceived = 0;
     public int workersReceived = 0;
 
@@ -17,10 +18,10 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
 
     void Start()
     {
-        playerinfo.electricityDependants.Add(this);
-        playerinfo.workerDependants.Add(this);
-        // playerinfo.ElectrifyBuildings();
-        playerinfo.EmployWorkers();
+        cityData.electricityDependants.Add(this);
+        cityData.workerDependants.Add(this);
+        cityData.ElectrifyBuildings();
+        cityData.EmployWorkers();
     }
 
     void Update()
@@ -36,7 +37,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
 
         if (cooldown >= 1)
         {
-            playerinfo.addMoney(businessesSO.profit);
+            cityData.addMoney(businessesSO.profit);
             cooldown = 0;
         }
         cooldown = cooldown + Time.deltaTime;
@@ -44,10 +45,15 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
 
     public void Sell()
     {
-        playerinfo.addMoney(businessesSO.price * .8f);
+        cityData.addMoney(businessesSO.price * .8f);
 
-        playerinfo.UseElectricity(-businessesSO.electricityNeeded);
+        cityData.UseElectricity(-businessesSO.electricityNeeded);
         Destroy(gameObject);
+    }
+
+    public void SetCityData(CityData cityData)
+    {
+        this.cityData = cityData;
     }
 
     public void Deactivate(int electricityLost, int workersLost) {
@@ -56,10 +62,10 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
         workersReceived -= workersLost;
 
         if (electricityLost > 0)
-            playerinfo.electricityDependants.Add(this);
+            cityData.electricityDependants.Add(this);
 
         if (workersLost > 0)
-            playerinfo.workerDependants.Add(this);
+            cityData.workerDependants.Add(this);
     }
     public void Activate() {
 
@@ -72,12 +78,12 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
     public void UseElectricity(int electricity)
     {
         electricityReceived += electricity;
-        playerinfo.UseElectricity(electricity);
+        cityData.UseElectricity(electricity);
 
         if (electricityReceived == GetElectricityNeeded())
         {
             Activate();
-            playerinfo.electricityDependants.Remove(this);
+            cityData.electricityDependants.Remove(this);
         }
     }
 
@@ -91,12 +97,12 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData, ISellable
     public bool HasEnoughWorkers() => businessesSO.workersNeeded <= workersReceived;
     public int GetElectricityReceived() => electricityReceived;
     public int GetProfit() => businessesSO.profit;
-    public bool CanPlace() => playerinfo.getMoney >= businessesSO.price;
+    public bool CanPlace() => cityData.getMoney >= businessesSO.price;
 
     public void ReceiveWorkers(int workersReceived)
     {
         this.workersReceived += workersReceived;
-        playerinfo.addWorkingPopulation(workersReceived);
+        cityData.addWorkingPopulation(workersReceived);
     }
 
     public string GetType() => businessesSO.type;

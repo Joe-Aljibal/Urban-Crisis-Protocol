@@ -1,0 +1,159 @@
+using UnityEngine;
+using System.Collections.Generic;
+using System;
+public class CityData
+{
+    public CityData()
+    {
+        InitializeResources();
+    }
+
+    int workingPopulation = 0;
+    int population = 0;
+    int electricity = 0;
+    int electricityUsed = 0;
+    int water = 0;
+    int waterUsed;
+    int food = 0;
+    float money = 2000;
+
+    Dictionary<GameObject, List<Vector3>> buildingsPositions = new Dictionary<GameObject, List<Vector3>>();
+    public List<Vector3> GetAllPositionStored()
+    {
+        List<Vector3> positions = new List<Vector3>();
+        foreach (var variable in buildingsPositions)
+        {
+            List<Vector3> positionsStored = buildingsPositions[variable.Key];
+
+            foreach (Vector3 positionStored in positionsStored)
+            {
+                positions.Add(positionStored);
+            }
+        }
+        return positions;
+    }
+
+    public void StoreNewBuilding(GameObject buildingCreated, List<Vector3> positionToStore)
+    {
+        buildingsPositions[buildingCreated] = new List<Vector3> { buildingCreated.transform.position };
+        
+        foreach (Vector3 v in positionToStore)
+        {
+            buildingsPositions[buildingCreated].Add(v);
+        }
+    }
+
+    public Dictionary<ResourceType, int> resources = new();
+
+    private void InitializeResources()
+    {
+        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
+            resources[type] = 0;
+        }
+    }
+
+    public void addPopulation(int population)
+    {
+        if (population > 0)
+        {
+            this.population += population;
+        }
+        else
+        {
+            this.population += population;
+            workingPopulation = Mathf.Min(workingPopulation, population);
+        }
+    }
+    public int getPopulation => population;
+    public void addWorkingPopulation(int population) { this.workingPopulation += population; }
+    public int getWorkingPopulation => workingPopulation;
+    public int getAvailablePopulation => population - workingPopulation;
+
+    public void addElectricity(int electricity)
+    {
+        if (electricity > 0)
+        {
+            this.electricity += electricity;
+        }
+        else
+        {
+            this.electricity += electricity;
+            electricityUsed = Mathf.Min(electricityUsed, this.electricity);
+        }
+    }
+    public int getElectricity => electricity;
+    public void UseElectricity(int electricity) { this.electricityUsed += electricity; }
+    public int getElectricityUsed => electricityUsed;
+    public int getAvailableElectricity => electricity - electricityUsed;
+
+    public void addWater(int water) { this.water += water; }
+    public void useWater(int water) { this.waterUsed += water; }
+    public int getWater => water;
+    public int getWaterUsed => waterUsed;
+    public int getAvailableWater => water - waterUsed;
+
+    public void addFood(int food) { this.food += food; }
+    public int getFood => food;
+
+    public void addMoney(float money) { this.money += money; }
+    public float getMoney => money;
+
+    public void addWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public int getWood => resources[ResourceType.Wood];
+
+    public void addStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public int getStone => resources[ResourceType.Stone];
+
+    public void addResource(ResourceType type, int amount)
+    {
+        resources[type] += amount;
+    }
+
+    // The building that needs electricit and how much more it needs
+    public List<IBuilding> electricityDependants = new();
+    // The providers available to give out electricity
+    public List<Electricity> electricityProviders = new();
+
+    public void ElectrifyBuildings()
+    {
+        List<Electricity> providersToRemove = new();
+        foreach (var provider in electricityProviders)
+        {
+            if (electricityDependants.Count < 1)
+                break;
+
+            provider.GetComponent<Electricity>().ElectrifyBuildings();
+
+            if (!provider.CanGiveElectricity())
+                providersToRemove.Add(provider);
+        }
+
+        foreach (Electricity provider in providersToRemove)
+            electricityProviders.Remove(provider);
+    }
+
+    // The building that needs workers
+    public List<IBuilding> workerDependants = new();
+    // The houses available to give out workers
+    public List<House> workerProviders = new();
+
+    public void EmployWorkers()
+    {
+        List<House> providersToRemove = new();
+
+        foreach (var provider in workerProviders)
+        {
+            if (workerDependants.Count < 1)
+                break;
+
+            provider.GetComponent<House>().EmployWorkers();
+
+            if (!provider.HasEnoughWorkers())
+                providersToRemove.Add(provider);
+        }
+
+        foreach (var provider in providersToRemove)
+            workerProviders.Remove(provider);
+    }
+}

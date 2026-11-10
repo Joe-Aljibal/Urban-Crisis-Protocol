@@ -4,6 +4,7 @@ using System;
 
 public class PlayerInfo
 {
+   
     public static PlayerInfo Instance { get; } = new PlayerInfo();
 
     private PlayerInfo()

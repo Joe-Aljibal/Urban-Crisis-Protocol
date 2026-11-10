@@ -19,4 +19,6 @@ public interface IBuilding
     public void ReceiveWorkers(int workers);
     public int GetWorkersNeeded();
     public bool HasEnoughWorkers();
+
+    public void SetCityData(CityData data);
 }
