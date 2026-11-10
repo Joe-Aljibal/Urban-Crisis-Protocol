@@ -21,13 +21,39 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private float debugTimeJump = 1f;
     [SerializeField] private Color dayColor = new Color(1f, 0.96f, 0.84f);
     [SerializeField] private Color nightColor = new Color(0.25f, 0.35f, 0.55f);
+    [SerializeField] private Light[] nightLights = new Light[0];
+    [SerializeField, Range(0f, 24f)] private float lightsOnHour = 18f;
+    [SerializeField, Range(0f, 24f)] private float lightsOffHour = 6f;
 
     private Light sun;
     private float currentHour;
+    private bool? nightLightsEnabled;
+    private bool powerAvailable = true;
+
+    public void SetCityPower(bool available)
+    {
+        powerAvailable = available;
+        nightLightsEnabled = null;
+        UpdateLighting();
+    }
 
     public float GetCurrentHour()
     {
         return currentHour;
+    }
+
+    public bool IsNight => lightsOnHour > lightsOffHour
+        ? currentHour >= lightsOnHour || currentHour < lightsOffHour
+        : currentHour >= lightsOnHour && currentHour < lightsOffHour;
+
+    public void RegisterNightLight(Light cityLight)
+    {
+        if (cityLight == null) return;
+        var lights = new System.Collections.Generic.List<Light>(nightLights);
+        if (lights.Contains(cityLight)) return;
+        lights.Add(cityLight);
+        nightLights = lights.ToArray();
+        cityLight.enabled = IsNight && powerAvailable;
     }
 
     public float GetDebugTimeJump()
@@ -56,7 +82,7 @@ public class DayNightCycle : MonoBehaviour
             HoursPerDay
         );
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             AdvanceTime();
             return;
@@ -97,5 +123,16 @@ public class DayNightCycle : MonoBehaviour
             dayAmbientIntensity,
             daylight
         );
+
+        bool isNight = IsNight && powerAvailable;
+        if (nightLightsEnabled != isNight)
+        {
+            nightLightsEnabled = isNight;
+            foreach (Light cityLight in nightLights)
+            {
+                if (cityLight != null)
+                    cityLight.enabled = isNight;
+            }
+        }
     }
 }
