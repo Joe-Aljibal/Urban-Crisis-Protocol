@@ -19,6 +19,7 @@ public class PlayerInfo
     int waterUsed;
     int food = 0;
     float money = 2000;
+    private const int MoneyPerExtractedResource = 10;
 
     public Dictionary<ResourceType, int> resources = new();
     private Dictionary<ResourceType, int> exploitedResources = new();
@@ -100,6 +101,19 @@ public class PlayerInfo
         {
             exploitedResources[type] += amount;
         }
+    }
+
+    // Money is awarded when a resource is extracted; stock may arrive later.
+    public void rewardExtraction(int amount)
+    {
+        if (amount > 0) addMoney(amount * MoneyPerExtractedResource);
+    }
+
+    public void collectResource(ResourceType type, int amount)
+    {
+        if (amount <= 0) return;
+        addResource(type, amount);
+        rewardExtraction(amount);
     }
 
     // The dependant and how much it more needs

@@ -34,12 +34,32 @@ public class SimpleResourceCollector : MonoBehaviour
 
     private void Update()
     {
+        bool unsafeArea = CityHazards.TryGetDanger(transform.position, out Vector3 dangerCenter);
+        if (unsafeArea)
+        {
+            if (targetResource != null && targetResource.IsActiveResource)
+                targetResource.IsAvailable = true;
+            targetResource = null;
+            isExploiting = false;
+            Vector3 away = transform.position - dangerCenter;
+            away.y = 0f;
+            if (away.sqrMagnitude < 0.01f) away = Vector3.forward;
+            transform.position += away.normalized * moveSpeed * Time.deltaTime;
+            CurrentAction = "Évacuation : incendie";
+            return;
+        }
+
         if (isReturningHome)
         {
             ReturnHome();
             return;
         }
 
+        if (targetResource != null && !targetResource.IsActiveResource)
+        {
+            targetResource = null;
+            isExploiting = false;
+        }
         if (targetResource == null)
         {
             isExploiting = false;
@@ -100,6 +120,7 @@ public class SimpleResourceCollector : MonoBehaviour
 
         foreach (Transform resourceTransform in resources)
         {
+            if (resourceTransform == null || CityHazards.TryGetDanger(resourceTransform.position, out _)) continue;
             StaticResource resource = resourceTransform.GetComponent<StaticResource>();
 
             if (!resource.IsAvailable ||
@@ -133,6 +154,12 @@ public class SimpleResourceCollector : MonoBehaviour
 
     private void ExploitResource()
     {
+        if (targetResource == null || !targetResource.IsActiveResource)
+        {
+            targetResource = null;
+            isExploiting = false;
+            return;
+        }
         exploitationTimer -= Time.deltaTime;
 
         if (exploitationTimer > 0f)
@@ -141,6 +168,7 @@ public class SimpleResourceCollector : MonoBehaviour
         carriedResourceType = targetResource.ResourceType;
         exploitedThisRound.Add(targetResource);
         targetResource.Disable();
+        if (town == TownType.Human) PlayerInfo.Instance.rewardExtraction(resourceAmount);
         targetResource = null;
         isExploiting = false;
         isReturningHome = true;

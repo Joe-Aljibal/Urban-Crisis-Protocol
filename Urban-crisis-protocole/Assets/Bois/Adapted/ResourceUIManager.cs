@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class ResourceUIManager : MonoBehaviour
 {
-    private const int WindowFontSize = 18;
-    private const int LabelFontSize = 16;
+    private const int WindowFontSize = 22;
+    private const int LabelFontSize = 19;
     private const float DashboardLeft = 20f;
     private const float DashboardTop = 20f;
-    private const float DashboardWidth = 400f;
+    private static float DashboardWidth => Mathf.Min(400f, Mathf.Max(160f, (Screen.width - 60f) * 0.5f));
     private const float MaximumDashboardHeight = 520f;
     private const float DashboardVerticalMargin = 40f;
     private const float TitleSpacing = 14f;
@@ -26,8 +26,10 @@ public class ResourceUIManager : MonoBehaviour
     [SerializeField] private DayNightCycle dayNightCycle;
 
     private Vector2 dashboardScroll;
+    private bool showDetails;
 
     public static bool IsPointerOverDashboard { get; private set; }
+    public static float PanelBottom { get; private set; } = 220f;
 
     private void UpdateWoodText()
     {
@@ -58,7 +60,7 @@ public class ResourceUIManager : MonoBehaviour
         windowStyle.fontSize = WindowFontSize;
 
         GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-        labelStyle.fontSize = LabelFontSize;
+        labelStyle.fontSize = Mathf.Min(LabelFontSize, Mathf.Max(14, Mathf.FloorToInt(DashboardWidth / 20f)));
 
         GUIStyle sectionStyle = new GUIStyle(labelStyle);
         sectionStyle.fontStyle = FontStyle.Bold;
@@ -66,7 +68,7 @@ public class ResourceUIManager : MonoBehaviour
         GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
         buttonStyle.fontSize = LabelFontSize;
 
-        float dashboardHeight = Screen.height - DashboardVerticalMargin;
+        float dashboardHeight = Mathf.Min(showDetails ? Screen.height - DashboardVerticalMargin : 200f, Mathf.Max(120f, Screen.height - 300f));
 
         if (dashboardHeight > MaximumDashboardHeight)
         {
@@ -79,26 +81,53 @@ public class ResourceUIManager : MonoBehaviour
             DashboardWidth,
             dashboardHeight
         );
+        PanelBottom = dashboardArea.yMax;
         IsPointerOverDashboard = dashboardArea.Contains(Event.current.mousePosition);
 
         GUILayout.BeginArea(
             dashboardArea,
-            "DASHBOARD DES RESSOURCES",
+            "RESSOURCES",
             windowStyle
         );
 
         GUILayout.Space(TitleSpacing);
         dashboardScroll = GUILayout.BeginScrollView(dashboardScroll);
 
-        DrawCurrentTime(sectionStyle, labelStyle, buttonStyle);
-        DrawPlayerStock(sectionStyle, labelStyle);
-        DrawTownResources(TownType.Human, "VILLE HUMAINE", sectionStyle, labelStyle);
-        DrawTownResources(TownType.AI, "VILLE IA", sectionStyle, labelStyle);
-        DrawComparison(sectionStyle, labelStyle);
-        DrawCollectors(sectionStyle, labelStyle);
+        DrawResourceSummary(sectionStyle, labelStyle, buttonStyle);
+        if (showDetails)
+        {
+            DrawCurrentTime(sectionStyle, labelStyle, buttonStyle);
+            DrawTownResources(TownType.Human, "VILLE HUMAINE", sectionStyle, labelStyle);
+            DrawTownResources(TownType.AI, "VILLE IA", sectionStyle, labelStyle);
+            DrawComparison(sectionStyle, labelStyle);
+            DrawCollectors(sectionStyle, labelStyle);
+        }
 
         GUILayout.EndScrollView();
         GUILayout.EndArea();
+    }
+
+    private void DrawResourceSummary(GUIStyle heading, GUIStyle label, GUIStyle button)
+    {
+        GUILayout.BeginHorizontal();
+        DrawResourceBox("BOIS", playerInfo.getWood.ToString(), new Color(0.8f, 0.55f, 0.3f), heading, label);
+        DrawResourceBox("PIERRE", playerInfo.getStone.ToString(), new Color(0.65f, 0.75f, 0.85f), heading, label);
+        DrawResourceBox("CHARBON", playerInfo.getCoal.ToString(), new Color(0.62f, 0.62f, 0.68f), heading, label);
+        GUILayout.EndHorizontal();
+        GUILayout.Label("ARGENT : " + playerInfo.getMoney.ToString("N0") + " $", heading);
+        if (GUILayout.Button(showDetails ? "Masquer les details" : "Voir les details", button, GUILayout.Height(38)))
+            showDetails = !showDetails;
+    }
+
+    private void DrawResourceBox(string name, string value, Color color, GUIStyle heading, GUIStyle label)
+    {
+        Color previousColor = GUI.backgroundColor;
+        GUI.backgroundColor = color;
+        GUILayout.BeginVertical(GUI.skin.box, GUILayout.ExpandWidth(true));
+        GUI.backgroundColor = previousColor;
+        GUILayout.Label(name, heading);
+        GUILayout.Label(value, label);
+        GUILayout.EndVertical();
     }
 
     private void DrawCurrentTime(
