@@ -19833,6 +19833,12 @@ GameObject:
   - component: {fileID: 8968899}
   - component: {fileID: 8968901}
   - component: {fileID: 8968902}
+  - component: {fileID: 8968903}
+  - component: {fileID: 8968904}
+  - component: {fileID: 8968905}
+  - component: {fileID: 8968906}
+  - component: {fileID: 8968907}
+  - component: {fileID: 8968908}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -19971,6 +19977,105 @@ MonoBehaviour:
   debugTimeJump: 1
   dayColor: {r: 1, g: 0.96, b: 0.84, a: 1}
   nightColor: {r: 0.25, g: 0.35, b: 0.55, a: 1}
+--- !u!114 &8968903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 926adfb91f194f5197d9688c897337ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityFireEvent
+  firstEventDelay: 30
+  cooldown: 90
+  warningDuration: 8
+  fireDuration: 30
+  dangerRadius: 12
+  responseCost: 100
+  repairCost: 50
+--- !u!114 &8968904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0e8df13694742dcbf32490d06c61393, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityWorldBuilder
+  townCenter: {fileID: 717982381}
+  dayNightCycle: {fileID: 8968902}
+  pedestrianCount: 6
+--- !u!114 &8968905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 721a01f344b8477c8fd41af1372d9e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityPowerOutage
+  dayNightCycle: {fileID: 8968902}
+  firstOutageDelay: 75
+  outageDuration: 45
+  cooldown: 150
+  repairCost: 100
+--- !u!114 &8968906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cf8020fdb940668a4f4b7d53c8f30a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityDisasterEvent
+  initialDelay: 110
+  warningTime: 10
+  activeTime: 25
+  cooldown: 180
+  dangerRadius: 15
+  repairCost: 150
+--- !u!114 &8968907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92f4bb6e4a8412bb3a6390a06c1ef52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityLegacyEvents
+  banditPrefab: {fileID: 100002, guid: 91a27d63d4784964b66cfb30f5a67746, type: 3}
+  bombPrefab: {fileID: 2029243068690900861, guid: 935afa7cd7413374699047b74e403db0, type: 3}
+--- !u!114 &8968908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6113ae98a614828a4fced96da3aa71a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityConstruction
+  cards:
+  - {fileID: 11400000, guid: f9c4e300173e9054d9cc94a6db82a59c, type: 2}
+  - {fileID: 11400000, guid: e2a91ef2204a93c4babfc0cf89c58e00, type: 2}
+  validMaterial: {fileID: 2100000, guid: 5eb18b6a87d47064b9c7be790513d24f, type: 2}
+  invalidMaterial: {fileID: 2100000, guid: cf2a5fb57f11e8849897c7f47c51ab6c, type: 2}
 --- !u!1 &10000000
 GameObject:
   m_ObjectHideFlags: 0
