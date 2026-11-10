@@ -44,16 +44,31 @@ public class BombDetonationController : MonoBehaviour, IDetonable
         yield return new WaitForSeconds(explosionDelay);
         CreateExplosionEffect(position);
 
+        if (explosionArea != null) explosionArea.OnAreaFinished += DestroyBomb;
         OnDetonated?.Invoke(position);
-        if (explosionArea != null)
-        explosionArea.OnAreaFinished += DestroyBomb;
-        else
-            DestroyBomb();
+        if (explosionArea == null) DestroyBomb();
     }
 
     private void CreateExplosionEffect(Vector3 position)
     {
         GameObject newEffect = Instantiate(explosionEffect, position, Quaternion.identity);
+
+        // The explosion prefab also contains a looping falling trail. It belongs
+        // to the descent, not to the explosion spawned after impact.
+        Transform fallingEffect = newEffect.transform.Find("Falling Effects");
+        if (fallingEffect != null) fallingEffect.gameObject.SetActive(false);
+
+        foreach (ParticleSystem particles in newEffect.GetComponentsInChildren<ParticleSystem>())
+        {
+            // Emit one burst: a continuous stream looked like another falling effect.
+            particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var settings = particles.main;
+            settings.loop = false;
+            var emission = particles.emission;
+            emission.enabled = false;
+            particles.Play();
+            particles.Emit(particles.name == "ExplosionSmoke" ? 35 : 1);
+        }
         if (explosionSound != null)
         {
             AudioSource.PlayClipAtPoint(explosionSound, position, explosionVolume);

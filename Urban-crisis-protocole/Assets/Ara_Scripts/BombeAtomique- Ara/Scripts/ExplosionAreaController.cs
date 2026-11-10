@@ -134,14 +134,13 @@ public class ExplosionAreaController : MonoBehaviour
             explosionCollider.radius = radius;
             UpdateExplosionSphere(radius);
 
-            Debug.Log(
-                $"[Explosion] radius = {explosionCollider.radius:F2} / {explosionRadius} (t = {t:F2})"
-            );
+
 
             yield return null;
         }
 
         explosionCollider.radius = explosionRadius;
+        ApplyBlast(explosionRadius);
         UpdateExplosionSphere(explosionRadius);
 
         yield return new WaitForSeconds(triggerDuration);
@@ -163,7 +162,15 @@ public class ExplosionAreaController : MonoBehaviour
         explosionSphere.localScale = Vector3.one * (radius * 2f);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void ApplyBlast(float radius)
+    {
+        // Query explicitly: a short expanding trigger can otherwise skip physics steps.
+        foreach (Collider hit in Physics.OverlapSphere(transform.position, radius, ~0, QueryTriggerInteraction.Ignore))
+            DestroyHit(hit);
+    }
+
+
+    private void DestroyHit(Collider other)
     {
         IDestructible destructible = other.GetComponentInParent<IDestructible>();
 
@@ -183,7 +190,7 @@ public class ExplosionAreaController : MonoBehaviour
 
     private void OnDestroy()
     {
-        detonationController.OnDetonated -= ActivateExplosionArea;
+        if (detonationController != null) detonationController.OnDetonated -= ActivateExplosionArea;
 
         if (explosionSphere != null)
         {

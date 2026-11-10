@@ -11,10 +11,25 @@ public class BombSpawner : MonoBehaviour
     [SerializeField]
     private Transform spawnPoint;
     private GameObject currentBomb;
+    [SerializeField] private bool spawnOnStart = true;
+
+    public void Configure(GameObject prefab, Transform point)
+    {
+        bombPrefab = prefab;
+        spawnPoint = point;
+        spawnOnStart = false;
+    }
+
+    public bool TrySpawn()
+    {
+        if (currentBomb != null || bombPrefab == null || spawnPoint == null) return false;
+        SpawnBomb();
+        return true;
+    }
 
     private void Start()
     {
-        SpawnBomb();
+        if (spawnOnStart) TrySpawn();
     }
 
     private void OnMoneyChanged(int newAmount)
