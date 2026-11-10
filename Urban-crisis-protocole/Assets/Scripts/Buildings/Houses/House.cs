@@ -58,7 +58,8 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
 
             dependant.ReceiveWorkers(amountToGive);
             workersGiven += amountToGive;
-            workerDependants.Add(dependant, amountToGive);
+            workerDependants.Add(dependant, amountToGive); 
+            playerInfo.AddWorkingPopulation(amountToGive);
 
             Debug.Log("Got here");
 
@@ -76,7 +77,6 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     public void ReceiveWater(int water)
     {
         waterReceived += water;
-        playerInfo.UseWater(water);
 
         if (HasEnoughWater() && HasEnoughElectricity())
         {
@@ -119,10 +119,9 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
         ProvideWorkers();
     }
 
-    public void UseElectricity(int electricity)
+    public void ReceiveElectricity(int electricity)
     {
         electricityReceived += electricity;
-        playerInfo.UseElectricity(electricity);
     }
 
     public IBuildingSO GetBuildingSO() => houseSO;

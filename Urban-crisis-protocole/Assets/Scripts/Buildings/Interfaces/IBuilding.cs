@@ -11,7 +11,7 @@ public interface IBuilding
     public void Activate();
     public void Deactivate(int electricityLost, int workersLost);
 
-    public void UseElectricity(int electricity);
+    public void ReceiveElectricity(int electricity);
     public int GetElectricityNeeded();
     public int GetElectricityReceived();
     public bool HasEnoughElectricity();

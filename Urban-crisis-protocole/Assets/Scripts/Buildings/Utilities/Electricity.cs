@@ -35,9 +35,10 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
             int electricityNeeded = dependant.GetElectricityNeeded();
             int amountToGive = Mathf.Min(electricityAvailable, electricityNeeded);
 
-            dependant.UseElectricity(amountToGive);
+            dependant.ReceiveElectricity(amountToGive);
             electricityGiven += amountToGive;
             electricityDependants.Add(dependant, amountToGive);
+            playerInfo.UseElectricity(amountToGive);
 
             if (dependant.HasEnoughElectricity())
                 buildingsToRemove.Add(dependant);
@@ -93,7 +94,7 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
     public int GetPrice() => electricitySO.GetPrice();
     public bool CanPlace() => playerInfo.GetMoney >= electricitySO.GetPrice();
     public bool IsActive() => isActive;
-    public void UseElectricity(int x) { }
+    public void ReceiveElectricity(int x) { }
 
     public void ReceiveWorkers(int workers) { }
     public int GetWorkersNeeded() => 0;

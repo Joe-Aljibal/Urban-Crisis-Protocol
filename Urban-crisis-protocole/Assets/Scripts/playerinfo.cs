@@ -12,7 +12,7 @@ public class PlayerInfo
     int electricityUsed = 0;
     int waterTotal = 0;
     int waterUsed = 0;
-    float money = 2000;
+    float money = 1000;
     float researchPoints = 20;
 
     public Dictionary<ResourceType, int> resources = new();

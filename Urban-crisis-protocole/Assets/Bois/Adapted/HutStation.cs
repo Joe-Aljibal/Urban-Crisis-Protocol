@@ -48,7 +48,7 @@ public class HutStation : MonoBehaviour, IBuilding
         throw new System.NotImplementedException();
     }
 
-    public void UseElectricity(int electricity)
+    public void ReceiveElectricity(int electricity)
     {
         throw new System.NotImplementedException();
     }

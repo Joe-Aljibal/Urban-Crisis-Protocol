@@ -75,10 +75,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
         }
     }
 
-    public void UseElectricity(int electricity)
+    public void ReceiveElectricity(int electricity)
     {
         electricityReceived += electricity;
-        playerInfo.UseElectricity(electricity);
 
         if (electricityReceived >= GetElectricityNeeded() && workersReceived >= GetWorkersNeeded())
         {
@@ -100,7 +99,6 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
     public void ReceiveWorkers(int workers)
     {
         workersReceived += workers;
-        playerInfo.AddWorkingPopulation(workers);
 
         if (workersReceived >= GetWorkersNeeded() && electricityReceived >= GetElectricityNeeded())
         {

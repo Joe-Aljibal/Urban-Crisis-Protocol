@@ -44,6 +44,7 @@ public class Water : MonoBehaviour, IBuilding
             dependant.ReceiveWater(amountToGive);
             waterGiven += amountToGive;
             waterDependants.Add(dependant, amountToGive);
+            playerInfo.UseWater(amountToGive);
 
             if (dependant.HasEnoughWorkers())
                 buildingsToRemove.Add(dependant);
@@ -68,7 +69,7 @@ public class Water : MonoBehaviour, IBuilding
     public void Activate() { }
     public void Deactivate(int electricityLost, int workersLost) { throw new System.NotImplementedException(); }
 
-    public void UseElectricity(int electricity) { }
+    public void ReceiveElectricity(int electricity) { }
     public void ReceiveWorkers(int workers) { }
 
     public bool CanPlace() => playerInfo.GetMoney >= waterSO.GetPrice();

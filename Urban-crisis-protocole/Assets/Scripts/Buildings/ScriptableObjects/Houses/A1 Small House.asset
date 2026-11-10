@@ -25,4 +25,4 @@ MonoBehaviour:
   researchPrice: 0
   researchOutput: 0.3
   electricityNeeded: 6
-  waterNeeded: 0
+  waterNeeded: 5
