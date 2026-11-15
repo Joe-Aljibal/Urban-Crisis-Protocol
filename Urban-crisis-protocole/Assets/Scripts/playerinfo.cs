@@ -32,11 +32,17 @@ public class PlayerInfo
     public event Action<string, string> addStat;
 
     private PlayerInfo() { InitializeResources(); }
+    private const int MoneyPerExtractedResource = 10;
+
+    public Dictionary<ResourceType, int> resources = new();
+    private Dictionary<ResourceType, int> exploitedResources = new();
 
     private void InitializeResources()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
             resources[type] = 0;
+            exploitedResources[type] = 0;
+        }
     }
 
     public void AddPopulation(int population)
@@ -60,6 +66,7 @@ public class PlayerInfo
     public int GetElectricityUsed => electricityUsed;
     public int GetAvailableElectricity => electricityTotal - electricityUsed;
 
+<<<<<<< HEAD
     public void AddWater(int water)
     {
         waterTotal += water;
@@ -91,6 +98,55 @@ public class PlayerInfo
     {
         researchPoints += points;
         addStat?.Invoke("ResearchPointsValue", $"{points}");
+=======
+    public void addWater(int water) { this.water += water; }
+    public void useWater(int water) { this.waterUsed += water; }
+    public int getWater => water;
+    public int getWaterUsed => waterUsed;
+    public int getAvailableWater => water - waterUsed;
+
+    public void addFood(int food) { this.food += food; }
+    public int getFood => food;
+
+    public void addMoney(float money) { this.money += money; }
+    public float getMoney => money;
+
+    public void addWood(int wood) { addResource(ResourceType.Wood, wood); }
+    public int getWood => resources[ResourceType.Wood];
+
+    public void addStone(int stone) { addResource(ResourceType.Stone, stone); }
+    public int getStone => resources[ResourceType.Stone];
+
+    public int getCoal => resources[ResourceType.Coal];
+
+    public int getExploitedWood => exploitedResources[ResourceType.Wood];
+    public int getExploitedStone => exploitedResources[ResourceType.Stone];
+    public int getExploitedCoal => exploitedResources[ResourceType.Coal];
+    public int getTotalExploited =>
+        getExploitedWood + getExploitedStone + getExploitedCoal;
+
+    public void addResource(ResourceType type, int amount)
+    {
+        resources[type] += amount;
+
+        if (amount > 0)
+        {
+            exploitedResources[type] += amount;
+        }
+    }
+
+    // Money is awarded when a resource is extracted; stock may arrive later.
+    public void rewardExtraction(int amount)
+    {
+        if (amount > 0) addMoney(amount * MoneyPerExtractedResource);
+    }
+
+    public void collectResource(ResourceType type, int amount)
+    {
+        if (amount <= 0) return;
+        addResource(type, amount);
+        rewardExtraction(amount);
+>>>>>>> c75f9cff08f3bdfc6c5651a1eb04552ba1965b7c
     }
 
     public void StartProvidingElectricity()

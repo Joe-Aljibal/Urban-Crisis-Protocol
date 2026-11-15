@@ -39,6 +39,32 @@ public class BanditRaidEvent : MonoBehaviour
     private int remainingBandits;
     private float totalStolen;
     private string message = "Prêt pour le raid.";
+    [SerializeField] private bool showStandalonePanel = true;
+    public bool IsRunning => raidRunning;
+    public string Status => message;
+
+    public void Configure(Bandit prefab, Transform entrance, MoneyBuilding[] targets)
+    {
+        banditPrefab = prefab;
+        spawnPoint = entrance;
+        moneyBuildings = targets;
+        startAutomatically = false;
+        showStandalonePanel = false;
+    }
+
+    public void SetTargets(MoneyBuilding[] targets)
+    {
+        if (!raidRunning) moneyBuildings = targets;
+    }
+
+    public void StopRaid()
+    {
+        StopAllCoroutines();
+        foreach (Bandit bandit in GetComponentsInChildren<Bandit>()) Destroy(bandit.gameObject);
+        raidRunning = false;
+        remainingBandits = 0;
+        message = "Security secured the area.";
+    }
 
     private IEnumerator Start()
     {
@@ -51,7 +77,7 @@ public class BanditRaidEvent : MonoBehaviour
 
     public void StartRaid()
     {
-        if (raidRunning)
+        if (raidRunning || banditPrefab == null || spawnPoint == null || moneyBuildings == null || moneyBuildings.Length == 0)
             return;
 
         raidRunning = true;
@@ -109,6 +135,7 @@ public class BanditRaidEvent : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!showStandalonePanel) return;
         GUILayout.BeginArea(new Rect(15, 15, 330, 200), GUI.skin.box);
 
         GUILayout.Label("RAID DES BANDITS");
