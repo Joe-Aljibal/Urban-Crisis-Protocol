@@ -1,10 +1,8 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class StaticResource : MonoBehaviour
+public class StaticResource : MonoBehaviour, IDestructible
 {
-    [SerializeField] private float respawnTime = 2.0f;
     [SerializeField] private ResourceType resourceType;
     
     public ResourceType ResourceType => resourceType;
@@ -18,29 +16,57 @@ public class StaticResource : MonoBehaviour
 
     public void Disable()
     {
+        if (!IsActiveResource)
+            return;
+
         IsActiveResource = false;
+        IsAvailable = false;
         DisableComponents();
-        StartCoroutine(RespawnCoroutine());
     }
 
-    private IEnumerator RespawnCoroutine()
-    {
-        yield return new WaitForSeconds(respawnTime);
-        ActivateComponents();
-    }
+    public void DestroyObject() => Disable();
 
-    private void ActivateComponents()
+    public void Restore()
     {
-        gameObject.GetComponent<MeshRenderer>().enabled = true;
-        gameObject.GetComponent<MeshRenderer>().enabled = true;
-        gameObject.GetComponent<NavMeshObstacle>().enabled = true;
         IsActiveResource = true;
+        IsAvailable = true;
+        SetComponentsEnabled(true);
+    }
+
+    public void Configure(ResourceType type)
+    {
+        ResourceManager.UnregisterResource(resourceType, transform);
+
+        resourceType = type;
+
+        ResourceManager.RegisterResource(resourceType, transform);
     }
 
     private void DisableComponents()
     {
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        gameObject.GetComponent<NavMeshObstacle>().enabled = false;
+        SetComponentsEnabled(false);
+    }
+
+    private void SetComponentsEnabled(bool value)
+    {
+        foreach (Renderer resourceRenderer in GetComponentsInChildren<Renderer>())
+        {
+            resourceRenderer.enabled = value;
+        }
+
+        foreach (Collider resourceCollider in GetComponentsInChildren<Collider>())
+        {
+            resourceCollider.enabled = value;
+        }
+
+        foreach (NavMeshObstacle resourceObstacle in GetComponentsInChildren<NavMeshObstacle>())
+        {
+            resourceObstacle.enabled = value;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        ResourceManager.UnregisterResource(resourceType, transform);
     }
 }

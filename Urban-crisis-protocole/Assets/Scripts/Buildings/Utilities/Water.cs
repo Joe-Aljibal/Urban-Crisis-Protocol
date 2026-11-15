@@ -24,6 +24,7 @@ public class Water : MonoBehaviour, IBuilding
     public int GetElectricityNeeded() => waterSO.electricityNeeded;
     public int GetPrice() => waterSO.price;
     public string GetRessource() => waterSO.ressource;
+    public bool HasEnoughElectricity() => true;
     public string GetBuildingType() => waterSO.type;
     public int GetWater => waterSO.water;
     public bool IsActive() => isActive;

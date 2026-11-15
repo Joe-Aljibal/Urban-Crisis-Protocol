@@ -19,14 +19,17 @@ public class PlayerInfo
     int waterUsed;
     int food = 0;
     float money = 2000;
+    private const int MoneyPerExtractedResource = 10;
 
     public Dictionary<ResourceType, int> resources = new();
+    private Dictionary<ResourceType, int> exploitedResources = new();
 
     private void InitializeResources()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
         {
             resources[type] = 0;
+            exploitedResources[type] = 0;
         }
     }
 
@@ -56,7 +59,7 @@ public class PlayerInfo
         else
         {
             this.electricity += electricity;
-            electricityUsed = Mathf.Min(electricityUsed, electricity);
+            electricityUsed = Mathf.Min(electricityUsed, this.electricity);
         }
     }
     public int getElectricity => electricity;
@@ -76,28 +79,67 @@ public class PlayerInfo
     public void addMoney(float money) { this.money += money; }
     public float getMoney => money;
 
-    public void addWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public void addWood(int wood) { addResource(ResourceType.Wood, wood); }
     public int getWood => resources[ResourceType.Wood];
 
-    public void addStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public void addStone(int stone) { addResource(ResourceType.Stone, stone); }
     public int getStone => resources[ResourceType.Stone];
+
+    public int getCoal => resources[ResourceType.Coal];
+
+    public int getExploitedWood => exploitedResources[ResourceType.Wood];
+    public int getExploitedStone => exploitedResources[ResourceType.Stone];
+    public int getExploitedCoal => exploitedResources[ResourceType.Coal];
+    public int getTotalExploited =>
+        getExploitedWood + getExploitedStone + getExploitedCoal;
 
     public void addResource(ResourceType type, int amount)
     {
         resources[type] += amount;
+
+        if (amount > 0)
+        {
+            exploitedResources[type] += amount;
+        }
     }
 
+    // Money is awarded when a resource is extracted; stock may arrive later.
+    public void rewardExtraction(int amount)
+    {
+        if (amount > 0) addMoney(amount * MoneyPerExtractedResource);
+    }
+
+    public void collectResource(ResourceType type, int amount)
+    {
+        if (amount <= 0) return;
+        addResource(type, amount);
+        rewardExtraction(amount);
+    }
+
+    // The dependant and how much it more needs
     public Dictionary<IBuilding, int> electricityDependants = new();
-    public Dictionary<GameObject, int> electricityProviders = new();
+    // The provider and how much it gave
+    public Dictionary<Electricity, int> electricityProviders = new();
 
     public void ElectrifyBuildings()
     {
-        foreach (var pair in electricityProviders)
+        List<Electricity> providersToRemove = new();
+        foreach (var (provider, maxAmount) in electricityProviders)
         {
             if (electricityDependants.Count < 1)
                 break;
 
-            pair.Key.GetComponent<Electricity>().ElectrifyBuildings();
+            provider.GetComponent<Electricity>().ElectrifyBuildings();
+
+            if(!provider.HasEnoughElectricity())
+            {
+                providersToRemove.Add(provider);
+            }
+        }
+
+        foreach (Electricity provider in providersToRemove)
+        {
+            electricityProviders.Remove(provider);
         }
     }
 }

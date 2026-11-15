@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SolarPanelSO
   type: Utility
   ressource: Electricity
-  electricityOutput: 60
+  electricityOutput: 20
   price: 750

@@ -17,6 +17,7 @@ public class HutStation : MonoBehaviour, IBuilding
     public int GetPrice() => woodHutStationSO.price;
     public string GetRessource() => woodHutStationSO.resource;
     public string GetBuildingType() => woodHutStationSO.type;
+    public bool HasEnoughElectricity() => true;
 
     public bool IsActive() => isActive;
 

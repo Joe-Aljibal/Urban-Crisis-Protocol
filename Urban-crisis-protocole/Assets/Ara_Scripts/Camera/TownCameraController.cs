@@ -22,16 +22,16 @@ public class TownCameraController : MonoBehaviour
     private float yaw = 45f;
 
     [SerializeField]
-    private float dragSpeed = 1f;
+    private float dragSpeed = 1.2f;
 
     [SerializeField]
-    private float speed = 30f;
+    private float movementSmoothness = 5f;
 
     [SerializeField]
-    private float zoomTransitionSpeed = 20f;
+    private float zoomSmoothness = 8f;
 
     [SerializeField]
-    private float panLimit = 20f;
+    private float panLimit = 190f;
 
     [SerializeField]
     private float cameraDistance = 60f;
@@ -41,6 +41,9 @@ public class TownCameraController : MonoBehaviour
 
     [SerializeField]
     private float zoomSpeed = 2f;
+
+    [SerializeField]
+    private float rotationSpeed = 0.25f;
 
     [SerializeField]
     private float minimumZoom = 8f;
@@ -56,6 +59,8 @@ public class TownCameraController : MonoBehaviour
     private Vector2 previousMousePosition;
     private CameraView currentView;
 
+    public Vector3 FocusPosition => GetCurrentTown().position + panOffset;
+
     private void Start()
     {
         cameraComponent = GetComponent<Camera>();
@@ -69,13 +74,25 @@ public class TownCameraController : MonoBehaviour
     {
         HandleCameraSwitchButtons();
         HandleZoom();
+        HandleRotation();
         HandleMouseDrag();
         MoveCamera();
+    }
+
+    private void HandleRotation()
+    {
+        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
+            return;
+
+        Mouse mouse = Mouse.current;
+        if (mouse != null && mouse.rightButton.isPressed)
+            yaw += mouse.delta.ReadValue().x * rotationSpeed;
     }
 
     private void HandleCameraSwitchButtons()
     {
         Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
         CameraView previousView = currentView;
 
         if (keyboard.digit1Key.wasPressedThisFrame)
@@ -108,6 +125,7 @@ public class TownCameraController : MonoBehaviour
     private void HandleMouseDrag()
     {
         Mouse mouse = Mouse.current;
+        if (mouse == null) return;
 
         Vector2 currentMousePosition = mouse.position.ReadValue();
         if (mouse.middleButton.wasPressedThisFrame)
@@ -127,13 +145,12 @@ public class TownCameraController : MonoBehaviour
             forward.Normalize();
 
             float worldUnitsPerPixel = cameraComponent.orthographicSize * 2f / Screen.height;
-            panOffset -=
+            MoveFocus(
                 (right * mouseDifference.x + forward * mouseDifference.y)
                 * worldUnitsPerPixel
-                * dragSpeed;
+                * -dragSpeed
+            );
 
-            panOffset.x = Mathf.Clamp(panOffset.x, -panLimit, panLimit);
-            panOffset.z = Mathf.Clamp(panOffset.z, -panLimit, panLimit);
             previousMousePosition = currentMousePosition;
         }
         if (mouse.middleButton.wasReleasedThisFrame)
@@ -144,7 +161,11 @@ public class TownCameraController : MonoBehaviour
 
     private void HandleZoom()
     {
+        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
+            return;
+
         Mouse mouse = Mouse.current;
+        if (mouse == null) return;
 
         float mouseWheel = mouse.scroll.ReadValue().y;
 
@@ -166,32 +187,21 @@ public class TownCameraController : MonoBehaviour
     private void MoveCamera()
     {
         Quaternion cameraRotation = Quaternion.Euler(pitch, yaw, 0f);
+        Vector3 targetPosition =
+            FocusPosition - cameraRotation * Vector3.forward * cameraDistance;
 
-        Vector3 focusPosition;
-
-        if (currentView == CameraView.HumanTown)
-        {
-            focusPosition = humanTown.position + panOffset;
-        }
-        else
-        {
-            focusPosition = aiTown.position + panOffset;
-        }
-
-        Vector3 targetPosition = focusPosition - cameraRotation * Vector3.forward * cameraDistance;
-
-        transform.position = Vector3.MoveTowards(
+        transform.position = Vector3.Lerp(
             transform.position,
             targetPosition,
-            speed * Time.deltaTime
+            movementSmoothness * Time.deltaTime
         );
 
         transform.rotation = cameraRotation;
 
-        cameraComponent.orthographicSize = Mathf.MoveTowards(
+        cameraComponent.orthographicSize = Mathf.Lerp(
             cameraComponent.orthographicSize,
             townZoom,
-            zoomTransitionSpeed * Time.deltaTime
+            zoomSmoothness * Time.deltaTime
         );
     }
 
@@ -199,7 +209,54 @@ public class TownCameraController : MonoBehaviour
     {
         Quaternion cameraRotation = Quaternion.Euler(pitch, yaw, 0f);
         transform.rotation = cameraRotation;
-        transform.position = humanTown.position - cameraRotation * Vector3.forward * cameraDistance;
+        transform.position =
+            FocusPosition - cameraRotation * Vector3.forward * cameraDistance;
         cameraComponent.orthographicSize = townZoom;
+    }
+
+    public void MoveFocus(Vector3 movement)
+    {
+        panOffset += movement;
+        ClampPanOffset();
+    }
+
+    public void FocusOnGround(Vector3 groundPosition)
+    {
+        Vector3 humanDistance = groundPosition - humanTown.position;
+        Vector3 aiDistance = groundPosition - aiTown.position;
+
+        humanDistance.y = 0f;
+        aiDistance.y = 0f;
+
+        if (humanDistance.sqrMagnitude <= aiDistance.sqrMagnitude)
+        {
+            currentView = CameraView.HumanTown;
+        }
+        else
+        {
+            currentView = CameraView.AiTown;
+        }
+
+        panOffset = groundPosition - GetCurrentTown().position;
+        panOffset.y = 0f;
+
+        ClampPanOffset();
+        dragging = false;
+    }
+
+    private Transform GetCurrentTown()
+    {
+        if (currentView == CameraView.HumanTown)
+        {
+            return humanTown;
+        }
+
+        return aiTown;
+    }
+
+    private void ClampPanOffset()
+    {
+        panOffset.x = Mathf.Clamp(panOffset.x, -panLimit, panLimit);
+        panOffset.z = Mathf.Clamp(panOffset.z, -panLimit, panLimit);
     }
 }

@@ -19,19 +19,28 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] private Material[] materials = new Material[2];
 
     private UiManager uiManager;
+    public string Status { get; private set; } = "Choose a building, then place it.";
+    public bool HasSelection => currentBuidlingCard != null;
+
+    public void Configure(GameObject platform, GameObject previewGrid, Material valid, Material invalid)
+    {
+        gridPlateform = platform;
+        movableGrid = previewGrid;
+        materials = new[] { valid, invalid };
+    }
 
      
     void Start()
     {
         gridComponent = gridPlateform.GetComponent<Grid>();
         uiManager = GetComponent<UiManager>();
-        uiManager.OnInteractWithMenu += ResetDefaultBuilding;
+        if (uiManager != null) uiManager.OnInteractWithMenu += ResetDefaultBuilding;
 
     }
 
     void Update()
     {
-        if (currentBuidlingCard != null)
+        if (currentBuidlingCard != null && Mouse.current != null && Keyboard.current != null)
         {
             MoveGridAround(FindMousePositionOnGrid());
         }
@@ -40,16 +49,11 @@ public class BuildingManager : MonoBehaviour
 
     Vector3? DetecteGround()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 mousePosition = hit.point;
-            if (hit.transform.gameObject != gridPlateform) return null;
-
-            return mousePosition;
-        }
-        return null;
+        if (Camera.main == null || Mouse.current == null) return null;
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Collider buildArea = gridPlateform.GetComponent<Collider>();
+        return buildArea != null && buildArea.Raycast(ray, out RaycastHit hit, 1000f)
+            ? hit.point : (Vector3?)null;
     }
 
     Vector3? FindMousePositionOnGrid()
@@ -118,7 +122,7 @@ public class BuildingManager : MonoBehaviour
         currentSelectedBuildingClone.transform.position = exactPosition;
 
 
-        if (Keyboard.current.sKey.wasPressedThisFrame)
+        if (!CityConstruction.IsMenuOpen && Keyboard.current != null && Keyboard.current.sKey.wasPressedThisFrame)
         {
             currentSelectedBuildingClone.transform.Rotate(0, 90, 0);
         }
@@ -133,41 +137,86 @@ public class BuildingManager : MonoBehaviour
         {
             ChangeBuildingColor(materials[0]);
             // trouver si bouton
-            if (Mouse.current.leftButton.IsPressed() && !FindUiButtonUnderMouse())
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !FindUiButtonUnderMouse())
+                TryPlace(currentBuidlingCard, position, currentSelectedBuildingClone.transform.rotation);
+        }
+    }
+
+    public void RotatePreview()
+    {
+        if (currentSelectedBuildingClone != null) currentSelectedBuildingClone.transform.Rotate(0, 90, 0);
+    }
+
+    // Places one existing card immediately. Returns false without charging when blocked.
+    public bool TryPlace(BuildingCard card, Vector3 gridPosition, Quaternion rotation)
+    {
+        if (card == null || card.completPrefab == null || card.placementRule == null) return false;
+        if (gridComponent == null) gridComponent = gridPlateform.GetComponent<Grid>();
+        Vector3[] occupied = card.placementRule.CanPlaceBuilding(gridPosition, GetAllPositionStored());
+        if (occupied == null) { Status = "This space is occupied."; return false; }
+        IBuilding building = card.completPrefab.GetComponent<IBuilding>();
+        int cost = building != null ? building.GetPrice() : 0;
+        if (PlayerInfo.Instance.getMoney < cost) { Status = "Not enough money ($" + cost + ")."; return false; }
+        Vector3 position = card.placementRule.ChangeFuturPosition(gridPosition);
+        GameObject placed = Instantiate(card.completPrefab, position, rotation);
+        CityStructure condition = placed.GetComponent<CityStructure>();
+        if (condition == null) condition = placed.AddComponent<CityStructure>();
+        condition.Configure("Construction", Color.white);
+        FindAnyObjectByType<CityPowerOutage>()?.IncludeBuilding(placed);
+        if (placed.GetComponentInChildren<Collider>() == null)
+        {
+            Renderer renderer = placed.GetComponentInChildren<Renderer>();
+            if (renderer != null)
             {
-                movableGrid.SetActive(false);
-                Destroy(currentSelectedSlot);
-                GameObject newBuilding = Instantiate(currentBuidlingCard.completPrefab, currentSelectedBuildingClone.transform.position, currentSelectedBuildingClone.transform.rotation);
-                
-
-                // !! special section (hut)
-                /*
-                if (newBuilding.TryGetComponent(out LocalHutManager r))
-                 {
-                      r.resource manager = 
-                 }
-                */
-
-                
-                Destroy(currentSelectedBuildingClone);
-                currentSelectedBuildingClone = null;
-                currentBuidlingCard = null;
-
-                buildingsPositions[newBuilding] = new List<Vector3> { newBuilding.transform.position };
-
-                foreach (Vector3 v in positionOccupiedByBuilding)
-                {
-                    buildingsPositions[newBuilding].Add(v);
-                }
-
+                BoxCollider collider = placed.AddComponent<BoxCollider>();
+                collider.center = placed.transform.InverseTransformPoint(renderer.bounds.center);
+                Vector3 scale = placed.transform.lossyScale;
+                collider.size = new Vector3(renderer.bounds.size.x / Mathf.Max(0.001f, Mathf.Abs(scale.x)), renderer.bounds.size.y / Mathf.Max(0.001f, Mathf.Abs(scale.y)), renderer.bounds.size.z / Mathf.Max(0.001f, Mathf.Abs(scale.z)));
             }
         }
+        PlayerInfo.Instance.addMoney(-cost);
+        buildingsPositions[placed] = new List<Vector3>(occupied);
+        Status = card.name + " built ($" + cost + ").";
+        ResetDefaultBuilding();
+        return true;
+    }
+
+    // An explicit button can place the selection without relying on a precise mouse ray.
+    public bool PlaceSelectedInBuildArea()
+    {
+        if (currentBuidlingCard == null || gridPlateform == null)
+        {
+            Status = "Choose a building first.";
+            return false;
+        }
+        BuildingCard card = currentBuidlingCard;
+        IBuilding building = card.completPrefab != null ? card.completPrefab.GetComponent<IBuilding>() : null;
+        if (building != null && PlayerInfo.Instance.getMoney < building.GetPrice())
+        {
+            Status = "Not enough money ($" + building.GetPrice() + ").";
+            return false;
+        }
+        Vector3 center = gridPlateform.transform.position;
+        Quaternion rotation = currentSelectedBuildingClone != null ? currentSelectedBuildingClone.transform.rotation : Quaternion.identity;
+        int[] offsets = { 0, 4, -4, 8, -8, 12, -12 };
+        foreach (int z in offsets)
+        {
+            foreach (int x in offsets)
+            {
+                Vector3 position = new Vector3(center.x + x, center.y + 0.01f, center.z + z);
+                if (TryPlace(card, position, rotation)) return true;
+            }
+        }
+        Status = "No open space in the build area.";
+        return false;
     }
 
     bool FindUiButtonUnderMouse()
     {
+        if (CityFireEvent.IsPointerOverPanel || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel) return true;
+        if (EventSystem.current == null) return false;
         PointerEventData data = new PointerEventData(EventSystem.current);
-        data.position = Input.mousePosition;
+        data.position = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
 
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(data, results);
@@ -183,15 +232,18 @@ public class BuildingManager : MonoBehaviour
     List<Vector3> GetAllPositionStored()
     {
         List<Vector3> positions = new List<Vector3>();
+        List<GameObject> removed = new List<GameObject>();
         foreach (var variable in buildingsPositions)
         {
-            List<Vector3> positionsStored = buildingsPositions[variable.Key];
+            if (variable.Key == null) { removed.Add(variable.Key); continue; }
+            List<Vector3> positionsStored = variable.Value;
 
             foreach (Vector3 positionStored in positionsStored)
             {
                 positions.Add(positionStored);
             }
         }
+        foreach (GameObject building in removed) buildingsPositions.Remove(building);
         return positions;
     }
 
@@ -222,6 +274,7 @@ public class BuildingManager : MonoBehaviour
     {
         ResetDefaultBuilding();
 
+        Status = "Click the area or press Place building.";
         currentBuidlingCard = selectBuildingCard;
         CreateBuilding();
     }
@@ -235,6 +288,13 @@ public class BuildingManager : MonoBehaviour
             movableGrid.SetActive(false);
             currentBuidlingCard = null;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (uiManager != null) uiManager.OnInteractWithMenu -= ResetDefaultBuilding;
+        if (currentSelectedBuildingClone != null) Destroy(currentSelectedBuildingClone);
+        if (currentSelectedSlot != null) Destroy(currentSelectedSlot);
     }
 
 
