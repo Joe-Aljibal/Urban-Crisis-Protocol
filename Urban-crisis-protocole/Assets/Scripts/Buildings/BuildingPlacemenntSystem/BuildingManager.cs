@@ -29,7 +29,7 @@ public class BuildingManager : MonoBehaviour
         materials = new[] { valid, invalid };
     }
 
-     
+
     void Start()
     {
         gridComponent = gridPlateform.GetComponent<Grid>();
@@ -37,6 +37,8 @@ public class BuildingManager : MonoBehaviour
         if (uiManager != null) uiManager.OnInteractWithMenu += ResetDefaultBuilding;
 
     }
+
+    float cooldown = 0;
 
     void Update()
     {
@@ -137,6 +139,37 @@ public class BuildingManager : MonoBehaviour
         {
             ChangeBuildingColor(materials[0]);
             // trouver si bouton
+<<<<<<< HEAD
+            if (Mouse.current.leftButton.IsPressed()
+                && !FindUiButtonUnderMouse()
+                && currentBuidlingCard.completPrefab.GetComponent<IBuilding>().CanPlace())
+            {
+                movableGrid.SetActive(false);
+                Destroy(currentSelectedSlot);
+                GameObject newBuilding = Instantiate(currentBuidlingCard.completPrefab, currentSelectedBuildingClone.transform.position, currentSelectedBuildingClone.transform.rotation);
+
+
+                // !! special section (hut)
+                /*
+                if (newBuilding.TryGetComponent(out LocalHutManager r))
+                 {
+                      r.resource manager = 
+                 }
+                */
+
+
+                Destroy(currentSelectedBuildingClone);
+                currentSelectedBuildingClone = null;
+                currentBuidlingCard = null;
+
+                buildingsPositions[newBuilding] = new List<Vector3> { newBuilding.transform.position };
+
+                foreach (Vector3 v in positionOccupiedByBuilding)
+                {
+                    buildingsPositions[newBuilding].Add(v);
+                }
+
+=======
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !FindUiButtonUnderMouse())
                 TryPlace(currentBuidlingCard, position, currentSelectedBuildingClone.transform.rotation);
         }
@@ -172,6 +205,7 @@ public class BuildingManager : MonoBehaviour
                 collider.center = placed.transform.InverseTransformPoint(renderer.bounds.center);
                 Vector3 scale = placed.transform.lossyScale;
                 collider.size = new Vector3(renderer.bounds.size.x / Mathf.Max(0.001f, Mathf.Abs(scale.x)), renderer.bounds.size.y / Mathf.Max(0.001f, Mathf.Abs(scale.y)), renderer.bounds.size.z / Mathf.Max(0.001f, Mathf.Abs(scale.z)));
+>>>>>>> c75f9cff08f3bdfc6c5651a1eb04552ba1965b7c
             }
         }
         PlayerInfo.Instance.addMoney(-cost);

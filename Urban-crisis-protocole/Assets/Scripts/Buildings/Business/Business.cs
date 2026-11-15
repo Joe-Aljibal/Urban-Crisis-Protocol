@@ -1,75 +1,124 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-public class Business: MonoBehaviour, IBuilding
+public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 {
-    [SerializeField] BusinessesSO businessesSO;
-    PlayerInfo playerinfo = PlayerInfo.Instance;
+    [SerializeField] BusinessesSO businessSO;
+    PlayerInfo playerInfo = PlayerInfo.Instance;
 
     int electricityReceived = 0;
+    public int workersReceived = 0;
+
     float cooldown = 0;
-    bool isActive = true;
+    bool isActive = false;
+    bool isFirstActivation = true;
 
     void Start()
     {
-        playerinfo.electricityDependants.Add(this, 0);
-        playerinfo.ElectrifyBuildings();
-        playerinfo.addWorkingPopulation(businessesSO.population);
+        playerInfo.AddMoney(-businessSO.GetPrice());
+
+        playerInfo.electricityDependants.Add(this);
+        playerInfo.workerDependants.Add(this);
+        playerInfo.StartProvidingElectricity();
+        playerInfo.StartProvidingWorkers();
+
+        playerInfo.AddResearchPoints(businessSO.GetResearchOutput());
     }
 
     void Update()
     {
-        if (cooldown >= 1 && isActive)
+        if (!isActive)
         {
-            playerinfo.addMoney(businessesSO.profit);
             cooldown = 0;
+            return;
         }
-            cooldown = isActive ? cooldown + Time.deltaTime : 0;
+
+        if (cooldown >= 1)
+        {
+            playerInfo.AddMoney(businessSO.GetProfit());
+            cooldown = 0;
+            return;
+        }
+        cooldown += Time.deltaTime;
     }
 
     public void DeleteButton()
     {
-        playerinfo.addMoney(businessesSO.price * .8f);
-        playerinfo.UseElectricity(-businessesSO.electricityNeeded);
-        playerinfo.addWorkingPopulation(-businessesSO.population);
+        playerInfo.AddMoney(businessSO.GetPrice() * .8f);
 
+        playerInfo.UseElectricity(-businessSO.GetElectricityNeeded());
         Destroy(gameObject);
     }
 
-    public void Deactivate(int electricityLost) {
+    public void Deactivate(int electricityLost, int workersLost) {
         isActive = false;
         electricityReceived -= electricityLost;
-        playerinfo.electricityDependants.Add(this, electricityReceived);
-        playerinfo.UseElectricity(-electricityLost);
+        workersReceived -= workersLost;
+
+        if (electricityLost > 0)
+            playerInfo.electricityDependants.Add(this);
+
+        if (workersLost > 0)
+            playerInfo.workerDependants.Add(this);
     }
     public void Activate() {
-        isActive = true;
-        playerinfo.UseElectricity(businessesSO.electricityNeeded);
+
+        if (HasEnoughElectricity() && HasEnoughWorkers())
+        {
+            isActive = true;
+        }
+
+        if (isFirstActivation)
+        {
+            playerInfo.AddResearchPoints(businessSO.GetResearchOutput());
+            isFirstActivation = false;
+        }
     }
 
-    public void UseElectricity(int electricity)
+    public void ReceiveElectricity(int electricity)
     {
         electricityReceived += electricity;
-        playerinfo.UseElectricity(electricity);
 
-        if (electricityReceived == GetElectricityNeeded())
+        if (electricityReceived >= GetElectricityNeeded() && workersReceived >= GetWorkersNeeded())
         {
             Activate();
-            playerinfo.electricityDependants.Remove(this);
         }
     }
 
     public bool IsActive() => isActive;
-    public IBuildingSO GetBuildingSO() => businessesSO;
-    public string GetBuildingType() => businessesSO.type;
-    public string GetRessource() => businessesSO.ressource;
-    public int GetPopulation() => businessesSO.population;
-    public int GetPrice() => businessesSO.price;
-    public bool HasEnoughElectricity() => businessesSO.electricityNeeded <= electricityReceived;
+    public IBuildingSO GetBuildingSO() => businessSO;
+    public string GetRessource() => businessSO.GetRessource();
+    public int GetWorkerPopulation() => workersReceived;
+    public int GetPrice() => businessSO.GetPrice();
+    public bool HasEnoughElectricity() => businessSO.GetElectricityNeeded() <= electricityReceived;
+    public bool HasEnoughWorkers() => businessSO.GetWorkersNeeded() <= workersReceived;
     public int GetElectricityReceived() => electricityReceived;
-    public int GetElectricityNeeded() => businessesSO.electricityNeeded;
-    public int GetProfit() => businessesSO.profit;
-    public bool CanPlace() =>
-        playerinfo.getMoney >= businessesSO.price &&
-        playerinfo.getAvailableElectricity >= businessesSO.electricityNeeded &&
-        playerinfo.getAvailablePopulation >= businessesSO.population;
+    public int GetProfit() => businessSO.GetProfit();
+    public bool CanPlace() => playerInfo.GetMoney >= businessSO.GetPrice();
+
+    public void ReceiveWorkers(int workers)
+    {
+        workersReceived += workers;
+
+        if (workersReceived >= GetWorkersNeeded() && electricityReceived >= GetElectricityNeeded())
+        {
+            Activate();
+        }
+    }
+
+    public int GetWorkersNeeded() => businessSO.GetWorkersNeeded() - workersReceived;
+    public int GetPopulation() => businessSO.GetWorkersNeeded();
+    public int GetElectricityNeeded() => businessSO.GetElectricityNeeded();
+
+    public List<UiDataModel> GetUiDataList()
+    {
+
+        
+        return new List<UiDataModel>
+        { 
+           new UiDataModel(UiDataType.NAME, "businessSO.type"),
+           new UiDataModel(UiDataType.PRICE, businessSO.GetPrice().ToString())
+        };
+    }
+
 }
