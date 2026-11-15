@@ -12,6 +12,7 @@ public class PlayerInfo
     int electricityUsed = 0;
     int waterTotal = 0;
     int waterUsed = 0;
+
     float money = 1000;
     float researchPoints = 20;
 
@@ -34,12 +35,13 @@ public class PlayerInfo
     private PlayerInfo() { InitializeResources(); }
     private const int MoneyPerExtractedResource = 10;
 
-    public Dictionary<ResourceType, int> resources = new();
+  
     private Dictionary<ResourceType, int> exploitedResources = new();
 
     private void InitializeResources()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
             resources[type] = 0;
             exploitedResources[type] = 0;
         }
@@ -66,7 +68,6 @@ public class PlayerInfo
     public int GetElectricityUsed => electricityUsed;
     public int GetAvailableElectricity => electricityTotal - electricityUsed;
 
-<<<<<<< HEAD
     public void AddWater(int water)
     {
         waterTotal += water;
@@ -98,15 +99,15 @@ public class PlayerInfo
     {
         researchPoints += points;
         addStat?.Invoke("ResearchPointsValue", $"{points}");
-=======
-    public void addWater(int water) { this.water += water; }
+    }
+    public void addWater(int water) { this.waterTotal += water; }
     public void useWater(int water) { this.waterUsed += water; }
-    public int getWater => water;
+    public int getWater => waterTotal;
     public int getWaterUsed => waterUsed;
-    public int getAvailableWater => water - waterUsed;
+    public int getAvailableWater => waterTotal - waterUsed;
 
-    public void addFood(int food) { this.food += food; }
-    public int getFood => food;
+    // public void addFood(int food) { this.food += food; }
+    // public int getFood => food;
 
     public void addMoney(float money) { this.money += money; }
     public float getMoney => money;
@@ -146,7 +147,6 @@ public class PlayerInfo
         if (amount <= 0) return;
         addResource(type, amount);
         rewardExtraction(amount);
->>>>>>> c75f9cff08f3bdfc6c5651a1eb04552ba1965b7c
     }
 
     public void StartProvidingElectricity()

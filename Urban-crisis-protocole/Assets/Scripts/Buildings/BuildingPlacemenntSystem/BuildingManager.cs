@@ -139,7 +139,6 @@ public class BuildingManager : MonoBehaviour
         {
             ChangeBuildingColor(materials[0]);
             // trouver si bouton
-<<<<<<< HEAD
             if (Mouse.current.leftButton.IsPressed()
                 && !FindUiButtonUnderMouse()
                 && currentBuidlingCard.completPrefab.GetComponent<IBuilding>().CanPlace())
@@ -169,9 +168,8 @@ public class BuildingManager : MonoBehaviour
                     buildingsPositions[newBuilding].Add(v);
                 }
 
-=======
-            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !FindUiButtonUnderMouse())
-                TryPlace(currentBuidlingCard, position, currentSelectedBuildingClone.transform.rotation);
+           // if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !FindUiButtonUnderMouse())  TryPlace(currentBuidlingCard, position, currentSelectedBuildingClone.transform.rotation);
+        }
         }
     }
 
@@ -189,7 +187,7 @@ public class BuildingManager : MonoBehaviour
         if (occupied == null) { Status = "This space is occupied."; return false; }
         IBuilding building = card.completPrefab.GetComponent<IBuilding>();
         int cost = building != null ? building.GetPrice() : 0;
-        if (PlayerInfo.Instance.getMoney < cost) { Status = "Not enough money ($" + cost + ")."; return false; }
+        if (PlayerInfo.Instance.GetMoney < cost) { Status = "Not enough money ($" + cost + ")."; return false; }
         Vector3 position = card.placementRule.ChangeFuturPosition(gridPosition);
         GameObject placed = Instantiate(card.completPrefab, position, rotation);
         CityStructure condition = placed.GetComponent<CityStructure>();
@@ -205,7 +203,6 @@ public class BuildingManager : MonoBehaviour
                 collider.center = placed.transform.InverseTransformPoint(renderer.bounds.center);
                 Vector3 scale = placed.transform.lossyScale;
                 collider.size = new Vector3(renderer.bounds.size.x / Mathf.Max(0.001f, Mathf.Abs(scale.x)), renderer.bounds.size.y / Mathf.Max(0.001f, Mathf.Abs(scale.y)), renderer.bounds.size.z / Mathf.Max(0.001f, Mathf.Abs(scale.z)));
->>>>>>> c75f9cff08f3bdfc6c5651a1eb04552ba1965b7c
             }
         }
         PlayerInfo.Instance.addMoney(-cost);
