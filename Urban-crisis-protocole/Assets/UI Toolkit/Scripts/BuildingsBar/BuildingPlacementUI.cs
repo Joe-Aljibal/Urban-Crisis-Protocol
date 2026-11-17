@@ -44,6 +44,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
     private void Awake()
     {
+        if (!enabled) return;
 
         panelRenderer = GetComponent<PanelRenderer>();
         panelRenderer.RegisterUIReloadCallback(BuildingsPlacementUI);
@@ -263,7 +264,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        panelRenderer.UnregisterUIReloadCallback(BuildingsPlacementUI);
+        if (panelRenderer != null) panelRenderer.UnregisterUIReloadCallback(BuildingsPlacementUI);
     }
 
     void Update()

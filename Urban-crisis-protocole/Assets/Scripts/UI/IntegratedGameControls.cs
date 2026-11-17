@@ -13,7 +13,7 @@ public class IntegratedGameControls : MonoBehaviour
     private void OnGUI()
     {
         GUILayout.BeginArea(new Rect(Screen.width - 220, 20, 200, 100), GUI.skin.box);
-        if (GUILayout.Button(researchOpen ? "Fermer recherche" : "Recherche")) researchOpen = !researchOpen;
+        if (FindAnyObjectByType<JackCityUI>() == null && GUILayout.Button(researchOpen ? "Fermer recherche" : "Recherche")) researchOpen = !researchOpen;
         if (GUILayout.Button("Casino")) casino.OpenPanel();
         GUILayout.EndArea();
         if (!researchOpen) return;

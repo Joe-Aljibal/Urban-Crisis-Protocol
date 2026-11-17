@@ -104,7 +104,7 @@ public class ResearchTreeUI : MonoBehaviour
             btn.style.borderTopColor = Color.green;
             btn.SetEnabled(true);
 
-            foreach (var b in nextButtons)
+            if (nextButtons != null) foreach (var b in nextButtons)
             {
                 root.Q<Button>(b).SetEnabled(true);
             }

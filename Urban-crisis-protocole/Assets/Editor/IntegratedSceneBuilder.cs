@@ -34,6 +34,15 @@ public static class IntegratedSceneBuilder
             SceneManager.MoveGameObjectToScene(root, scene);
         }
         EditorSceneManager.CloseScene(mainUi, true);
+        var jack = EditorSceneManager.OpenScene("Assets/Scenes/Jack.unity", OpenSceneMode.Additive);
+        var jackPanel = jack.GetRootGameObjects().FirstOrDefault(root => root.name == "PanelRenderer");
+        if (jackPanel == null || jackPanel.GetComponent<ResearchTreeUI>() == null)
+            throw new System.InvalidOperationException("Jack's UI panel was not found.");
+        foreach (var behaviour in jackPanel.GetComponents<MonoBehaviour>())
+            if (!(behaviour is ResearchTreeUI)) behaviour.enabled = false;
+        jackPanel.AddComponent<JackCityUI>();
+        SceneManager.MoveGameObjectToScene(jackPanel, scene);
+        EditorSceneManager.CloseScene(jack, true);
         SceneManager.SetActiveScene(scene);
         new GameObject("Integrated Game Controls").AddComponent<IntegratedGameControls>();
         EditorSceneManager.MarkSceneDirty(scene);

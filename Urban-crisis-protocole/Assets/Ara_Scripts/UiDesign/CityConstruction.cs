@@ -21,6 +21,14 @@ public class CityConstruction : MonoBehaviour
     public static bool IsPointerOverPanel => instance != null && !CityFireEvent.IsMenuOpen && Mouse.current != null &&
         (instance.menuOpen ? Panel : Tab).Contains(new Vector2(Mouse.current.position.ReadValue().x, Screen.height - Mouse.current.position.ReadValue().y));
 
+    public BuildingCard[] Cards => cards;
+    public void SelectCard(BuildingCard card)
+    {
+        if (manager == null || card == null) return;
+        FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
+        manager.ChangeCurrentBuildingCard(card);
+    }
+
     private void Start()
     {
         instance = this;
@@ -70,7 +78,7 @@ public class CityConstruction : MonoBehaviour
 
     private void OnGUI()
     {
-        if (manager == null || CityFireEvent.IsMenuOpen) return;
+        if (manager == null || CityFireEvent.IsMenuOpen || FindAnyObjectByType<JackCityUI>() != null) return;
         if (!menuOpen)
         {
             if (GUI.Button(Tab, "Construction (E)")) ToggleMenu();
