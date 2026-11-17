@@ -125,4 +125,5 @@ public class Electricity : MonoBehaviour, IBuilding, ISellable, IElectricityProv
 
     public void Sell() { playerInfo.RemoveBuilding(gameObject); DeleteButton(); }
 
+    public void ElectrifyBuildings() => ProvideElectricity();
 }

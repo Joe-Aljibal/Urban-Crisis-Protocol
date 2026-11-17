@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3954112697859179201}
   - component: {fileID: -2777999238529562052}
   m_Layer: 0
-  m_Name: Npc
+  m_Name: WoodNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
