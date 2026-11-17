@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class GambleBuilding: MonoBehaviour, IBuilding, IBuildingUiData
+public class GambleBuilding : MonoBehaviour, IBuilding, IBuildingUiData
 {
     [SerializeField] GambleBuildingSO gambleBuildingSO;
     //[SerializeField] Image workersImage;
@@ -53,7 +53,8 @@ public class GambleBuilding: MonoBehaviour, IBuilding, IBuildingUiData
         Destroy(gameObject);
     }
 
-    public void Deactivate(int electricityLost, int workersLost) {
+    public void Deactivate(int electricityLost, int workersLost)
+    {
         isActive = false;
         electricityReceived -= electricityLost;
         workersReceived -= workersLost;
@@ -64,7 +65,8 @@ public class GambleBuilding: MonoBehaviour, IBuilding, IBuildingUiData
         if (workersLost > 0)
             playerinfo.workerDependants.Add(this);
     }
-    public void Activate() {
+    public void Activate()
+    {
 
         if (HasEnoughElectricity() && HasEnoughWorkers())
         {
@@ -106,6 +108,16 @@ public class GambleBuilding: MonoBehaviour, IBuilding, IBuildingUiData
         }
     }
 
+    public void ReceiveElectricity(int electricity)
+    {
+        electricityReceived += electricity;
+
+        if (electricityReceived >= GetElectricityNeeded() && workersReceived >= GetWorkersNeeded())
+        {
+            Activate();
+        }
+    }
+
     public int GetWorkersNeeded() => gambleBuildingSO.workersNeeded - workersReceived;
     public int GetPopulation() => gambleBuildingSO.workersNeeded;
     public int GetElectricityNeeded() => gambleBuildingSO.electricityNeeded;
@@ -113,9 +125,9 @@ public class GambleBuilding: MonoBehaviour, IBuilding, IBuildingUiData
     public List<UiDataModel> GetUiDataList()
     {
 
-        
+
         return new List<UiDataModel>
-        { 
+        {
            new UiDataModel(UiDataType.NAME, gambleBuildingSO.type),
            new UiDataModel(UiDataType.PRICE, gambleBuildingSO.price.ToString())
         };

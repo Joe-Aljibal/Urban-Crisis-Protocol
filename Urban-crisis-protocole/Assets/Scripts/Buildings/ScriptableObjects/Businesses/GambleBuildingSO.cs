@@ -17,12 +17,16 @@ public class GambleBuildingSO : ScriptableObject, IBuildingSO
     public int workersNeeded;
     public int price;
     public int profit;
+    [SerializeField] int researchPrice;
+    [SerializeField] float researchOutput;
     public BuildingCard card;
 
     public BuildingTypes GetBuildingType() => buildingType;
     public Sprite GetIcon() => icon;
     public BuildingCard GetCard() => card;
     public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;
+    public int GetResearchPrice() => researchPrice;
+    public float GetResearchOutput() => researchOutput;
     public string GetBuildingName() => "💵 " + buildingName;
 
     public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>
