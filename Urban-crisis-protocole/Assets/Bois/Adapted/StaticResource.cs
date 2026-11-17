@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class StaticResource : MonoBehaviour
+public class StaticResource : MonoBehaviour, IDestructible
 {
     [SerializeField] private ResourceType resourceType;
     
@@ -23,6 +23,8 @@ public class StaticResource : MonoBehaviour
         IsAvailable = false;
         DisableComponents();
     }
+
+    public void DestroyObject() => Disable();
 
     public void Restore()
     {

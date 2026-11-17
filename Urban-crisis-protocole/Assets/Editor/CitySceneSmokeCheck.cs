@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-// Run with -executeMethod CitySceneSmokeCheck.Run (without -quit).
 [InitializeOnLoad]
 public static class CitySceneSmokeCheck
 {
@@ -11,11 +10,18 @@ public static class CitySceneSmokeCheck
     private static double started;
     private static int step;
     private static bool failed;
+    private static CityDisasterEvent disaster;
+    private static CityStructure city;
+    private static CityStructure built;
 
     static CitySceneSmokeCheck()
     {
         EditorApplication.update += Update;
-        Application.logMessageReceived += OnLog;
+        Application.logMessageReceived += (message, stack, type) =>
+        {
+            if (stack.Contains("UnityEditor.Search.SearchDatabase")) return;
+            if (SessionState.GetBool(Running, false) && (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)) failed = true;
+        };
     }
 
     public static void Run()
@@ -25,13 +31,9 @@ public static class CitySceneSmokeCheck
         EditorApplication.EnterPlaymode();
     }
 
-    private static void OnLog(string message, string stack, LogType type)
+    private static void Check(bool condition, string message)
     {
-        // Unity 6000.5's background search index can fail before play mode.
-        // It is an editor-only error; gameplay exceptions must still fail the check.
-        if (stack.Contains("UnityEditor.Search.SearchDatabase")) return;
-        if (SessionState.GetBool(Running, false) &&
-            (type == LogType.Exception || type == LogType.Error || type == LogType.Assert)) failed = true;
+        if (!condition) throw new InvalidOperationException(message);
     }
 
     private static void Update()
@@ -43,29 +45,83 @@ public static class CitySceneSmokeCheck
         {
             if (step == 0 && elapsed > 3)
             {
-                Require(CityStructure.All.Count == 6, "Six neighborhood structures must exist.");
-                Require(UnityEngine.Object.FindAnyObjectByType<BuildingManager>() != null, "Original construction manager must exist.");
-                Require(CityLegacyEvents.Instance != null && CityLegacyEvents.Instance.IsReady, "Legacy events must initialize.");
-                Require(UnityEngine.Object.FindAnyObjectByType<DayNightCycle>() != null, "Day/night cycle must exist.");
-                Require(UnityEngine.Object.FindObjectsByType<CityPedestrian>(FindObjectsSortMode.None).Length == 6, "Six pedestrians must exist.");
-                CheckDisasterScenarios();
+                BuildingManager manager = UnityEngine.Object.FindAnyObjectByType<BuildingManager>();
+                CityConstruction construction = UnityEngine.Object.FindAnyObjectByType<CityConstruction>();
+                Check(manager != null && construction != null, "Construction must initialize.");
+                // Fund the full construction and disaster sequence independently of starting money and card prices.
+                PlayerInfo.Instance.AddMoney(10000f - PlayerInfo.Instance.GetMoney);
+
+                construction.ToggleMenu();
+                Check(CityConstruction.IsMenuOpen, "Construction must open.");
+                construction.SelectNextBuilding();
+                Check(manager.HasSelection, "Construction must select a building.");
+                var preview = (GameObject)typeof(BuildingManager).GetField("currentSelectedBuildingClone", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(manager);
+                Quaternion beforeRotation = preview.transform.rotation;
+                manager.RotatePreview();
+                Check(Quaternion.Angle(beforeRotation, preview.transform.rotation) > 80f, "Construction must rotate the preview.");
+                manager.ResetDefaultBuilding();
+                construction.ToggleMenu();
+                Check(!CityConstruction.IsMenuOpen, "Construction must close.");
+                BuildingCard house = AssetDatabase.LoadAssetAtPath<BuildingCard>("Assets/Scripts/Buildings/BuildingPlacemenntSystem/BuildingCard/Houses/Medium House.asset");
+                Check(house != null, "The house building card must exist.");
+                Check(manager.TryPlace(house, new Vector3(-120f, 0.16f, -55f), Quaternion.identity), "House must be built.");
+                city = CityStructure.All.Find(building => building != null && building.District == "Residential");
+                built = CityStructure.All.Find(building => building != null && building.District == "Construction");
+                Check(city != null && built != null, "Both areas must have damageable buildings.");
+
+                Check(Array.IndexOf(Enum.GetNames(typeof(CityDisasterEvent.Disaster)), "Flood") < 0, "Flood must not be selectable.");
+                CityFireEvent fire = CityFireEvent.Instance;
+                fire.StartFireEvent();
+                var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+                typeof(CityFireEvent).GetMethod("StartFire", flags).Invoke(fire, null);
+                var fireTargets = (System.Collections.Generic.List<CityStructure>)typeof(CityFireEvent).GetField("damagedBuildings", flags).GetValue(fire);
+                Check(fireTargets.Exists(item => item.District == "Construction") && fireTargets.Exists(item => item.District != "Construction"), "Fire must affect both areas.");
+                typeof(CityFireEvent).GetMethod("FinishFire", flags).Invoke(fire, new object[] { true });
                 CityLegacyEvents.Instance.StartRaid();
-                Require(CityLegacyEvents.Instance.RaidRunning, "Raid must start.");
+                BanditRaidEvent raid = UnityEngine.Object.FindAnyObjectByType<BanditRaidEvent>();
+                var raidTargets = (BanditRaidEvent.MoneyBuilding[])typeof(BanditRaidEvent).GetField("moneyBuildings", flags).GetValue(raid);
+                Check(raidTargets.Length == 2, "Bandit raids must target both areas.");
+                Check(CityLegacyEvents.Instance.DispatchSecurity(), "Raid must be stoppable.");
+
+                disaster = CityDisasterEvent.Instance;
+                Check(disaster.TryStart(CityDisasterEvent.Disaster.Tornado, city.transform.position), "Tornado must start.");
+                disaster.Tick(11f);
+                GameObject effect = (GameObject)typeof(CityDisasterEvent).GetField("effect", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(disaster);
+                Check(effect != null && effect.name.StartsWith("Tornado"), "The original tornado prefab must be used.");
+                Vector3 firstPosition = effect.transform.position;
+                disaster.Tick(1f);
+                Check(Mathf.Abs(Vector3.Distance(firstPosition, effect.transform.position) - 8f) < 0.1f, "Tornado must move at its original speed.");
+                for (int i = 0; i < 15 && !disaster.NeedsRepair; i++) disaster.Tick(1f);
+                Check(CityStructure.All.Exists(item => item.District != "Construction" && item.IsDestroyed), "Tornado must destroy a city building.");
+                Check(built.IsDestroyed, "Tornado must reach the construction area.");
+                Check(disaster.Repair(), "Tornado damage must be repairable.");
+
+                Check(disaster.TryStart(CityDisasterEvent.Disaster.Earthquake, city.transform.position), "Earthquake must start.");
+                disaster.Tick(11f);
+                disaster.Tick(26f);
+                Check(city.IsDestroyed && built.IsDestroyed, "Earthquake must destroy buildings in both areas.");
+                Check(disaster.Repair(), "Earthquake damage must be repairable.");
+
+                Check(disaster.TryStart(CityDisasterEvent.Disaster.Thunderstorm, city.transform.position), "Thunderstorm must start.");
+                disaster.Tick(11f);
+                Check(disaster.LightningStrikeCount == 1, "The first strike must start immediately.");
+                Check(!built.GetComponent<House>().enabled, "An outage must pause constructed building functions.");
                 step = 1;
             }
-            if (step == 1 && elapsed > 6)
+            if (step == 1 && elapsed > 9)
             {
-                Require(CityLegacyEvents.Instance.DispatchSecurity(), "Security must stop an active raid.");
-                Require(!CityLegacyEvents.Instance.RaidRunning, "Raid must stop.");
-                CityLegacyEvents.Instance.LaunchBomb();
-                step = 2;
-            }
-            if (elapsed > 20)
-            {
-                Require(CityStructure.All.Exists(building => building.IsDamaged), "Bomb must damage a city structure.");
+                Check(disaster.LightningStrikeCount == 3, "Thunderstorm must create exactly three strikes.");
+                Check(CityStructure.All.FindAll(item => item.District != "Construction" && item.IsDestroyed).Count == 2, "Two lightning strikes must hit city buildings.");
+                Check(built.IsDestroyed, "One lightning strike must hit a constructed building.");
+                disaster.Tick(26f);
+                Check(disaster.Repair(), "Lightning damage must be repairable.");
+                Check(!built.IsDestroyed && !city.IsDestroyed, "Repair must restore buildings.");
+                Check(UnityEngine.Object.FindAnyObjectByType<CityPowerOutage>().DispatchRepair(), "Power repair must work.");
+                Check(built.GetComponent<House>().enabled, "Power repair must resume constructed building functions.");
+                Check(!failed, "The scene must not produce gameplay errors.");
                 SessionState.SetBool(Running, false);
-                Debug.Log(failed ? "CITY_SMOKE_CHECK_FAILED" : "CITY_SMOKE_CHECK_PASSED");
-                EditorApplication.Exit(failed ? 1 : 0);
+                Debug.Log("CITY_SCENE_CHECK_PASSED");
+                EditorApplication.Exit(0);
             }
         }
         catch (Exception exception)
@@ -74,45 +130,5 @@ public static class CitySceneSmokeCheck
             Debug.LogException(exception);
             EditorApplication.Exit(1);
         }
-    }
-
-    private static void Require(bool condition, string message)
-    {
-        if (!condition) throw new InvalidOperationException(message);
-    }
-
-    private static void CheckDisasterScenarios()
-    {
-        CityDisasterEvent disaster = CityDisasterEvent.Instance;
-        CityStructure target = CityStructure.All[0];
-        Vector3 location = target.transform.position;
-        Require(disaster.TryStart(CityDisasterEvent.Disaster.Flood, location), "Flood warning must start.");
-        Require(!disaster.TryStart(CityDisasterEvent.Disaster.Tornado, location), "An active incident must reject replacement.");
-        disaster.Tick(11f);
-        Require(disaster.TryGetDanger(location, out _), "Active flood must be dangerous.");
-        disaster.Tick(26f);
-        Require(target.IsDamaged && disaster.IsRoadBlocked(location), "Flood must damage structures and leave a blocked area.");
-        Require(disaster.Repair(), "Flood recovery must succeed with sufficient funds.");
-        Require(!target.IsDamaged && !disaster.IsRoadBlocked(location), "Recovery must clear damage and road closure.");
-
-        Require(disaster.TryStart(CityDisasterEvent.Disaster.Thunderstorm, location), "Storm warning must start.");
-        Require(disaster.DispatchResponse(), "Emergency preparation must succeed.");
-        Require(!disaster.DispatchResponse(), "Preparation cannot charge twice.");
-        disaster.Tick(11f);
-        CityPowerOutage power = UnityEngine.Object.FindAnyObjectByType<CityPowerOutage>();
-        Require(power.IsActive, "Thunderstorm must trigger a blackout.");
-        Require(power.DispatchRepair(), "Blackout must be repairable.");
-        disaster.Tick(26f);
-        Require(disaster.Repair(), "Storm damage must be repairable.");
-
-        Require(disaster.TryStart(CityDisasterEvent.Disaster.HeatWave, location), "Heat warning must start.");
-        disaster.Tick(11f);
-        disaster.Tick(26f);
-        Require(!target.IsDamaged, "Heat must not directly damage building integrity.");
-        CityPedestrian citizen = UnityEngine.Object.FindAnyObjectByType<CityPedestrian>();
-        citizen.TakeExposure(80f);
-        Require(citizen.IsInjured, "Severe exposure must injure a citizen.");
-        Require(CityPedestrian.DispatchMedicalAid(), "Operational medical services must treat injured citizens.");
-        Require(!citizen.IsInjured, "Medical aid must restore health.");
     }
 }

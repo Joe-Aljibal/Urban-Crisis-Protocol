@@ -10,9 +10,9 @@ public class HutStation : MonoBehaviour, IBuilding
 
     public IBuildingSO GetBuildingSO() => woodHutStationSO;
     public bool CanPlace() =>
-        playerInfo.getMoney >= woodHutStationSO.price &&
-        playerInfo.getAvailableElectricity >= woodHutStationSO.electricityNeeded &&
-        playerInfo.getAvailablePopulation >= woodHutStationSO.population;
+        playerInfo.GetMoney >= woodHutStationSO.price &&
+        playerInfo.GetAvailableElectricity >= woodHutStationSO.electricityNeeded &&
+        playerInfo.GetAvailablePopulation >= woodHutStationSO.population;
     public int GetElectricityNeeded() => woodHutStationSO.electricityNeeded;
     public int GetPrice() => woodHutStationSO.price;
     public string GetRessource() => woodHutStationSO.resource;
@@ -24,13 +24,13 @@ public class HutStation : MonoBehaviour, IBuilding
     public void SetActive()
     {
         isActive = true;
-        playerInfo.addWood(woodHutStationSO.resourceAmount);
+        playerInfo.AddWood(woodHutStationSO.resourceAmount);
     }
 
     public void Deactivate()
     {
         isActive = false;
-        playerInfo.addWood(-woodHutStationSO.resourceAmount);
+        playerInfo.AddWood(-woodHutStationSO.resourceAmount);
     }
 
     public int GetElectricityReceived()
@@ -38,7 +38,7 @@ public class HutStation : MonoBehaviour, IBuilding
         throw new System.NotImplementedException();
     }
 
-    public void Deactivate(int electricityLost)
+    public void Deactivate(int electricityLost, int workersLost)
     {
         throw new System.NotImplementedException();
     }
@@ -48,10 +48,19 @@ public class HutStation : MonoBehaviour, IBuilding
         throw new System.NotImplementedException();
     }
 
-    public void UseElectricity(int electricity)
+    public void ReceiveElectricity(int electricity)
     {
         throw new System.NotImplementedException();
     }
 
     public int GetWood => woodHutStationSO.resourceAmount;
+    public void ReceiveWorkers(int workers) { }
+    public int GetWorkersNeeded() => 0;
+
+    public bool HasAvailableWorkers() => true;
+
+  public bool HasEnoughWorkers()
+  {
+    throw new System.NotImplementedException();
+  }
 }

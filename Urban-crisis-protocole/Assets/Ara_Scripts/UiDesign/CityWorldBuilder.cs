@@ -54,7 +54,7 @@ public class CityWorldBuilder : MonoBehaviour
             pedestrian.transform.SetParent(cityRoot, false);
             pedestrian.transform.localScale = new Vector3(0.7f, 1f, 0.7f);
             pedestrian.GetComponent<Renderer>().sharedMaterial = person;
-            Destroy(pedestrian.GetComponent<Collider>());
+            pedestrian.AddComponent<DestructibleObject>();
             pedestrian.AddComponent<CityPedestrian>().Configure(route, i % route.Length);
         }
 
@@ -63,6 +63,8 @@ public class CityWorldBuilder : MonoBehaviour
             center + new Vector3(19, 0.8f, 20), center + new Vector3(-19, 0.8f, 20)
         };
         GameObject vehicle = Box("City vehicle", carRoute[0], new Vector3(2f, 1.4f, 3.5f), car);
+        vehicle.AddComponent<BoxCollider>();
+        vehicle.AddComponent<DestructibleObject>();
         vehicle.AddComponent<CityTraffic>().Configure(carRoute);
         for (int i = 0; i < route.Length; i++)
         {

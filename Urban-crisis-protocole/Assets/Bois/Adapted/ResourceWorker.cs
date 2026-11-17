@@ -13,6 +13,7 @@ public class ResourceWorker : Worker
     private Transform[] _resourceTransforms;
     private Transform currentResource;
     private ResourceType cachedResourceType;
+    private bool carryingResource;
 
     private Vector3 _stationPosition;
 
@@ -95,13 +96,23 @@ public class ResourceWorker : Worker
     private void HandleResourceCollected()
     {
         if (currentResource == null) return;
-        cachedResourceType = GetCurrentResourceScript().ResourceType;
-        GetCurrentResourceScript().Disable();
+        StaticResource resource = GetCurrentResourceScript();
+        if (resource == null || !resource.IsActiveResource)
+        {
+            currentResource = null;
+            return;
+        }
+        cachedResourceType = resource.ResourceType;
+        resource.Disable();
+        carryingResource = true;
+        playerInfo.rewardExtraction(1);
         currentResource = null;
     }
 
     private void HandleResourceBroughtBack()
     {
+        if (!carryingResource) return;
+        carryingResource = false;
         playerInfo.addResource(cachedResourceType, 1);
         TownResourceStatistics.AddResource(TownType.Human, cachedResourceType, 1);
     }
@@ -141,6 +152,7 @@ public class ResourceWorker : Worker
     {
         bool success;
 
+        if (_resourceTransforms == null || _resourceTransforms.Length == 0) return false;
         int rng = UnityEngine.Random.Range(0, _resourceTransforms.Length);
         currentResource = _resourceTransforms[rng];
 
