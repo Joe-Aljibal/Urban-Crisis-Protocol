@@ -42,6 +42,13 @@ public class BuildingManager : MonoBehaviour
 
     void Update()
     {
+        if (cooldown >= 1)
+        {
+            //PlayerInfo.Instance.AddMoney(50); cooldown = 0; 
+        }
+        else cooldown += Time.deltaTime;
+
+        if (currentBuidlingCard != null)
         if (currentBuidlingCard != null && Mouse.current != null && Keyboard.current != null)
         {
             MoveGridAround(FindMousePositionOnGrid());
