@@ -33,7 +33,10 @@ public class BuildingManager : MonoBehaviour
 
     void Update()
     {
-        if (cooldown >= 1) { PlayerInfo.Instance.AddMoney(50); cooldown = 0; }
+        if (cooldown >= 1)
+        {
+            //PlayerInfo.Instance.AddMoney(50); cooldown = 0; 
+        }
         else cooldown += Time.deltaTime;
 
         if (currentBuidlingCard != null)

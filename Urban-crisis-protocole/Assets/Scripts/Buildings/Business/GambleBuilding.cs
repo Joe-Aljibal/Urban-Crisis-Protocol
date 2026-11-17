@@ -38,7 +38,7 @@ public class GambleBuilding: MonoBehaviour, IBuilding, IBuildingUiData
 
         if (cooldown >= 1)
         {
-            playerinfo.AddMoney(gambleBuildingSO.profit);
+            //playerinfo.AddMoney(gambleBuildingSO.profit);
             cooldown = 0;
             return;
         }
