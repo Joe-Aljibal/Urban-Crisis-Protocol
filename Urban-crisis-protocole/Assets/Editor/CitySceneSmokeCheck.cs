@@ -31,6 +31,13 @@ public static class CitySceneSmokeCheck
         EditorApplication.EnterPlaymode();
     }
 
+    public static void RunIntegrated()
+    {
+        EditorSceneManager.OpenScene("Assets/Scenes/IntegratedCity.unity");
+        SessionState.SetBool(Running, true);
+        EditorApplication.EnterPlaymode();
+    }
+
     private static void Check(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);

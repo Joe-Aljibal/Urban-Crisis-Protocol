@@ -14,6 +14,7 @@ public class CityConstruction : MonoBehaviour
     private static CityConstruction instance;
     private bool menuOpen;
     private int selectedIndex;
+    private Vector2 cardScroll;
     private static Rect Panel => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 8f, Screen.height - 120f), Mathf.Min(320f, Screen.width - 40f), Mathf.Max(110f, Mathf.Min(200f, Screen.height - ResourceUIManager.PanelBottom - 28f)));
     public static bool IsMenuOpen => instance != null && instance.menuOpen;
     private static Rect Tab => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 8f, Screen.height - 95f), 205f, 40f);
@@ -80,6 +81,7 @@ public class CityConstruction : MonoBehaviour
         GUILayout.BeginArea(Panel, GUI.skin.box);
         GUILayout.Label("CONSTRUCTION (E: close, Q: select, R: rotate)", title);
         GUILayout.Label(manager.Status);
+        cardScroll = GUILayout.BeginScrollView(cardScroll, GUILayout.Height(100));
         foreach (BuildingCard card in cards)
         {
             if (card == null) continue;
@@ -90,6 +92,7 @@ public class CityConstruction : MonoBehaviour
                 manager.ChangeCurrentBuildingCard(card);
             }
         }
+        GUILayout.EndScrollView();
         if (manager.HasSelection && GUILayout.Button("Place building", button, GUILayout.Height(34)))
             manager.PlaceSelectedInBuildArea();
 
