@@ -7,22 +7,34 @@ public class CityStructure : MonoBehaviour, IDestructible
     public static readonly List<CityStructure> All = new List<CityStructure>();
 
     [SerializeField] private float maximumHealth = 100f;
-    public float Health { get; private set; }
+    [SerializeField] private float health;
+    public float Health => health;
     public bool IsDamaged => Health < maximumHealth;
     public float Condition => maximumHealth > 0f ? Health / maximumHealth : 0f;
-    public string District { get; private set; }
+    [SerializeField] private string district;
+    public string District => district;
 
-    private Renderer buildingRenderer;
+    [SerializeField] private Renderer buildingRenderer;
+    [SerializeField] private Renderer[] buildingRenderers;
+    [SerializeField] private bool[] rendererEnabled;
+    [SerializeField] private Behaviour[] buildingBehaviours;
+    [SerializeField] private bool[] behaviourEnabled;
     private MaterialPropertyBlock properties;
-    private Color originalColor;
+    [SerializeField] private Color originalColor;
 
     public void Configure(string district, Color color)
     {
-        District = district;
+        this.district = district;
         originalColor = color;
-        buildingRenderer = GetComponent<Renderer>();
+        buildingRenderers = GetComponentsInChildren<Renderer>(true);
+        rendererEnabled = new bool[buildingRenderers.Length];
+        for (int i = 0; i < buildingRenderers.Length; i++) rendererEnabled[i] = buildingRenderers[i].enabled;
+        buildingRenderer = buildingRenderers.Length > 0 ? buildingRenderers[0] : null;
+        buildingBehaviours = GetComponents<MonoBehaviour>();
+        behaviourEnabled = new bool[buildingBehaviours.Length];
+        for (int i = 0; i < buildingBehaviours.Length; i++) behaviourEnabled[i] = buildingBehaviours[i].enabled;
         properties = new MaterialPropertyBlock();
-        Health = maximumHealth;
+        health = maximumHealth;
         UpdateAppearance();
     }
 
@@ -31,22 +43,50 @@ public class CityStructure : MonoBehaviour, IDestructible
 
     public void Damage(float amount)
     {
-        Health = Mathf.Max(0f, Health - Mathf.Max(0f, amount));
-        UpdateAppearance();
+        if (destroyed) return;
+        health = Mathf.Max(0f, health - Mathf.Max(0f, amount));
+        if (health <= 0f) DestroyObject();
+        else UpdateAppearance();
     }
 
     public void Repair()
     {
-        Health = maximumHealth;
+        health = maximumHealth;
+        if (destroyed)
+        {
+            destroyed = false;
+            if (buildingRenderers != null)
+                for (int i = 0; i < buildingRenderers.Length; i++)
+                    if (buildingRenderers[i] != null) buildingRenderers[i].enabled = rendererEnabled[i];
+            if (buildingBehaviours != null)
+                for (int i = 0; i < buildingBehaviours.Length; i++)
+                    if (buildingBehaviours[i] != null && buildingBehaviours[i] != this) buildingBehaviours[i].enabled = behaviourEnabled[i];
+            foreach (Collider part in GetComponentsInChildren<Collider>()) part.enabled = true;
+        }
         UpdateAppearance();
     }
 
-    public void DestroyObject() => Damage(maximumHealth);
+    [SerializeField] private bool destroyed;
+    public bool IsDestroyed => destroyed;
+    public void DestroyObject()
+    {
+        if (destroyed) return;
+        destroyed = true;
+        BlastDebris.Spawn(buildingRenderer);
+        health = 0f;
+        if (buildingRenderers != null)
+            foreach (Renderer part in buildingRenderers) if (part != null) part.enabled = false;
+        if (buildingBehaviours != null)
+            foreach (Behaviour behaviour in buildingBehaviours)
+                if (behaviour != null && behaviour != this) behaviour.enabled = false;
+        foreach (Collider part in GetComponentsInChildren<Collider>()) part.enabled = false;
+    }
 
     private void UpdateAppearance()
     {
         if (buildingRenderer == null) return;
         Color color = Color.Lerp(new Color(0.16f, 0.13f, 0.12f), originalColor, Condition);
+        if (properties == null) properties = new MaterialPropertyBlock();
         buildingRenderer.GetPropertyBlock(properties);
         properties.SetColor("_BaseColor", color);
         properties.SetColor("_Color", color);

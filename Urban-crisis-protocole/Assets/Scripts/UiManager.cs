@@ -26,7 +26,7 @@ public class UiManager : MonoBehaviour
     {
         InteractWithMenu();
 
-        elecShow.text = $"{PlayerInfo.Instance.getElectricityUsed} / {PlayerInfo.Instance.getElectricity}";
+        //elecShow.text = $"{PlayerInfo.Instance.getElectricityUsed} / {PlayerInfo.Instance.getElectricity}";
     }
 
     void InteractWithMenu()

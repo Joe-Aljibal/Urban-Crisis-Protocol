@@ -65,6 +65,33 @@ public class NaturalResourcePopulator : MonoBehaviour
         GenerateNature();
     }
 
+    private void Start()
+    {
+        if (!Application.isPlaying) return;
+        // Scene-authored trees and rocks were decorative only. Register them too.
+        GameObject world = GameObject.Find("WORLD_NewWorldDesign");
+        if (world == null) return;
+        foreach (Transform item in world.GetComponentsInChildren<Transform>())
+        {
+            string name = item.name;
+            ResourceType type;
+            if (IsNumbered(name, "Tree_") || IsNumbered(name, "ForestTree_") || IsNumbered(name, "NatureTree_") ||
+                IsNumbered(name, "Bush_") || IsNumbered(name, "ForestShrub_") || IsNumbered(name, "NatureShrub_"))
+                type = ResourceType.Wood;
+            else if (IsNumbered(name, "Rock_")) type = ResourceType.Stone;
+            else continue;
+            MakeCollectible(item.gameObject, type);
+        }
+    }
+
+    private static bool IsNumbered(string name, string prefix)
+    {
+        if (!name.StartsWith(prefix) || name.Length == prefix.Length) return false;
+        for (int i = prefix.Length; i < name.Length; i++)
+            if (!char.IsDigit(name[i])) return false;
+        return true;
+    }
+
     private void OnDisable()
     {
         ClearGeneratedObjects();
@@ -386,9 +413,10 @@ public class NaturalResourcePopulator : MonoBehaviour
     private void MakeCollectible(GameObject resource, ResourceType type)
     {
         foreach (MeshFilter mesh in resource.GetComponentsInChildren<MeshFilter>())
-            mesh.gameObject.AddComponent<BoxCollider>();
+            if (mesh.GetComponent<Collider>() == null) mesh.gameObject.AddComponent<BoxCollider>();
 
-        StaticResource staticResource = resource.AddComponent<StaticResource>();
+        StaticResource staticResource = resource.GetComponent<StaticResource>();
+        if (staticResource == null) staticResource = resource.AddComponent<StaticResource>();
         staticResource.Configure(type);
     }
 
