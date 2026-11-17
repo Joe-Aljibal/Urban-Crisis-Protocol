@@ -14,7 +14,7 @@ public class UiManager : MonoBehaviour
      private string closingMenuText = "Press (E) to close Menu";
     [SerializeField] private GameObject buildingMenu;
 
-    [SerializeField] TMP_Text elecShow;
+
 
     public event Action OnInteractWithMenu;
 
@@ -26,7 +26,7 @@ public class UiManager : MonoBehaviour
     {
         InteractWithMenu();
 
-        //elecShow.text = $"{PlayerInfo.Instance.getElectricityUsed} / {PlayerInfo.Instance.getElectricity}";
+
     }
 
     void InteractWithMenu()
@@ -35,7 +35,7 @@ public class UiManager : MonoBehaviour
         {
             bool isOpen = buildingMenu.activeSelf;
             buildingMenu.SetActive(!isOpen);
-            
+            Debug.Log("allo");
             ChangeMenuText(isOpen);
 
             OnInteractWithMenu?.Invoke();

@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class GambleBuilding : MonoBehaviour, IBuilding, IBuildingUiData
+public class GambleBuilding : MonoBehaviour, IBuilding, ISellable, IBuildingUiData
 {
     [SerializeField] GambleBuildingSO gambleBuildingSO;
     //[SerializeField] Image workersImage;
     //[SerializeField] Image electricityImage;
-    PlayerInfo playerinfo = PlayerInfo.Instance;
+    CityData playerinfo = Cities.cities["PLAYER"];
 
     int electricityReceived = 0;
     public int workersReceived = 0;
@@ -17,7 +17,7 @@ public class GambleBuilding : MonoBehaviour, IBuilding, IBuildingUiData
 
     void Start()
     {
-        playerinfo.AddMoney(-gambleBuildingSO.price);
+
 
         playerinfo.electricityDependants.Add(this);
         playerinfo.workerDependants.Add(this);
@@ -134,4 +134,8 @@ public class GambleBuilding : MonoBehaviour, IBuilding, IBuildingUiData
     }
 
     public void DestroyScript() { Destroy(this); }
+    public void SetCityData(CityData data) => playerinfo = data ?? Cities.cities["PLAYER"];
+
+    public void Sell() { playerinfo.RemoveBuilding(gameObject); DeleteButton(); }
+
 }

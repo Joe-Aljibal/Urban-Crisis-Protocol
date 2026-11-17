@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuildingUiData
+public class Electricity : MonoBehaviour, IBuilding, ISellable, IElectricityProvider, IBuildingUiData
 {
     [SerializeField] public ElectricitySO electricitySO;
 
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     int electricityGiven = 0;
     bool isActive = true;
@@ -121,4 +121,8 @@ public class Electricity : MonoBehaviour, IBuilding, IElectricityProvider, IBuil
            new UiDataModel(UiDataType.PRICE, electricitySO.GetPrice().ToString())
         };
     }
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
+    public void Sell() { playerInfo.RemoveBuilding(gameObject); DeleteButton(); }
+
 }

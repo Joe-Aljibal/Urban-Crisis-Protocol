@@ -20,21 +20,22 @@ public class PlayerInteraction : MonoBehaviour
 
     void InteractWithBuilding()
     {
-        if (Keyboard.current.iKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame && panel != null)
         {
             IBuildingUiData building = DetecteBuilding();
             if (building == null) return;
            
             
             panel.SetActive(true);
-            panel.GetComponent<InfoPanelManager>().ReformatePanel(building);
+            panel.GetComponent<InfoPanelManager>().ReformatePanel(building, currentBuildingSelected);
         }
         
     }
 
     IBuildingUiData DetecteBuilding()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Camera.main == null || Mouse.current == null) return null;
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -42,6 +43,7 @@ public class PlayerInteraction : MonoBehaviour
             if (hit.transform.TryGetComponent<IBuildingUiData>(out var data))
             {
                 Debug.Log(hit.transform.name);
+                currentBuildingSelected = hit.transform.gameObject;
                 return data;
             }
         }

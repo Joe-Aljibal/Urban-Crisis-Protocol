@@ -4,7 +4,7 @@ using UnityEngine;
 public class MilitaryBase : MonoBehaviour, IBuilding
 {
     [SerializeField] MilitaryBaseSO militaryBaseSO;
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     // Toutes les bases actives de la ville (utilise par les evenements de crise).
     static readonly List<MilitaryBase> activeBases = new();
@@ -22,13 +22,13 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     void Awake()
     {
         soldiers = GetComponentsInChildren<Solider>(true);
-        enabled = false; // Update (la solde) ne tourne que quand la base est active
+        // Start must register the base before it can receive power.
     }
 
     void Start()
     {
         playerInfo.addWorkingPopulation(militaryBaseSO.population);
-        playerInfo.electricityDependants.Add(this, 0);
+        playerInfo.electricityDependants.Add(this);
         RequestElectricity();
 
         Log($"Placee : {militaryBaseSO.population} soldats, " +
@@ -40,17 +40,18 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     // fait planter l'original ("Collection was modified").
     void RequestElectricity()
     {
-        foreach (Electricity provider in new List<Electricity>(playerInfo.electricityProviders.Keys))
+        foreach (Electricity provider in new List<Electricity>(playerInfo.electricityProviders))
         {
-            if (!playerInfo.electricityDependants.ContainsKey(this))
+            if (!playerInfo.electricityDependants.Contains(this))
                 break;
 
-            provider.ElectrifyBuildings();
+            provider.ProvideElectricity();
         }
     }
 
     void Update()
     {
+        if (!isActive) return;
         cooldown += Time.deltaTime;
         if (cooldown >= 1)
         {
@@ -152,4 +153,16 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     public int GetElectricityReceived() => electricityReceived;
     public int GetElectricityNeeded() => militaryBaseSO.electricityNeeded;
     public bool CanPlace() => militaryBaseSO.CanPlace();
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
+    public void ReceiveElectricity(int amount)
+    {
+        electricityReceived += amount;
+        if (HasEnoughElectricity()) Activate();
+    }
+    public void Deactivate(int electricityLost, int workersLost) => Deactivate(electricityLost);
+    public void ReceiveWorkers(int workers) { }
+    public int GetWorkersNeeded() => 0;
+    public bool HasEnoughWorkers() => true;
+
 }

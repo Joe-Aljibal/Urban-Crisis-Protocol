@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
+public class House : MonoBehaviour, IBuilding, ISellable, IWorkerProvider, IBuildingUiData
 {
 
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
     [SerializeField] public HousesSO houseSO;
 
     // Buildings that depend on it and how man workers they receive from this script
@@ -20,7 +20,7 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     void Start()
     {
         //elecMissingImage.color = Color.blueViolet;
-        playerInfo.AddMoney(-houseSO.GetPrice());
+
         playerInfo.AddPopulation(houseSO.GetPopulation());
 
         playerInfo.electricityDependants.Add(this);
@@ -157,4 +157,8 @@ public class House : MonoBehaviour, IBuilding, IWorkerProvider, IBuildingUiData
     }
     public int GetWaterNeeded() => houseSO.GetWaterNeeded() - waterReceived;
     public bool HasEnoughWater() => waterReceived >= houseSO.GetWaterNeeded();
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
+    public void Sell() { playerInfo.RemoveBuilding(gameObject); DeleteButton(); }
+
 }

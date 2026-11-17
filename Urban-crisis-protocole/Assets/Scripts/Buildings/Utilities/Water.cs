@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : MonoBehaviour, IBuilding
+public class Water : MonoBehaviour, IBuilding, ISellable, IBuildingUiData
 {
     [SerializeField] WaterSO waterSO;
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     Dictionary<House, int> waterDependants = new();
     bool isActive = true;
@@ -89,4 +89,11 @@ public class Water : MonoBehaviour, IBuilding
 
     public int GetWaterOutput() => waterSO.GetWaterOutput();
     public bool HasAvailableWater() => waterGiven < waterSO.GetWaterOutput();
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
+    public void Sell() { playerInfo.RemoveBuilding(gameObject); DeleteButton(); }
+
+    public List<UiDataModel> GetUiDataList() => new List<UiDataModel> {
+        new UiDataModel(UiDataType.NAME, "Water"), new UiDataModel(UiDataType.PRICE, GetPrice().ToString()) };
+
 }

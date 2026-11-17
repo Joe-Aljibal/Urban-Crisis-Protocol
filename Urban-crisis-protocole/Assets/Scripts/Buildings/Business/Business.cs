@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Business: MonoBehaviour, IBuilding, IBuildingUiData
+public class Business: MonoBehaviour, IBuilding, ISellable, IBuildingUiData
 {
     [SerializeField] BusinessesSO businessSO;
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     int electricityReceived = 0;
     public int workersReceived = 0;
@@ -15,7 +15,7 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
 
     void Start()
     {
-        playerInfo.AddMoney(-businessSO.GetPrice());
+
 
         playerInfo.electricityDependants.Add(this);
         playerInfo.workerDependants.Add(this);
@@ -120,5 +120,9 @@ public class Business: MonoBehaviour, IBuilding, IBuildingUiData
            new UiDataModel(UiDataType.PRICE, businessSO.GetPrice().ToString())
         };
     }
+
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
+    public void Sell() { playerInfo.RemoveBuilding(gameObject); DeleteButton(); }
 
 }

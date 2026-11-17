@@ -3,10 +3,17 @@ using UnityEngine;
 public class BuildingButton : MonoBehaviour
 {
     [SerializeField] private BuildingCard card;
-    [SerializeField] private BuildingManager manager;
+    [SerializeField] private GameObject gameManager;
+ private PlayerController controller;
+
+    void Start()
+    {
+        controller = gameManager.GetComponent<PlayerController>();
+    }
+    
     public void OnClick()
     {
-        manager.ChangeCurrentBuildingCard(card);
+        controller.ChangeCurrentBuildingCard(card);
     }
 
 }
