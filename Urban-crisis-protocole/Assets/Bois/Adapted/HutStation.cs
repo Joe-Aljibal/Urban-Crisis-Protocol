@@ -48,7 +48,7 @@ public class HutStation : MonoBehaviour, IBuilding
         throw new System.NotImplementedException();
     }
 
-    public void UseElectricity(int electricity)
+    public void ReceiveElectricity(int electricity)
     {
         throw new System.NotImplementedException();
     }
@@ -58,7 +58,6 @@ public class HutStation : MonoBehaviour, IBuilding
     public int GetWorkersNeeded() => 0;
 
     public bool HasAvailableWorkers() => true;
-    public void DestroyScript() { enabled = false; }
 
   public bool HasEnoughWorkers()
   {

@@ -15,7 +15,8 @@ MonoBehaviour:
   type: Utility
   ressource: Electricity
   buildingClass: 2
-  buildingType: 2
+  buildingType: 14
+  researchPrice: 0
   buildingName: Solar Plant
   description: It's so hot in there...
   electricityOutput: 250

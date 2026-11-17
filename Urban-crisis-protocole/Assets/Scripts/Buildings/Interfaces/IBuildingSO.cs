@@ -11,5 +11,6 @@ public interface IBuildingSO
     public string GetBuildingName();
     public List<Dictionary<string, string>> GetStats();
     public string GetDescription();
+    public int GetResearchPrice();
 }
 

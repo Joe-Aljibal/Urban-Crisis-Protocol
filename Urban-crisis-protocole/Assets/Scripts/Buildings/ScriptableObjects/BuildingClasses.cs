@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum BuildingClasses
 {
+    None,
     House,
     Business,
     Electricity,

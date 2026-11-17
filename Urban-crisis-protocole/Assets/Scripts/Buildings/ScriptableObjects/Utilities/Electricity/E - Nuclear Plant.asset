@@ -15,7 +15,8 @@ MonoBehaviour:
   type: Utility
   ressource: Electricity
   buildingClass: 2
-  buildingType: 2
+  buildingType: 15
+  researchPrice: 0
   buildingName: Nuclear Plant
   description: Please don't Chernobyl us T-T
   electricityOutput: 2000

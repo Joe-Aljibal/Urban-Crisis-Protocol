@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BusinessesSO
   type: Business
   ressource: Money
-  buildingType: 1
-  businessType: 4
+  buildingClass: 1
+  buildingType: 10
+  researchPrice: 0
   buildingName: Super Market
   description: Retail is the worse...
   icon: {fileID: 21300000, guid: 82316b12e947cb34e95b1925b99ae943, type: 3}

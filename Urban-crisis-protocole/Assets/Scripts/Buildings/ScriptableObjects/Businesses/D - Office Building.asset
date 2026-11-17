@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BusinessesSO
   type: Business
   ressource: Money
-  buildingType: 1
-  businessType: 3
+  buildingClass: 1
+  buildingType: 9
+  researchPrice: 0
   buildingName: Office Building
   description: I'm so busy... No time to talk!!
   icon: {fileID: 21300000, guid: d1fb30e4c7b45234fb084bc9f601a3fe, type: 3}

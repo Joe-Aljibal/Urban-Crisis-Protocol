@@ -40,4 +40,9 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
     {
         throw new System.NotImplementedException();
     }
+
+    public int GetResearchPrice()
+    {
+        throw new System.NotImplementedException();
+    }
 }
