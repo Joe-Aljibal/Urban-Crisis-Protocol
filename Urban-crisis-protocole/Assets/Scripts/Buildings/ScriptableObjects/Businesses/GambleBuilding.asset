@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7dac482eee6f9c4f9603db0d14fec95, type: 3}
+  m_Name: GambleBuilding
+  m_EditorClassIdentifier: Assembly-CSharp::GambleBuildingSO
+  type: Gamble
+  ressource: Money
+  buildingClass: 1
+  buildingType: 0
+  buildingName: 
+  description: 
+  icon: {fileID: 0}
+  electricityNeeded: 0
+  workersNeeded: 0
+  price: 0
+  profit: 100
+  card: {fileID: 0}

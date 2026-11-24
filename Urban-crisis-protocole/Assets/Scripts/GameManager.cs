@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
             if (Keyboard.current != null && Keyboard.current.enterKey.IsPressed()) // If the Enter key on the keypad is pressed, load the "MainGame" scene.
             {
 
-                LoadChosenScene("MainGame");
+                LoadChosenScene("IntegratedCity");
             }
         }
         // In "MainGame", the Escape key is handled by PauseMenu (Quit button goes back to "HomeScreen").

@@ -97,3 +97,17 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# LLMUnity models (can be multiple GB, and GitHub rejects files over 100 MB)
+*.gguf
+*.bin
+Assets/StreamingAssets/LLMUnity/
+Assets/StreamingAssets/LLMUnity.meta
+
+# LLMUnity Downloaded native libraries / runtime caches (if present in your version)
+Assets/LLMUnity/Runtime/LlamaLib/runtimes/
+
+# LLMUnity
+Urban-crisis-protocole/Assets/StreamingAssets/LlamaLib-*/
+Urban-crisis-protocole/Assets/StreamingAssets/LlamaLib-*.meta
+*.gguf

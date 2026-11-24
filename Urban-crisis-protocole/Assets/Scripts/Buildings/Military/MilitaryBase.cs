@@ -8,7 +8,7 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     [Header("Voyant d'electricite")]
     [SerializeField] float indicatorHeight = 1f; // au-dessus du haut de la base
     [SerializeField] float indicatorSize = 0.4f;
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     static readonly Color poweredColor = new(0.2f, 0.9f, 0.3f);
     static readonly Color unpoweredColor = new(0.95f, 0.15f, 0.15f);
@@ -36,7 +36,7 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     void Awake()
     {
         soldiers = GetComponentsInChildren<Solider>(true);
-        enabled = false; // Update (la solde) ne tourne que quand la base est active
+        // Start must register the base before it can receive power.
         CreatePowerIndicator();
         ShowPower(false);
     }
@@ -101,7 +101,7 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     void Start()
     {
         playerInfo.addWorkingPopulation(militaryBaseSO.population);
-        playerInfo.electricityDependants.Add(this, 0);
+        playerInfo.electricityDependants.Add(this);
         RequestElectricity();
 
         Log($"Placee : {militaryBaseSO.population} soldats, " +
@@ -113,17 +113,18 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     // fait planter l'original ("Collection was modified").
     void RequestElectricity()
     {
-        foreach (Electricity provider in new List<Electricity>(playerInfo.electricityProviders.Keys))
+        foreach (Electricity provider in new List<Electricity>(playerInfo.electricityProviders))
         {
-            if (!playerInfo.electricityDependants.ContainsKey(this))
+            if (!playerInfo.electricityDependants.Contains(this))
                 break;
 
-            provider.ElectrifyBuildings();
+            provider.ProvideElectricity();
         }
     }
 
     void Update()
     {
+        if (!isActive) return;
         cooldown += Time.deltaTime;
         if (cooldown >= 1)
         {
@@ -227,4 +228,16 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     public int GetElectricityReceived() => electricityReceived;
     public int GetElectricityNeeded() => militaryBaseSO.electricityNeeded;
     public bool CanPlace() => militaryBaseSO.CanPlace();
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
+    public void ReceiveElectricity(int amount)
+    {
+        electricityReceived += amount;
+        if (HasEnoughElectricity()) Activate();
+    }
+    public void Deactivate(int electricityLost, int workersLost) => Deactivate(electricityLost);
+    public void ReceiveWorkers(int workers) { }
+    public int GetWorkersNeeded() => 0;
+    public bool HasEnoughWorkers() => true;
+
 }

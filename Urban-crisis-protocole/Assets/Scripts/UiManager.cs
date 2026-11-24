@@ -14,28 +14,30 @@ public class UiManager : MonoBehaviour
      private string closingMenuText = "Press (E) to close Menu";
     [SerializeField] private GameObject buildingMenu;
 
-    [SerializeField] TMP_Text elecShow;
+    [SerializeField] private GameObject workStationMenu;
+    private WorkStationUI workStationUI;
 
     public event Action OnInteractWithMenu;
 
     void Start()
-    {}
+    {
+        workStationUI = GetComponent<WorkStationUI>();
+    }
 
 
     void Update()
     {
         InteractWithMenu();
-
-        elecShow.text = $"{PlayerInfo.Instance.getElectricityUsed} / {PlayerInfo.Instance.getElectricity}";
+        InteractWithWorkStation();
     }
 
     void InteractWithMenu()
     {
-        if (Keyboard.current.eKey.wasPressedThisFrame)
+        if (Keyboard.current != null && buildingMenu != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             bool isOpen = buildingMenu.activeSelf;
             buildingMenu.SetActive(!isOpen);
-            
+            Debug.Log("allo");
             ChangeMenuText(isOpen);
 
             OnInteractWithMenu?.Invoke();
@@ -43,9 +45,30 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    // Handle Interactions with WorkStation buildings (OnClick)
+    void InteractWithWorkStation()
+    {
+        if (Keyboard.current == null || Mouse.current == null || Camera.main == null || workStationMenu == null || workStationUI == null) return;
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            workStationMenu.SetActive(false);
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if(Physics.Raycast(ray, out RaycastHit hit))
+        {
+            if(hit.transform.TryGetComponent(out WorkStation workStation) && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                workStationMenu.SetActive(true);
+                workStationUI.SetCurrentBuilding(workStation);
+            }
+        }
+    }
+
 
     void ChangeMenuText(bool value)
     {
-        openBuildingMenuText.text = value ? openingMenuText : closingMenuText ;
+        if (openBuildingMenuText != null) openBuildingMenuText.text = value ? openingMenuText : closingMenuText ;
     }
 }

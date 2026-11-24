@@ -15,7 +15,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private TMP_Text summaryText;        // MenuBreak/Summary
     [SerializeField] private string homeSceneName = "HomeScreen";
 
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     bool isPaused = false;
 

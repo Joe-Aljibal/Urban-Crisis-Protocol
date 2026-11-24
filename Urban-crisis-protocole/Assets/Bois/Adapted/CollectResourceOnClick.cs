@@ -12,26 +12,27 @@ public class CollectResourceOnClick : MonoBehaviour
 
     private void CollectResourceClick()
     {
-        if (ResourceUIManager.IsPointerOverDashboard)
+        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel || CityConstruction.IsPointerOverPanel)
             return;
 
-        if (!Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame)
             return;
 
+        if (Camera.main == null) return;
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, ~0, QueryTriggerInteraction.Ignore);
+        System.Array.Sort(hits, (left, right) => left.distance.CompareTo(right.distance));
+        foreach (RaycastHit hit in hits)
         {
             StaticResource resource = hit.transform.GetComponentInParent<StaticResource>();
-
-            if (resource == null || !resource.IsAvailable)
-                return;
+            // A worker reservation must not prevent the player from collecting it.
+            if (resource == null || !resource.IsActiveResource) continue;
 
             TownType town = GetClosestTown(resource.transform.position);
 
             if (town == TownType.Human)
             {
-                playerInfo.addResource(
+                playerInfo.collectResource(
                     resource.ResourceType,
                     ResourceAmountPerClick
                 );
@@ -43,6 +44,7 @@ public class CollectResourceOnClick : MonoBehaviour
                 ResourceAmountPerClick
             );
             resource.Disable();
+            return;
         }
     }
 

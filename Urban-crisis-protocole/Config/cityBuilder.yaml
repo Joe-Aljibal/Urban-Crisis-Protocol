@@ -1,0 +1,9 @@
+behaviors:                      # Liste des comportements à entraîner
+  CityAI:                       # Nom du comportement
+    trainer_type: ppo           # Algorithme utilisé pour apprendre PPO est le plus utilisé avec ML-Agents
+    hyperparameters:            # Paramètres d'apprentissage
+      batch_size: 64            # Nombre d'expériences utilisées  avant une mise à jour du réseau
+      buffer_size: 2048         # Taille de la mémoire temporaire  Plus grand = plus stable mais plus lent
+      learning_rate: 3.0e-4     # Vitesse d'apprentissage # 0.0003
+    network_settings:           # Configuration du cerveau
+      hidden_units: 128         # Nombre de neurones par couche

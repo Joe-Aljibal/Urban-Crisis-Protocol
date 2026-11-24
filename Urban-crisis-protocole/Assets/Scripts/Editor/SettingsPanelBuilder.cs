@@ -5,7 +5,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Cree l'UI du menu pause dans la scene ouverte (MainGame) et la branche au PauseMenu :
+// Cree l'UI du menu pause dans la scene ouverte et la branche au PauseMenu :
 // panneau Settings, panneau de confirmation Quit et resume de la partie dans MenuBreak.
 // Les panneaux copient le fond de MenuBreak et le style du bouton Resume : a restyler ensuite si besoin.
 // Relancer le menu remplace les anciens elements.
@@ -14,6 +14,10 @@ public static class SettingsPanelBuilder
     const string SettingsName = "SettingsPanel";
     const string ConfirmQuitName = "ConfirmQuitPanel";
     const string SummaryName = "Summary";
+
+    // MainGame est la source de l'UI : IntegratedSceneBuilder (Ara) copie son UI dans IntegratedCity,
+    // la scene jouee depuis HomeScreen. On construit dans les deux pour que l'UI survive a une regeneration.
+    static readonly string[] PauseMenuScenes = { "Assets/Scenes/MainGame.unity", "Assets/Scenes/IntegratedCity.unity" };
 
     [MenuItem("Tools/Urban Crisis/Build Pause Menu UI")]
     static void BuildInOpenScene()
@@ -25,9 +29,15 @@ public static class SettingsPanelBuilder
     // Unity.exe -batchmode -quit -projectPath ... -executeMethod SettingsPanelBuilder.BuildFromCommandLine
     public static void BuildFromCommandLine()
     {
-        var scene = EditorSceneManager.OpenScene("Assets/Scenes/MainGame.unity");
-        if (Build())
-            EditorSceneManager.SaveScene(scene);
+        foreach (string path in PauseMenuScenes)
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+                continue;
+
+            var scene = EditorSceneManager.OpenScene(path);
+            if (Build())
+                EditorSceneManager.SaveScene(scene);
+        }
     }
 
     static bool Build()
@@ -35,7 +45,7 @@ public static class SettingsPanelBuilder
         var pauseMenu = Object.FindAnyObjectByType<PauseMenu>(FindObjectsInactive.Include);
         if (pauseMenu == null)
         {
-            Debug.LogError("[Settings] Aucun PauseMenu dans la scene ouverte (ouvrir MainGame).");
+            Debug.LogError("[Settings] Aucun PauseMenu dans la scene ouverte (ouvrir MainGame ou IntegratedCity).");
             return false;
         }
 

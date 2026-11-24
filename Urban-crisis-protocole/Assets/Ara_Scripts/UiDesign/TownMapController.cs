@@ -33,6 +33,7 @@ public class TownMapController : MonoBehaviour
     private void HandleKeyboardMovement()
     {
         Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
         Vector2 input = Vector2.zero;
 
         if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed)
@@ -64,7 +65,10 @@ public class TownMapController : MonoBehaviour
 
     private void HandleMapClick()
     {
+        if (CityFireEvent.IsPointerOverPanel || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel)
+            return;
         Mouse mouse = Mouse.current;
+        if (mouse == null) return;
 
         if (!mouse.leftButton.wasPressedThisFrame)
             return;
