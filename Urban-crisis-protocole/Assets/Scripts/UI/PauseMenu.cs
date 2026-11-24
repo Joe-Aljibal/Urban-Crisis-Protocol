@@ -1,15 +1,21 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 // Menu pause de MainGame : Echap ouvre/ferme le menu et met le jeu en pause.
 // Le bouton Setting ouvre le panneau des parametres ; Echap ou Back y revient.
+// Quit demande confirmation avant de revenir a l'accueil.
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject pausePanel;    // MenuBreak
-    [SerializeField] private GameObject settingsPanel; // SettingsPanel
+    [SerializeField] private GameObject pausePanel;       // MenuBreak
+    [SerializeField] private GameObject settingsPanel;    // SettingsPanel
+    [SerializeField] private GameObject confirmQuitPanel; // ConfirmQuitPanel
+    [SerializeField] private TMP_Text summaryText;        // MenuBreak/Summary
     [SerializeField] private string homeSceneName = "HomeScreen";
+
+    PlayerInfo playerInfo = PlayerInfo.Instance;
 
     bool isPaused = false;
 
@@ -22,6 +28,8 @@ public class PauseMenu : MonoBehaviour
         pausePanel.SetActive(false);
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+        if (confirmQuitPanel != null)
+            confirmQuitPanel.SetActive(false);
         Time.timeScale = 1f;
     }
 
@@ -31,6 +39,7 @@ public class PauseMenu : MonoBehaviour
             return;
 
         if (settingsPanel != null && settingsPanel.activeSelf) CloseSettings();
+        else if (confirmQuitPanel != null && confirmQuitPanel.activeSelf) CancelQuit();
         else if (isPaused) Resume();
         else Pause();
     }
@@ -39,8 +48,23 @@ public class PauseMenu : MonoBehaviour
     {
         isPaused = true;
         HideOtherUI();
+        RefreshSummary();
         pausePanel.SetActive(true);
         SetGamePaused(true);
+    }
+
+    // Resume de la partie affiche dans le menu pause (le HUD est cache pendant la pause).
+    void RefreshSummary()
+    {
+        if (summaryText == null)
+            return;
+
+        summaryText.text =
+            $"Money: {Mathf.FloorToInt(playerInfo.getMoney)} $\n" +
+            $"Residents: {playerInfo.getAvailablePopulation} / {playerInfo.getPopulation}\n" +
+            $"Electricity: {playerInfo.getElectricityUsed} / {playerInfo.getElectricity}\n" +
+            $"Water: {playerInfo.getWaterUsed} / {playerInfo.getWater}\n" +
+            $"Active military bases: {MilitaryBase.ActiveBaseCount}";
     }
 
     // Bouton Resume
@@ -50,6 +74,8 @@ public class PauseMenu : MonoBehaviour
         pausePanel.SetActive(false);
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+        if (confirmQuitPanel != null)
+            confirmQuitPanel.SetActive(false);
         ShowOtherUI();
         SetGamePaused(false);
     }
@@ -107,11 +133,31 @@ public class PauseMenu : MonoBehaviour
         pausePanel.SetActive(true);
     }
 
-    // Bouton Quit : retour a l'ecran d'accueil
+    // Bouton Quit : demande confirmation (ou quitte directement s'il n'y a pas de panneau)
     public void QuitToHome()
+    {
+        if (confirmQuitPanel == null)
+        {
+            ConfirmQuit();
+            return;
+        }
+
+        pausePanel.SetActive(false);
+        confirmQuitPanel.SetActive(true);
+    }
+
+    // Bouton Yes : retour a l'ecran d'accueil
+    public void ConfirmQuit()
     {
         SetGamePaused(false);
         SceneManager.LoadScene(homeSceneName);
+    }
+
+    // Bouton No (ou Echap) : retour au menu pause
+    public void CancelQuit()
+    {
+        confirmQuitPanel.SetActive(false);
+        pausePanel.SetActive(true);
     }
 
     // Si la scene se ferme pendant la pause, le jeu ne reste pas fige.

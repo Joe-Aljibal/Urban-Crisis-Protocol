@@ -1,10 +1,24 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MilitaryBase : MonoBehaviour, IBuilding
 {
     [SerializeField] MilitaryBaseSO militaryBaseSO;
+    [Header("Voyant d'electricite")]
+    [SerializeField] float indicatorHeight = 1f; // au-dessus du haut de la base
+    [SerializeField] float indicatorSize = 0.4f;
     PlayerInfo playerInfo = PlayerInfo.Instance;
+
+    static readonly Color poweredColor = new(0.2f, 0.9f, 0.3f);
+    static readonly Color unpoweredColor = new(0.95f, 0.15f, 0.15f);
+    static readonly Color unpoweredDimColor = new(0.35f, 0.05f, 0.05f);
+    static readonly int baseColorId = Shader.PropertyToID("_BaseColor"); // URP Lit
+    static readonly int colorId = Shader.PropertyToID("_Color");         // shaders Built-in
+
+    Renderer indicator;
+    MaterialPropertyBlock indicatorBlock;
+    Coroutine blinkRoutine;
 
     // Toutes les bases actives de la ville (utilise par les evenements de crise).
     static readonly List<MilitaryBase> activeBases = new();
@@ -23,6 +37,65 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     {
         soldiers = GetComponentsInChildren<Solider>(true);
         enabled = false; // Update (la solde) ne tourne que quand la base est active
+        CreatePowerIndicator();
+        ShowPower(false);
+    }
+
+    // Petite sphere au-dessus de la base : verte si alimentee, rouge clignotante sinon.
+    void CreatePowerIndicator()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        Bounds bounds = renderers.Length > 0 ? renderers[0].bounds : new Bounds(transform.position, Vector3.zero);
+        foreach (Renderer r in renderers)
+            bounds.Encapsulate(r.bounds);
+
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.name = "PowerIndicator";
+        Destroy(sphere.GetComponent<Collider>()); // ne doit pas bloquer les clics sur la base
+
+        sphere.transform.SetParent(transform, false);
+        sphere.transform.position = new Vector3(bounds.center.x, bounds.max.y + indicatorHeight, bounds.center.z);
+
+        // La base est aplatie (echelle non uniforme) : on compense pour garder une vraie sphere.
+        Vector3 parentScale = transform.lossyScale;
+        sphere.transform.localScale = new Vector3(
+            indicatorSize / Mathf.Max(parentScale.x, 0.0001f),
+            indicatorSize / Mathf.Max(parentScale.y, 0.0001f),
+            indicatorSize / Mathf.Max(parentScale.z, 0.0001f));
+
+        indicator = sphere.GetComponent<Renderer>();
+        indicator.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        indicatorBlock = new MaterialPropertyBlock();
+    }
+
+    void ShowPower(bool powered)
+    {
+        if (blinkRoutine != null)
+            StopCoroutine(blinkRoutine);
+        blinkRoutine = null;
+
+        if (powered) SetIndicatorColor(poweredColor);
+        else blinkRoutine = StartCoroutine(BlinkUnpowered());
+    }
+
+    // Tourne meme si le script est desactive (enabled = false) : seule la solde s'arrete.
+    IEnumerator BlinkUnpowered()
+    {
+        var wait = new WaitForSeconds(0.5f);
+        while (true)
+        {
+            SetIndicatorColor(unpoweredColor);
+            yield return wait;
+            SetIndicatorColor(unpoweredDimColor);
+            yield return wait;
+        }
+    }
+
+    void SetIndicatorColor(Color color)
+    {
+        indicatorBlock.SetColor(baseColorId, color);
+        indicatorBlock.SetColor(colorId, color);
+        indicator.SetPropertyBlock(indicatorBlock);
     }
 
     void Start()
@@ -115,6 +188,8 @@ public class MilitaryBase : MonoBehaviour, IBuilding
 
         foreach (Solider soldier in soldiers)
             soldier.SetOnDuty(active);
+
+        ShowPower(active);
     }
 
     public void UseElectricity(int electricity)

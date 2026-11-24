@@ -5,14 +5,17 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Cree le panneau Settings du menu pause dans la scene ouverte (MainGame) et le branche.
-// Le panneau copie le fond de MenuBreak et le style du bouton Resume : a restyler ensuite si besoin.
-// Relancer le menu remplace l'ancien panneau.
+// Cree l'UI du menu pause dans la scene ouverte (MainGame) et la branche au PauseMenu :
+// panneau Settings, panneau de confirmation Quit et resume de la partie dans MenuBreak.
+// Les panneaux copient le fond de MenuBreak et le style du bouton Resume : a restyler ensuite si besoin.
+// Relancer le menu remplace les anciens elements.
 public static class SettingsPanelBuilder
 {
-    const string PanelName = "SettingsPanel";
+    const string SettingsName = "SettingsPanel";
+    const string ConfirmQuitName = "ConfirmQuitPanel";
+    const string SummaryName = "Summary";
 
-    [MenuItem("Tools/Urban Crisis/Build Settings Panel")]
+    [MenuItem("Tools/Urban Crisis/Build Pause Menu UI")]
     static void BuildInOpenScene()
     {
         if (Build())
@@ -38,34 +41,38 @@ public static class SettingsPanelBuilder
 
         var pauseMenuSO = new SerializedObject(pauseMenu);
         var pausePanel = (GameObject)pauseMenuSO.FindProperty("pausePanel").objectReferenceValue;
-        Transform parent = pausePanel.transform.parent;
 
         Button resumeButton = FindButton(pausePanel, "Resume");
         Button settingButton = FindButton(pausePanel, "Setting");
         TMP_Text textTemplate = resumeButton.GetComponentInChildren<TMP_Text>(true);
 
-        Transform old = parent.Find(PanelName);
-        if (old != null)
-            Undo.DestroyObjectImmediate(old.gameObject);
+        // Le resume est enleve avant de copier MenuBreak pour les autres panneaux.
+        Transform oldSummary = pausePanel.transform.Find(SummaryName);
+        if (oldSummary != null)
+            Undo.DestroyObjectImmediate(oldSummary.gameObject);
 
-        // Meme fond et meme taille que MenuBreak, sans ses boutons.
-        GameObject panel = Object.Instantiate(pausePanel, parent);
-        panel.name = PanelName;
-        panel.transform.SetSiblingIndex(pausePanel.transform.GetSiblingIndex() + 1);
-        for (int i = panel.transform.childCount - 1; i >= 0; i--)
-            Object.DestroyImmediate(panel.transform.GetChild(i).gameObject);
-        foreach (LayoutGroup group in panel.GetComponents<LayoutGroup>())
-            Object.DestroyImmediate(group);
-        Undo.RegisterCreatedObjectUndo(panel, "Build Settings Panel");
+        GameObject settingsPanel = BuildSettingsPanel(pauseMenu, pausePanel, resumeButton, textTemplate);
+        GameObject confirmPanel = BuildConfirmQuitPanel(pauseMenu, pausePanel, resumeButton, textTemplate);
+        TMP_Text summary = BuildSummary(pausePanel, textTemplate);
 
-        var layout = panel.AddComponent<VerticalLayoutGroup>();
-        layout.padding = new RectOffset(40, 40, 30, 30);
-        layout.spacing = 20;
-        layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.childControlWidth = true;
-        layout.childControlHeight = true;
-        layout.childForceExpandWidth = true;
-        layout.childForceExpandHeight = false;
+        pauseMenuSO.FindProperty("settingsPanel").objectReferenceValue = settingsPanel;
+        pauseMenuSO.FindProperty("confirmQuitPanel").objectReferenceValue = confirmPanel;
+        pauseMenuSO.FindProperty("summaryText").objectReferenceValue = summary;
+        pauseMenuSO.ApplyModifiedProperties();
+
+        if (!HasListener(settingButton, pauseMenu, nameof(PauseMenu.OpenSettings)))
+        {
+            Undo.RecordObject(settingButton, "Wire Setting button");
+            UnityEventTools.AddPersistentListener(settingButton.onClick, pauseMenu.OpenSettings);
+        }
+
+        Debug.Log("[Settings] UI du menu pause creee et branchee (Settings, confirmation Quit, resume).");
+        return true;
+    }
+
+    static GameObject BuildSettingsPanel(PauseMenu pauseMenu, GameObject pausePanel, Button buttonTemplate, TMP_Text textTemplate)
+    {
+        GameObject panel = CreatePanel(pausePanel, SettingsName);
 
         TMP_Text title = CreateText(textTemplate, panel.transform, "Title", "Settings", 36, TextAlignmentOptions.Center);
         SetHeight(title.gameObject, 50);
@@ -73,15 +80,7 @@ public static class SettingsPanelBuilder
         (Slider masterSlider, TMP_Text masterValue) = CreateSliderRow(textTemplate, panel.transform, "MasterVolume", "Volume");
         (Slider musicSlider, TMP_Text musicValue) = CreateSliderRow(textTemplate, panel.transform, "MusicVolume", "Music");
 
-        // Bouton Back : copie de Resume, sans ses anciens evenements.
-        Button back = Object.Instantiate(resumeButton, panel.transform);
-        back.name = "Back";
-        back.onClick = new Button.ButtonClickedEvent();
-        UnityEventTools.AddPersistentListener(back.onClick, pauseMenu.CloseSettings);
-        back.GetComponentInChildren<TMP_Text>(true).text = "Back";
-        var backLayout = back.gameObject.AddComponent<LayoutElement>();
-        backLayout.preferredHeight = ((RectTransform)resumeButton.transform).rect.height;
-        backLayout.preferredWidth = ((RectTransform)resumeButton.transform).rect.width;
+        CreateButton(buttonTemplate, panel.transform, "Back", pauseMenu.CloseSettings);
 
         var settingsMenu = panel.AddComponent<SettingsMenu>();
         var settingsSO = new SerializedObject(settingsMenu);
@@ -91,18 +90,94 @@ public static class SettingsPanelBuilder
         settingsSO.FindProperty("musicValue").objectReferenceValue = musicValue;
         settingsSO.ApplyModifiedPropertiesWithoutUndo();
 
-        pauseMenuSO.FindProperty("settingsPanel").objectReferenceValue = panel;
-        pauseMenuSO.ApplyModifiedProperties();
+        panel.SetActive(false);
+        return panel;
+    }
 
-        if (!HasListener(settingButton, pauseMenu, nameof(PauseMenu.OpenSettings)))
-        {
-            Undo.RecordObject(settingButton, "Wire Setting button");
-            UnityEventTools.AddPersistentListener(settingButton.onClick, pauseMenu.OpenSettings);
-        }
+    static GameObject BuildConfirmQuitPanel(PauseMenu pauseMenu, GameObject pausePanel, Button buttonTemplate, TMP_Text textTemplate)
+    {
+        GameObject panel = CreatePanel(pausePanel, ConfirmQuitName);
+
+        TMP_Text title = CreateText(textTemplate, panel.transform, "Title", "Quit to home screen?", 36, TextAlignmentOptions.Center);
+        SetHeight(title.gameObject, 50);
+        TMP_Text warning = CreateText(textTemplate, panel.transform, "Warning", "Your city will not be saved.", 24, TextAlignmentOptions.Center);
+        SetHeight(warning.gameObject, 40);
+
+        var row = new GameObject("Buttons", typeof(RectTransform));
+        row.transform.SetParent(panel.transform, false);
+        SetHeight(row, ((RectTransform)buttonTemplate.transform).rect.height);
+        var rowLayout = row.AddComponent<HorizontalLayoutGroup>();
+        rowLayout.spacing = 60;
+        rowLayout.childAlignment = TextAnchor.MiddleCenter;
+        rowLayout.childControlWidth = true;
+        rowLayout.childControlHeight = true;
+        rowLayout.childForceExpandWidth = false;
+        rowLayout.childForceExpandHeight = false;
+
+        CreateButton(buttonTemplate, row.transform, "Yes", pauseMenu.ConfirmQuit);
+        CreateButton(buttonTemplate, row.transform, "No", pauseMenu.CancelQuit);
 
         panel.SetActive(false);
-        Debug.Log("[Settings] Panneau Settings cree et branche au menu pause.");
-        return true;
+        return panel;
+    }
+
+    // Texte au centre de MenuBreak, au-dessus des boutons (en bas de l'ecran).
+    static TMP_Text BuildSummary(GameObject pausePanel, TMP_Text textTemplate)
+    {
+        TMP_Text summary = CreateText(textTemplate, pausePanel.transform, SummaryName, "Money: 0 $", 28, TextAlignmentOptions.Center);
+        summary.textWrappingMode = TextWrappingModes.Normal;
+
+        var rect = summary.rectTransform;
+        rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = new Vector2(0, 20);
+        rect.sizeDelta = new Vector2(500, 220);
+        Undo.RegisterCreatedObjectUndo(summary.gameObject, "Build Pause Summary");
+        return summary;
+    }
+
+    // Copie vide de MenuBreak (meme fond, meme taille) avec une mise en page verticale.
+    static GameObject CreatePanel(GameObject pausePanel, string name)
+    {
+        Transform parent = pausePanel.transform.parent;
+        Transform old = parent.Find(name);
+        if (old != null)
+            Undo.DestroyObjectImmediate(old.gameObject);
+
+        GameObject panel = Object.Instantiate(pausePanel, parent);
+        panel.name = name;
+        panel.SetActive(true);
+        panel.transform.SetSiblingIndex(pausePanel.transform.GetSiblingIndex() + 1);
+        for (int i = panel.transform.childCount - 1; i >= 0; i--)
+            Object.DestroyImmediate(panel.transform.GetChild(i).gameObject);
+        foreach (LayoutGroup group in panel.GetComponents<LayoutGroup>())
+            Object.DestroyImmediate(group);
+        Undo.RegisterCreatedObjectUndo(panel, "Build " + name);
+
+        var layout = panel.AddComponent<VerticalLayoutGroup>();
+        layout.padding = new RectOffset(40, 40, 30, 30);
+        layout.spacing = 20;
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.childControlWidth = true;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = true;
+        layout.childForceExpandHeight = false;
+        return panel;
+    }
+
+    // Copie du bouton Resume, sans ses anciens evenements.
+    static Button CreateButton(Button template, Transform parent, string label, UnityEngine.Events.UnityAction onClick)
+    {
+        Button button = Object.Instantiate(template, parent);
+        button.name = label;
+        button.onClick = new Button.ButtonClickedEvent();
+        UnityEventTools.AddPersistentListener(button.onClick, onClick);
+        button.GetComponentInChildren<TMP_Text>(true).text = label;
+
+        var element = button.gameObject.AddComponent<LayoutElement>();
+        element.preferredHeight = ((RectTransform)template.transform).rect.height;
+        element.preferredWidth = ((RectTransform)template.transform).rect.width;
+        return button;
     }
 
     static (Slider, TMP_Text) CreateSliderRow(TMP_Text textTemplate, Transform parent, string name, string label)

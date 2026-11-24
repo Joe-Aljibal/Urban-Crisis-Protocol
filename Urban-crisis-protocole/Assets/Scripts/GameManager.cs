@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         string scene = SceneManager.GetActiveScene().name; // Get the name of the currently active scene and store it in the variable 'scene'.
         if (scene == "HomeScreen") // Check if the current scene is "MainMenu".
         {
-            if (Keyboard.current.enterKey.IsPressed()) // If the Enter key on the keypad is pressed, load the "MainGame" scene.
+            if (Keyboard.current != null && Keyboard.current.enterKey.IsPressed()) // If the Enter key on the keypad is pressed, load the "MainGame" scene.
             {
 
                 LoadChosenScene("MainGame");
