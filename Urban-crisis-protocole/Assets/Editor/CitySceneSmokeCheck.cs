@@ -125,6 +125,27 @@ public static class CitySceneSmokeCheck
                 Check(!built.IsDestroyed && !city.IsDestroyed, "Repair must restore buildings.");
                 Check(UnityEngine.Object.FindAnyObjectByType<CityPowerOutage>().DispatchRepair(), "Power repair must work.");
                 Check(built.GetComponent<House>().enabled, "Power repair must resume constructed building functions.");
+                var construction = UnityEngine.Object.FindAnyObjectByType<CityConstruction>();
+                var manager = UnityEngine.Object.FindAnyObjectByType<BuildingManager>();
+                var ground = manager.GetComponent<BoxCollider>();
+                Check(ground != null && ground.size.x == 180f && ground.size.z == 180f, "The construction area must be 180 by 180.");
+                Physics.SyncTransforms();
+                Vector3 outerPosition = construction.BuildAreaPosition + new Vector3(75f, 10f, 0f);
+                Check(ground.Raycast(new Ray(outerPosition, Vector3.down), out _, 20f), "The expanded area must be reachable for placement.");
+                var militaryCard = AssetDatabase.LoadAssetAtPath<BuildingCard>("Assets/Scripts/Buildings/BuildingPlacemenntSystem/BuildingCard/MilitaryBaseCard.asset");
+                Check(militaryCard != null && System.Array.IndexOf(construction.Cards, militaryCard) >= 0, "The military base must be available in construction.");
+                float funds = PlayerInfo.Instance.GetMoney;
+                PlayerInfo.Instance.AddMoney(-funds);
+                Vector3 militaryPosition = construction.BuildAreaPosition + new Vector3(60f, 0.01f, 0f);
+                Check(!manager.TryPlace(militaryCard, militaryPosition, Quaternion.identity) && manager.Status.Contains("Fonds insuffisants"), "Military placement must report insufficient funds.");
+                PlayerInfo.Instance.AddMoney(funds + 10000f);
+                Check(militaryCard.completPrefab.GetComponent<MilitaryBase>().GetBuildingSO().GetCard() == militaryCard, "The military asset must reference its building card.");
+                Check(manager.TryPlace(militaryCard, militaryPosition, Quaternion.identity), "The military base must be placeable with sufficient funds.");
+                step = 2;
+            }
+            if (step == 2 && elapsed > 12)
+            {
+                Check(UnityEngine.Object.FindAnyObjectByType<MilitaryBase>() != null, "The placed military base must initialize.");
                 Check(!failed, "The scene must not produce gameplay errors.");
                 SessionState.SetBool(Running, false);
                 Debug.Log("CITY_SCENE_CHECK_PASSED");

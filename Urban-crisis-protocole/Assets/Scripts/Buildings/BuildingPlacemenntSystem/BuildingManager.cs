@@ -164,7 +164,7 @@ public class BuildingManager : MonoBehaviour
         if (occupied == null) { Status = "This space is occupied."; return false; }
         IBuilding building = card.completPrefab.GetComponent<IBuilding>();
         int cost = building != null ? building.GetPrice() : 0;
-        if (owner.GetMoney < cost) { Status = "Not enough money ($" + cost + ")."; return false; }
+        if (owner.GetMoney < cost) { Status = "Fonds insuffisants : besoin de $" + cost + " (disponible : $" + owner.GetMoney.ToString("F0") + ")."; return false; }
         Vector3 position = card.GetPlacementPosition(gridPosition, rotated);
         GameObject placed = Instantiate(card.completPrefab, position, rotation);
         placed.GetComponent<IBuilding>()?.SetCityData(owner);
@@ -206,7 +206,10 @@ public class BuildingManager : MonoBehaviour
         }
         Vector3 center = gridPlateform.transform.position;
         Quaternion rotation = currentSelectedBuildingClone != null ? currentSelectedBuildingClone.transform.rotation : Quaternion.identity;
-        int[] offsets = { 0, 4, -4, 8, -8, 12, -12 };
+        var offsets = new List<int> { 0 };
+        BoxCollider area = gridPlateform.GetComponent<BoxCollider>();
+        int radius = area != null ? Mathf.FloorToInt(Mathf.Min(area.size.x, area.size.z) * 0.5f) : 0;
+        for (int offset = 4; offset < radius; offset += 4) { offsets.Add(offset); offsets.Add(-offset); }
         foreach (int z in offsets)
         {
             foreach (int x in offsets)
@@ -266,7 +269,11 @@ public class BuildingManager : MonoBehaviour
     {
         ResetDefaultBuilding();
 
-        Status = "Click the area or press Place building.";
+        var building = selectBuildingCard != null && selectBuildingCard.completPrefab != null
+            ? selectBuildingCard.completPrefab.GetComponent<IBuilding>() : null;
+        Status = building != null
+            ? "Prix : $" + building.GetPrice() + " | Fonds : $" + cityData.GetMoney.ToString("F0") + " — clique sur le terrain."
+            : "Choisis un emplacement sur le terrain.";
         currentBuidlingCard = selectBuildingCard;
         CreateBuilding();
     }

@@ -13,6 +13,18 @@ PrefabInstance:
       value: Solar Plant
       objectReference: {fileID: 0}
     - target: {fileID: 1976914517727598414, guid: f0ab15584469e6d40a7ea405b91d5d8d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1976914517727598414, guid: f0ab15584469e6d40a7ea405b91d5d8d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1976914517727598414, guid: f0ab15584469e6d40a7ea405b91d5d8d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1976914517727598414, guid: f0ab15584469e6d40a7ea405b91d5d8d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.7204825
       objectReference: {fileID: 0}

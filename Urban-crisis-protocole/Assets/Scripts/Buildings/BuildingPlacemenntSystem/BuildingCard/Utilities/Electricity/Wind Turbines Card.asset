@@ -16,5 +16,5 @@ MonoBehaviour:
   completPrefab: {fileID: 8673480549036252510, guid: edc0b6278141885418122a47b5066e44, type: 3}
   meshPrefab: {fileID: 8673480549036252510, guid: cf1d1ce39fd4a9e4f9fa494cc2cd8dec, type: 3}
   placementRule: {fileID: 11400000, guid: d53b79bbf0ab24445ba1fb6113fdf37b, type: 2}
-  width: 2
-  height: 2
+  width: 16
+  height: 16

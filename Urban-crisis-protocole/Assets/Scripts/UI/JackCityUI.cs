@@ -12,6 +12,7 @@ public class JackCityUI : MonoBehaviour
     private ResearchTreeUI research;
     private IBuilding selected;
     private GameObject selectedObject;
+    private Label placementStatus;
     private bool showCards;
     private int section = -1;
 
@@ -28,6 +29,18 @@ public class JackCityUI : MonoBehaviour
     private void Setup(PanelRenderer renderer, VisualElement visual, int version)
     {
         root = visual;
+        placementStatus = new Label();
+        placementStatus.style.position = Position.Absolute;
+        placementStatus.style.top = 120;
+        placementStatus.style.left = 20;
+        placementStatus.style.color = Color.white;
+        placementStatus.style.backgroundColor = new Color(0.12f, 0.12f, 0.14f, 0.9f);
+        placementStatus.style.paddingLeft = 12;
+        placementStatus.style.paddingRight = 12;
+        placementStatus.style.paddingTop = 6;
+        placementStatus.style.paddingBottom = 6;
+        placementStatus.style.display = DisplayStyle.None;
+        root.Add(placementStatus);
         root.Q("BuildingInfo").style.display = DisplayStyle.None;
         root.Q("BuildingPopUp").style.display = DisplayStyle.None;
         root.Q("BuildingsContainer").style.display = DisplayStyle.None;
@@ -45,6 +58,14 @@ public class JackCityUI : MonoBehaviour
     {
         if (root == null) return;
         var p = PlayerInfo.Instance;
+        if (construction == null) construction = FindAnyObjectByType<CityConstruction>();
+        var manager = construction != null ? construction.GetComponentInChildren<BuildingManager>() : null;
+        if (manager == null) manager = FindAnyObjectByType<BuildingManager>();
+        if (placementStatus != null && manager != null)
+        {
+            placementStatus.text = manager.Status;
+            placementStatus.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
+        }
         Set("MoneyValue", "$" + p.GetMoney.ToString("F0"));
         Set("PopulationValue", p.GetWorkingPopulation + " / " + p.GetPopulation);
         Set("ElectricityValue", p.GetElectricityUsed + " / " + p.GetElectricity);

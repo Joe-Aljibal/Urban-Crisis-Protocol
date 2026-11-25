@@ -77,7 +77,7 @@
 
 /* One tile style shared by stats AND selector buttons */
 .bar-tile {
-    width: 84px;
+    width: 70px;
     height: 92px;
     margin: 0 4px;
     padding: 6px 4px;
@@ -120,8 +120,13 @@
 .stats-container,
 .bar-spacer {
     height: 50px;
-    width: 280px;
+    width: 390px;
     flex-shrink: 0;
+}
+
+.bar-spacer {
+    width: 0;
+    flex-grow: 1;
 }
 
 .stats-container {

@@ -13,6 +13,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 75dc23b3b70046a42b15ddb3a1532bbe, type: 2}
     - target: {fileID: 7463550270173414091, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7463550270173414091, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7463550270173414091, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7463550270173414091, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -54,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7843031677881636977, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
       propertyPath: m_Name
-      value: Gas Station
+      value: A - Gas Station
       objectReference: {fileID: 0}
     - target: {fileID: 9109085439574227034, guid: 7207104076da7ff4d944715a32c6483d, type: 3}
       propertyPath: m_Name

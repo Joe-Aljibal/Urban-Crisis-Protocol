@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 786f0fac17f3ec341a9a7f867806c465, type: 3}
   m_Name: Military Base
   m_EditorClassIdentifier: Assembly-CSharp::MilitaryBaseSO
+  card: {fileID: 11400000, guid: f6a89ce8ffb64080924a1d02202d780d, type: 2}
   type: Military
   ressource: Defense
   electricityNeeded: 150

@@ -14,16 +14,12 @@ public class BuildingCard : ScriptableObject
     public Vector3[] GetOccupiedCells(Vector3 position, List<Vector3> occupied, Grid grid, bool rotated)
     {
         if (placementRule == null) return null;
-        if (placementRule is OneSlotPlacementRules || placementRule is FourSlotPlacementRules)
-            return placementRule.CanPlaceBuilding(position, occupied);
         int w = Mathf.Max(1, rotated ? height : width);
         int h = Mathf.Max(1, rotated ? width : height);
         return placementRule.CanPlaceBuilding(position, occupied, w, h, grid);
     }
     public Vector3 GetPlacementPosition(Vector3 position, bool rotated)
     {
-        if (placementRule is OneSlotPlacementRules || placementRule is FourSlotPlacementRules)
-            return placementRule.ChangeFuturPosition(position);
         return placementRule.ChangeFuturPosition(position, Mathf.Max(1, rotated ? height : width), Mathf.Max(1, rotated ? width : height));
     }
 

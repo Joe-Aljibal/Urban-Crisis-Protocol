@@ -18,7 +18,19 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: bc0035309eb197044a3c59b30b58de62, type: 2}
     - target: {fileID: 7239524929014894338, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_Name
-      value: B2-M Apartment Ghost
+      value: B2 Medium Apartment Ghost
+      objectReference: {fileID: 0}
+    - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 11.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 11.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 11.2
       objectReference: {fileID: 0}
     - target: {fileID: 8015322378088535480, guid: 67aa92493c03ad944a3e9b297cdda8ed, type: 3}
       propertyPath: m_LocalPosition.x

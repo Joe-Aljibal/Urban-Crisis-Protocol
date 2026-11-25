@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 448bb52b941b54b42bea0d78478662b4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 448bb52b941b54b42bea0d78478662b4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 448bb52b941b54b42bea0d78478662b4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 448bb52b941b54b42bea0d78478662b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -54,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 0ff9b0c3bd5b8664ca475dce71006073, type: 2}
     - target: {fileID: 919132149155446097, guid: 448bb52b941b54b42bea0d78478662b4, type: 3}
       propertyPath: m_Name
-      value: Water Silo
+      value: Water Silo Ghost
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

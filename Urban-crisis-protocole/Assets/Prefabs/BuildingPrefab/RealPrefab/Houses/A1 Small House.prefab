@@ -10,19 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 459540565546621627, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_Name
-      value: A1-S House
+      value: A1 Small House
       objectReference: {fileID: 0}
     - target: {fileID: 948936917133131777, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 948936917133131777, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 948936917133131777, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 948936917133131777, guid: 21252ebab46e56e458f3984a7cb95e54, type: 3}
       propertyPath: m_LocalPosition.x

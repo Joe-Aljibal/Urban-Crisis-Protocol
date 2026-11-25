@@ -7,6 +7,7 @@ public class CityConstruction : MonoBehaviour
     [SerializeField] private BuildingCard[] cards;
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
+    private const float BuildAreaSize = 180f;
     private BuildingManager manager;
     private GameObject constructionRoot;
     public Vector3 BuildAreaPosition => constructionRoot != null ? constructionRoot.transform.position : new Vector3(-120f, 0f, -55f);
@@ -38,14 +39,14 @@ public class CityConstruction : MonoBehaviour
         buildArea.name = "Build area";
         buildArea.transform.SetParent(constructionRoot.transform, false);
         buildArea.transform.localPosition = new Vector3(0, -0.12f, 0);
-        buildArea.transform.localScale = new Vector3(30f, 0.04f, 30f);
+        buildArea.transform.localScale = new Vector3(BuildAreaSize, 0.04f, BuildAreaSize);
         Destroy(buildArea.GetComponent<Collider>());
         buildArea.GetComponent<Renderer>().material.color = new Color(0.42f, 0.5f, 0.38f);
         Grid grid = constructionRoot.AddComponent<Grid>();
         grid.cellSize = new Vector3(0.5f, 0.5f, 0.5f);
         grid.cellSwizzle = GridLayout.CellSwizzle.XZY;
         BoxCollider ground = constructionRoot.AddComponent<BoxCollider>();
-        ground.size = new Vector3(30f, 0.1f, 30f);
+        ground.size = new Vector3(BuildAreaSize, 0.1f, BuildAreaSize);
         preview = new GameObject("Construction grid preview");
         manager = constructionRoot.AddComponent<BuildingManager>();
         manager.Configure(constructionRoot, preview, validMaterial, invalidMaterial);
