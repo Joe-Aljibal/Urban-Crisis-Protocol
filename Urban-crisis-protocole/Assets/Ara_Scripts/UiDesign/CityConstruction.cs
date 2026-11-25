@@ -72,9 +72,15 @@ public class CityConstruction : MonoBehaviour
     public void SelectNextBuilding()
     {
         if (manager == null || cards == null || cards.Length == 0) return;
-        selectedIndex = (selectedIndex + 1) % cards.Length;
-        if (cards[selectedIndex] != null) manager.ChangeCurrentBuildingCard(cards[selectedIndex]);
-        FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
+        for (int i = 0; i < cards.Length; i++)
+        {
+            selectedIndex = (selectedIndex + 1) % cards.Length;
+            BuildingCard card = cards[selectedIndex];
+            if (card == null || card.completPrefab == null || card.completPrefab.GetComponent<IBuilding>()?.GetBuildingSO() == null) continue;
+            manager.ChangeCurrentBuildingCard(card);
+            FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
+            break;
+        }
     }
 
     private void OnGUI()
@@ -93,7 +99,7 @@ public class CityConstruction : MonoBehaviour
         cardScroll = GUILayout.BeginScrollView(cardScroll, GUILayout.Height(100));
         foreach (BuildingCard card in cards)
         {
-            if (card == null) continue;
+            if (card == null || card.completPrefab == null || card.completPrefab.GetComponent<IBuilding>()?.GetBuildingSO() == null) continue;
             string label = card.name == "GazStation" ? "Business" : card.name;
             if (GUILayout.Button(label, button, GUILayout.Height(28)))
             {

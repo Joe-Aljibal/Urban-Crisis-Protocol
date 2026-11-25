@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public class CityData
+public partial class CityData
 {
 
 
@@ -86,13 +86,13 @@ public class CityData
     }
     public float GetMoney => money;
 
-    public void AddWood(int wood) { resources[ResourceType.Wood] += wood; }
+    public void AddWood(int wood) { addResource(ResourceType.Wood, wood); }
     public int GetWood => resources[ResourceType.Wood];
 
-    public void AddStone(int stone) { resources[ResourceType.Stone] += stone; }
+    public void AddStone(int stone) { addResource(ResourceType.Stone, stone); }
     public int GetStone => resources[ResourceType.Stone];
 
-    public void AddResource(ResourceType type, int amount) { resources[type] += amount; }
+    public void AddResource(ResourceType type, int amount) { addResource(type, amount); }
 
     public float GetResearchPoints() => researchPoints;
     public void AddResearchPoints(float points)
@@ -149,41 +149,9 @@ public class CityData
         rewardExtraction(amount);
     }
 
-    public void StartProvidingElectricity()
-    {
-        List<Electricity> providersToRemove = new();
-        foreach (var provider in new List<Electricity>(electricityProviders))
-        {
-            if (electricityDependants.Count < 1) break;
-            provider.ProvideElectricity();
-            if (!provider.HasAvailableElectricity()) providersToRemove.Add(provider);
-        }
-        foreach (Electricity provider in providersToRemove) electricityProviders.Remove(provider);
-    }
-
-    public void StartProvidingWorkers()
-    {
-        List<House> providersToRemove = new();
-        foreach (var provider in new List<House>(workerProviders))
-        {
-            if (workerDependants.Count < 1) break;
-            provider.ProvideWorkers();
-            if (!provider.HasEnoughWorkers()) providersToRemove.Add(provider);
-        }
-        foreach (var provider in providersToRemove) workerProviders.Remove(provider);
-    }
-
-    public void StartProvidingWater()
-    {
-        List<Water> providersToRemove = new();
-        foreach (Water provider in new List<Water>(waterProviders))
-        {
-            if (waterDependants.Count < 1) break;
-            provider.ProvideWater();
-            if (!provider.HasAvailableWater()) providersToRemove.Add(provider);
-        }
-        foreach (Water provider in providersToRemove) waterProviders.Remove(provider);
-    }
+    public void StartProvidingElectricity() => RecalculateBuildings();
+    public void StartProvidingWorkers() => RecalculateBuildings();
+    public void StartProvidingWater() => RecalculateBuildings();
 
     private int food;
     private readonly Dictionary<GameObject, List<Vector3>> buildingsPositions = new();

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MilitaryBase : MonoBehaviour, IBuilding
+public class MilitaryBase : MonoBehaviour, IBuilding, ISellable
 {
     [SerializeField] MilitaryBaseSO militaryBaseSO;
     CityData playerInfo = Cities.cities["PLAYER"];
@@ -27,9 +27,7 @@ public class MilitaryBase : MonoBehaviour, IBuilding
 
     void Start()
     {
-        playerInfo.addWorkingPopulation(militaryBaseSO.population);
-        playerInfo.electricityDependants.Add(this);
-        RequestElectricity();
+        playerInfo.RegisterBuilding(this);
 
         Log($"Placee : {militaryBaseSO.population} soldats, " +
             $"electricite {electricityReceived}/{militaryBaseSO.electricityNeeded}");
@@ -38,17 +36,6 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     // Meme role que PlayerInfo.ElectrifyBuildings(), mais sur une copie de la liste :
     // une centrale vide se retire de electricityProviders pendant le parcours, ce qui
     // fait planter l'original ("Collection was modified").
-    void RequestElectricity()
-    {
-        foreach (Electricity provider in new List<Electricity>(playerInfo.electricityProviders))
-        {
-            if (!playerInfo.electricityDependants.Contains(this))
-                break;
-
-            provider.ProvideElectricity();
-        }
-    }
-
     void Update()
     {
         if (!isActive) return;
@@ -60,69 +47,43 @@ public class MilitaryBase : MonoBehaviour, IBuilding
         }
     }
 
+    public int PowerDemand => militaryBaseSO.electricityNeeded;
+    public int WorkerDemand => militaryBaseSO.population;
+    private int workersReceived;
+    public void ApplySupply(int power, int workers, bool available)
+    {
+        electricityReceived = power;
+        workersReceived = workers;
+        SetActive(available && HasEnoughElectricity() && HasEnoughWorkers());
+    }
     public void DeleteButton()
     {
+        if (isDeleted) return;
         isDeleted = true;
         SetActive(false);
+        playerInfo.UnregisterBuilding(this);
+        playerInfo.RemoveBuilding(gameObject);
         playerInfo.addMoney(militaryBaseSO.price * .8f);
-        playerInfo.UseElectricity(-electricityReceived);
-        playerInfo.addWorkingPopulation(-militaryBaseSO.population);
-        playerInfo.electricityDependants.Remove(this);
-
         Destroy(gameObject);
     }
-
-    void OnDestroy() => activeBases.Remove(this);
-
-    // Appele par Electricity quand la centrale qui alimente la base disparait.
-    public void Deactivate(int electricityLost)
+    public void Sell() => DeleteButton();
+    void OnDestroy()
     {
-        if (isDeleted)
-            return;
-
-        SetActive(false);
-        electricityReceived -= electricityLost;
-        playerInfo.UseElectricity(-electricityLost);
-
-        Log($"Desactivee : electricite {electricityReceived}/{militaryBaseSO.electricityNeeded}");
+        activeBases.Remove(this);
+        if (!isDeleted) { playerInfo.UnregisterBuilding(this); playerInfo.RemoveBuilding(gameObject); }
     }
-
-    // Appele par Electricity quand la base a recu toute son electricite.
-    public void Activate()
-    {
-        SetActive(true);
-
-        Log($"Active ! Bases actives : {activeBases.Count}, solde -{militaryBaseSO.upkeep} $/s");
-    }
-
+    public void Deactivate(int electricityLost) => playerInfo.SetBuildingAvailable(this, false);
+    public void Activate() => playerInfo.SetBuildingAvailable(this, true);
     void SetActive(bool active)
     {
-        if (isActive == active)
-            return;
-
+        if (isActive == active) return;
         isActive = active;
-        enabled = active;
         cooldown = 0;
-
-        if (active)
-        {
-            if (!activeBases.Contains(this))
-                activeBases.Add(this);
-        }
-        else
-        {
-            activeBases.Remove(this);
-        }
-
-        foreach (Solider soldier in soldiers)
-            soldier.SetOnDuty(active);
+        if (active) { if (!activeBases.Contains(this)) activeBases.Add(this); }
+        else activeBases.Remove(this);
+        foreach (Solider soldier in soldiers) if (soldier != null) soldier.SetOnDuty(active);
     }
-
-    public void UseElectricity(int electricity)
-    {
-        electricityReceived += electricity;
-        playerInfo.UseElectricity(electricity);
-    }
+    public void UseElectricity(int electricity) => playerInfo.RecalculateBuildings();
 
     // Chance combinee de toutes les bases actives : 1 - produit(1 - p).
     public static bool TryInterceptBandit()
@@ -155,14 +116,9 @@ public class MilitaryBase : MonoBehaviour, IBuilding
     public bool CanPlace() => militaryBaseSO.CanPlace();
     public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
 
-    public void ReceiveElectricity(int amount)
-    {
-        electricityReceived += amount;
-        if (HasEnoughElectricity()) Activate();
-    }
-    public void Deactivate(int electricityLost, int workersLost) => Deactivate(electricityLost);
-    public void ReceiveWorkers(int workers) { }
-    public int GetWorkersNeeded() => 0;
-    public bool HasEnoughWorkers() => true;
-
+    public void ReceiveElectricity(int amount) => playerInfo.RecalculateBuildings();
+    public void Deactivate(int electricityLost, int workersLost) => playerInfo.RecalculateBuildings();
+    public void ReceiveWorkers(int workers) => playerInfo.RecalculateBuildings();
+    public int GetWorkersNeeded() => Mathf.Max(0, WorkerDemand - workersReceived);
+    public bool HasEnoughWorkers() => workersReceived >= WorkerDemand;
 }

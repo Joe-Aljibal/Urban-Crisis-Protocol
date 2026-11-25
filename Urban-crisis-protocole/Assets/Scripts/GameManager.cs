@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
             if (Keyboard.current.enterKey.IsPressed()) // If the Enter key on the keypad is pressed, load the "MainGame" scene.
             {
 
+                Cities.ResetForNewGame();
                 LoadChosenScene("IntegratedCity");
             }
         }

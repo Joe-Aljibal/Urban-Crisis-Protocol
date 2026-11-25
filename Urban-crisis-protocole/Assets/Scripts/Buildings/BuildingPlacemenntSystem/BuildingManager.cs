@@ -131,7 +131,7 @@ public class BuildingManager : MonoBehaviour
         currentSelectedSlot.transform.position = exactPosition;
         currentSelectedBuildingClone.transform.position = exactPosition;
         ChangeBuildingColor(materials[occupied == null ? 1 : 0]);
-        if (occupied != null && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !FindUiButtonUnderMouse())
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !FindUiButtonUnderMouse())
             TryPlace(currentBuidlingCard, position, rotation);
     }
 
@@ -224,7 +224,7 @@ public class BuildingManager : MonoBehaviour
 
     bool FindUiButtonUnderMouse()
     {
-        if (CityFireEvent.IsPointerOverPanel || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel) return true;
+        if (CityFireEvent.IsPointerOverPanel || IntegratedGameControls.IsPointerOverCasino || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel) return true;
         if (EventSystem.current == null) return false;
         PointerEventData data = new PointerEventData(EventSystem.current);
         data.position = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
@@ -258,9 +258,17 @@ public class BuildingManager : MonoBehaviour
         Vector3? position = FindMousePositionOnGrid();
 
 
-        currentSelectedBuildingClone = Instantiate(currentBuidlingCard.meshPrefab);
-        currentSelectedSlot = Instantiate(currentBuidlingCard.prefabCurrentCaseSelection);
-
+        // Some cards use gameplay prefabs as their preview. Keep preview components
+        // from producing resources or blocking the placement ray.
+        var inactiveParent = new GameObject("Inactive preview container");
+        inactiveParent.SetActive(false);
+        currentSelectedBuildingClone = Instantiate(currentBuidlingCard.meshPrefab, inactiveParent.transform);
+        currentSelectedSlot = Instantiate(currentBuidlingCard.prefabCurrentCaseSelection, inactiveParent.transform);
+        foreach (var behaviour in inactiveParent.GetComponentsInChildren<MonoBehaviour>(true)) behaviour.enabled = false;
+        foreach (var collider in inactiveParent.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
+        currentSelectedBuildingClone.transform.SetParent(null);
+        currentSelectedSlot.transform.SetParent(null);
+        Destroy(inactiveParent);
         MoveGridAround(position);
     }
 

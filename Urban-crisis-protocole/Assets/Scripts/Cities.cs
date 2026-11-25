@@ -9,5 +9,9 @@ public class Cities
         {"PLAYER", new PlayerInfo()},
         {"AI", new CityData()},
     };
-      
+
+    public static void ResetForNewGame()
+    {
+        foreach (CityData city in cities.Values) city.ResetForNewGame();
+    }
 }

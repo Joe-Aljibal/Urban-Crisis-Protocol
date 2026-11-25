@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour
 
     bool FindUiButtonUnderMouse()
     {
-        if (CityFireEvent.IsPointerOverPanel || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel) return true;
+        if (CityFireEvent.IsPointerOverPanel || IntegratedGameControls.IsPointerOverCasino || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel) return true;
         if (EventSystem.current == null || Mouse.current == null) return false;
         PointerEventData data = new PointerEventData(EventSystem.current);
         data.position = Mouse.current.position.ReadValue();

@@ -45,6 +45,14 @@ public class GamblingPanelUI : MonoBehaviour
         resultText.text = "Match all three green squares to win!";
     }
 
+    public void Close()
+    {
+        StopAllCoroutines();
+        isSpinning = false;
+        gambleButton.interactable = true;
+        gameObject.SetActive(false);
+    }
+
     public void ShowResult(float totalMoney, float change)
     {
         UpdateMoney(totalMoney);
@@ -85,6 +93,18 @@ public class GamblingPanelUI : MonoBehaviour
         gambleButton.targetGraphic = buttonImage;
         gambleButton.onClick.AddListener(() => { if (!isSpinning) StartCoroutine(Spin()); });
         CreateText("Button Label", buttonRect, Vector2.zero, new Vector2(180f, 40f), 20f).text = "Play";
+
+        RectTransform closeRect = CreateRect("Close Casino Button", panelRect);
+        closeRect.anchorMin = closeRect.anchorMax = new Vector2(1f, 1f);
+        closeRect.pivot = new Vector2(1f, 1f);
+        closeRect.anchoredPosition = new Vector2(-6f, -6f);
+        closeRect.sizeDelta = new Vector2(44f, 44f);
+        Image closeImage = closeRect.gameObject.AddComponent<Image>();
+        closeImage.color = new Color(0.7f, 0.12f, 0.12f);
+        Button closeButton = closeRect.gameObject.AddComponent<Button>();
+        closeButton.targetGraphic = closeImage;
+        closeButton.onClick.AddListener(Close);
+        CreateText("Close Label", closeRect, Vector2.zero, new Vector2(40f, 40f), 28f).text = "X";
     }
 
     private IEnumerator Spin()

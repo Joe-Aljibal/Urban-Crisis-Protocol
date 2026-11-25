@@ -65,7 +65,7 @@ public class TownMapController : MonoBehaviour
 
     private void HandleMapClick()
     {
-        if (CityFireEvent.IsPointerOverPanel || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel)
+        if (CityFireEvent.IsPointerOverPanel || IntegratedGameControls.IsPointerOverCasino || ResourceUIManager.IsPointerOverDashboard || CityConstruction.IsPointerOverPanel)
             return;
         Mouse mouse = Mouse.current;
         if (mouse == null) return;

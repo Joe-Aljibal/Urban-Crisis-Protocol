@@ -113,7 +113,6 @@ public class ResourceWorker : Worker
     {
         if (!carryingResource) return;
         carryingResource = false;
-        playerInfo.addResource(cachedResourceType, 1);
         TownResourceStatistics.AddResource(TownType.Human, cachedResourceType, 1);
     }
 

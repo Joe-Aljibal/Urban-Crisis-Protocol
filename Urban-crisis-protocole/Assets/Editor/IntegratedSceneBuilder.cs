@@ -19,7 +19,8 @@ public static class IntegratedSceneBuilder
             .Select(AssetDatabase.LoadAssetAtPath<BuildingCard>)
             .Where(card => card != null && card.completPrefab != null && card.meshPrefab != null &&
                            card.prefabCurrentCaseSelection != null && card.placementRule != null &&
-                           card.completPrefab.GetComponent<IBuilding>() != null)
+                           card.completPrefab.GetComponent<IBuilding>() != null &&
+                           card.completPrefab.GetComponent<IBuilding>().GetBuildingSO() != null)
             .OrderBy(card => card.name).ToArray();
         var serialized = new SerializedObject(construction);
         var array = serialized.FindProperty("cards");

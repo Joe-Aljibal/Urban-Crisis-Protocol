@@ -18,14 +18,6 @@ public class MovingNpcManager : MonoBehaviour
 
     void Update()
     {
-         if (Keyboard.current.tabKey.isPressed)
-        {
-            Time.timeScale = 100.0f;
-        }
-        else
-        {
-            Time.timeScale = 1.0f;
-        }
         CalculateNpcsFromPopulation();
         ManageMovingNpcs();
         //Debug.Log("Available Population: " + playerInfo.getAvailablePopulation + " Moving NPCs: " + movingNpcCount);

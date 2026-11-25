@@ -13,6 +13,7 @@ public class JackCityUI : MonoBehaviour
     private IBuilding selected;
     private GameObject selectedObject;
     private Label placementStatus;
+    private Button placeButton;
     private bool showCards;
     private int section = -1;
 
@@ -21,18 +22,30 @@ public class JackCityUI : MonoBehaviour
         panel = GetComponent<PanelRenderer>();
         research = GetComponent<ResearchTreeUI>();
         panel.RegisterUIReloadCallback(Setup);
+        research.ResearchChanged += RefreshOpenSection;
     }
 
     private void Start() => construction = FindAnyObjectByType<CityConstruction>();
-    private void OnDestroy() { if (panel != null) panel.UnregisterUIReloadCallback(Setup); }
+    private void OnDestroy()
+    {
+        if (panel != null) panel.UnregisterUIReloadCallback(Setup);
+        if (research != null) research.ResearchChanged -= RefreshOpenSection;
+    }
+    private void RefreshOpenSection()
+    {
+        if (!showCards || section < 0) return;
+        showCards = false;
+        if (section >= 6) ShowActionSection(section);
+        else ShowSection(section);
+    }
 
     private void Setup(PanelRenderer renderer, VisualElement visual, int version)
     {
         root = visual;
         placementStatus = new Label();
         placementStatus.style.position = Position.Absolute;
-        placementStatus.style.top = 120;
-        placementStatus.style.left = 20;
+        placementStatus.style.top = 55;
+        placementStatus.style.left = new StyleLength(new Length(35, LengthUnit.Percent));
         placementStatus.style.color = Color.white;
         placementStatus.style.backgroundColor = new Color(0.12f, 0.12f, 0.14f, 0.9f);
         placementStatus.style.paddingLeft = 12;
@@ -41,6 +54,12 @@ public class JackCityUI : MonoBehaviour
         placementStatus.style.paddingBottom = 6;
         placementStatus.style.display = DisplayStyle.None;
         root.Add(placementStatus);
+        placeButton = new Button(() => FindAnyObjectByType<BuildingManager>()?.PlaceSelectedInBuildArea()) { text = "Place automatically" };
+        placeButton.style.position = Position.Absolute;
+        placeButton.style.top = 90;
+        placeButton.style.left = new StyleLength(new Length(35, LengthUnit.Percent));
+        placeButton.style.display = DisplayStyle.None;
+        root.Add(placeButton);
         root.Q("BuildingInfo").style.display = DisplayStyle.None;
         root.Q("BuildingPopUp").style.display = DisplayStyle.None;
         root.Q("BuildingsContainer").style.display = DisplayStyle.None;
@@ -52,6 +71,23 @@ public class JackCityUI : MonoBehaviour
         }
         root.Q<Button>("ResearchTreeButton").clicked += () => research.ToggleResearchPage();
         root.Q<Button>("SellButton").clicked += SellSelected;
+        SetupAction("CasinoButton", "ToolbarIcons/Casino", "Casino", () => ShowActionSection(6));
+        SetupAction("EventsButton", "ToolbarIcons/Events", "Events", () => ShowActionSection(7));
+        SetupAction("AtomicBombButton", "ToolbarIcons/AtomicBomb", "Atomic bomb", () => ShowActionSection(8));
+    }
+
+    private void SetupAction(string buttonName, string imagePath, string fallback, System.Action action)
+    {
+        Button button = root.Q<Button>(buttonName);
+        if (button == null) return;
+        Texture2D texture = Resources.Load<Texture2D>(imagePath);
+        if (texture != null)
+        {
+            button.style.backgroundImage = new StyleBackground(texture);
+            button.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+        }
+        else button.text = fallback;
+        button.clicked += action;
     }
 
     private void Update()
@@ -65,6 +101,7 @@ public class JackCityUI : MonoBehaviour
         {
             placementStatus.text = manager.Status;
             placementStatus.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
+            placeButton.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
         }
         Set("MoneyValue", "$" + p.GetMoney.ToString("F0"));
         Set("PopulationValue", p.GetWorkingPopulation + " / " + p.GetPopulation);
@@ -89,16 +126,69 @@ public class JackCityUI : MonoBehaviour
 
     private void Set(string name, string value) { var label = root.Q<Label>(name); if (label != null) label.text = value; }
 
-    private void ShowSection(int value)
+    // The action menus share the same panel and toggle behavior as the building categories.
+    private ScrollView OpenSection(int value)
     {
-        if (construction == null) construction = FindAnyObjectByType<CityConstruction>();
-        if (construction == null) return;
         showCards = !showCards || section != value;
         section = value;
         var container = root.Q<ScrollView>("BuildingsContainer");
         container.Clear();
         container.style.translate = new Translate(0, -120);
         container.style.display = showCards ? DisplayStyle.Flex : DisplayStyle.None;
+        return container;
+    }
+
+    private void ShowActionSection(int value)
+    {
+        if (CityFireEvent.IsMenuOpen) CityFireEvent.ClosePanel();
+        var container = OpenSection(value);
+        if (!showCards) return;
+        if (value == 6)
+            AddAction(container, "Open casino", () => FindAnyObjectByType<IntegratedGameControls>()?.OpenCasino());
+        else if (value == 8)
+            AddAction(container, "Launch bomb", () => CityLegacyEvents.Instance?.LaunchBomb());
+        else
+        {
+            AddAction(container, "Fire", () => CityFireEvent.Instance?.StartFireEvent());
+            AddAction(container, "Blackout", () => FindAnyObjectByType<CityPowerOutage>()?.TriggerOutage());
+            AddAction(container, "Raid", () => CityLegacyEvents.Instance?.StartRaid());
+            AddAction(container, "Tornado", () => StartDisaster(CityDisasterEvent.Disaster.Tornado));
+            AddAction(container, "Earthquake", () => StartDisaster(CityDisasterEvent.Disaster.Earthquake));
+            AddAction(container, "Storm", () => StartDisaster(CityDisasterEvent.Disaster.Thunderstorm));
+            AddAction(container, "Manage", () => CityFireEvent.Instance?.TogglePanel());
+        }
+    }
+
+    private void AddAction(ScrollView container, string label, System.Action action)
+    {
+        var button = new Button(() =>
+        {
+            action();
+            container.style.display = DisplayStyle.None;
+            showCards = false;
+        }) { text = label, tooltip = label };
+        button.AddToClassList("bar-tile");
+        button.style.width = 96;
+        button.style.height = 80;
+        button.style.fontSize = 16;
+        button.style.color = Color.white;
+        button.style.unityTextAlign = TextAnchor.MiddleCenter;
+        button.style.whiteSpace = WhiteSpace.Normal;
+        container.Add(button);
+    }
+
+    private static void StartDisaster(CityDisasterEvent.Disaster type)
+    {
+        var disaster = CityDisasterEvent.Instance;
+        var target = CityStructure.All.Find(building => building != null && !building.IsDestroyed);
+        if (disaster != null && target != null && disaster.TryStart(type, target.transform.position)) disaster.Focus();
+    }
+
+    private void ShowSection(int value)
+    {
+        if (construction == null) construction = FindAnyObjectByType<CityConstruction>();
+        if (construction == null) return;
+        var container = OpenSection(value);
         if (!showCards) return;
         foreach (var card in construction.Cards)
         {
@@ -110,7 +200,7 @@ public class JackCityUI : MonoBehaviour
             var button = new Button(() => { construction.SelectCard(card); container.style.display = DisplayStyle.None; showCards = false; }) { text = so.GetIcon() == null ? card.name : "" };
             if (so.GetIcon() != null) button.style.backgroundImage = new StyleBackground(so.GetIcon());
             button.style.width = 80; button.style.height = 80;
-            button.tooltip = so.GetBuildingName();
+            button.tooltip = so.GetBuildingName() + " — $" + building.GetPrice();
             button.RegisterCallback<MouseEnterEvent>(_ => ShowDescription(so));
             button.RegisterCallback<MouseLeaveEvent>(_ => root.Q("BuildingInfo").style.display = DisplayStyle.None);
             container.Add(button);

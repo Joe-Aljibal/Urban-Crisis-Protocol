@@ -60,10 +60,17 @@ public class CityStructure : MonoBehaviour, IDestructible
                     if (buildingRenderers[i] != null) buildingRenderers[i].enabled = rendererEnabled[i];
             if (buildingBehaviours != null)
                 for (int i = 0; i < buildingBehaviours.Length; i++)
-                    if (buildingBehaviours[i] != null && buildingBehaviours[i] != this) buildingBehaviours[i].enabled = behaviourEnabled[i];
+                    if (buildingBehaviours[i] != null && buildingBehaviours[i] != this)
+                    {
+                        var outage = FindAnyObjectByType<CityPowerOutage>();
+                        if (outage == null || !outage.IsActive || !(buildingBehaviours[i] is IBuilding))
+                            buildingBehaviours[i].enabled = behaviourEnabled[i];
+                        else outage.IncludeBuilding(gameObject, behaviourEnabled[i]);
+                    }
             foreach (Collider part in GetComponentsInChildren<Collider>()) part.enabled = true;
         }
         UpdateAppearance();
+        foreach (CityData city in Cities.cities.Values) city.RecalculateBuildings();
     }
 
     [SerializeField] private bool destroyed;
@@ -80,6 +87,7 @@ public class CityStructure : MonoBehaviour, IDestructible
             foreach (Behaviour behaviour in buildingBehaviours)
                 if (behaviour != null && behaviour != this) behaviour.enabled = false;
         foreach (Collider part in GetComponentsInChildren<Collider>()) part.enabled = false;
+        foreach (CityData city in Cities.cities.Values) city.RecalculateBuildings();
     }
 
     private void UpdateAppearance()

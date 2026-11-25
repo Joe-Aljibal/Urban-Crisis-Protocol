@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // Provides access to city-wide systems from the integrated world.
 public class IntegratedGameControls : MonoBehaviour
@@ -7,15 +8,22 @@ public class IntegratedGameControls : MonoBehaviour
     private bool researchOpen;
     private Vector2 scroll;
     private GambleLogic casino;
+    private static IntegratedGameControls instance;
 
-    private void Awake() => casino = gameObject.AddComponent<GambleLogic>();
+    private void Awake() { instance = this; casino = gameObject.AddComponent<GambleLogic>(); }
+    private void OnDestroy() { if (instance == this) instance = null; }
+
+    public void OpenCasino() => casino.OpenPanel();
+
+    private static bool CasinoVisible => instance != null && FindAnyObjectByType<JackCityUI>() == null && !CityConstruction.IsMenuOpen && CityFireEvent.DashboardBottom + 48f <= Screen.height;
+    private static Rect CasinoRect => new Rect(CityFireEvent.TabRect.x, CityFireEvent.DashboardBottom + 8f, CityFireEvent.TabRect.width, 40f);
+    public static bool IsPointerOverCasino => CasinoVisible && Mouse.current != null &&
+        CasinoRect.Contains(new Vector2(Mouse.current.position.ReadValue().x, Screen.height - Mouse.current.position.ReadValue().y));
 
     private void OnGUI()
     {
-        GUILayout.BeginArea(new Rect(Screen.width - 220, 20, 200, 100), GUI.skin.box);
-        if (FindAnyObjectByType<JackCityUI>() == null && GUILayout.Button(researchOpen ? "Fermer recherche" : "Recherche")) researchOpen = !researchOpen;
-        if (GUILayout.Button("Casino")) casino.OpenPanel();
-        GUILayout.EndArea();
+        if (CasinoVisible && GUI.Button(CasinoRect, "Casino")) casino.OpenPanel();
+        if (FindAnyObjectByType<JackCityUI>() == null && GUI.Button(new Rect(Screen.width - 220, 20, 200, 40), researchOpen ? "Fermer recherche" : "Recherche")) researchOpen = !researchOpen;
         if (!researchOpen) return;
 
         var player = PlayerInfo.Instance;

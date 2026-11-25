@@ -18,6 +18,12 @@ public class GeneralScriptUI : MonoBehaviour
         PlayerInfo.Instance.addStat += AnimateStat;
     }
 
+    void OnDestroy()
+    {
+        PlayerInfo.Instance.addStat -= AnimateStat;
+        if (panelRenderer != null) panelRenderer.UnregisterUIReloadCallback(SettingUp);
+    }
+
     void SettingUp(PanelRenderer panelRenderer, VisualElement rootElement, int version)
     {
         root = rootElement;
@@ -25,7 +31,9 @@ public class GeneralScriptUI : MonoBehaviour
 
     public void AnimateStat(string labelName, string statValue)
     {
+        if (root == null) return;
         Label label = root.Q<Label>(labelName);
+        if (label == null || label.parent == null) return;
         Label newLabel = new Label(statValue);
 
         newLabel.style.position = Position.Absolute;

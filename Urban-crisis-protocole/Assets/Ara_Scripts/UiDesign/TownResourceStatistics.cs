@@ -1,46 +1,11 @@
-public enum TownType
-{
-    Human,
-    AI
-}
+public enum TownType { Human, AI }
 
+// Compatibility view over each city's lifetime delivered resources.
 public static class TownResourceStatistics
 {
-    private static int humanWood;
-    private static int humanStone;
-    private static int aiWood;
-    private static int aiStone;
-
-    public static void AddResource(TownType town, ResourceType resourceType, int amount)
-    {
-        if (town == TownType.Human)
-        {
-            if (resourceType == ResourceType.Wood)
-                humanWood += amount;
-            else if (resourceType == ResourceType.Stone)
-                humanStone += amount;
-
-            return;
-        }
-
-        if (resourceType == ResourceType.Wood)
-            aiWood += amount;
-        else if (resourceType == ResourceType.Stone)
-            aiStone += amount;
-    }
-
-    public static int GetWood(TownType town)
-    {
-        return town == TownType.Human ? humanWood : aiWood;
-    }
-
-    public static int GetStone(TownType town)
-    {
-        return town == TownType.Human ? humanStone : aiStone;
-    }
-
-    public static int GetTotal(TownType town)
-    {
-        return GetWood(town) + GetStone(town);
-    }
+    private static CityData City(TownType town) => Cities.cities[town == TownType.Human ? "PLAYER" : "AI"];
+    public static void AddResource(TownType town, ResourceType type, int amount) => City(town).addResource(type, amount);
+    public static int GetWood(TownType town) => City(town).getExploitedWood;
+    public static int GetStone(TownType town) => City(town).getExploitedStone;
+    public static int GetTotal(TownType town) => GetWood(town) + GetStone(town);
 }

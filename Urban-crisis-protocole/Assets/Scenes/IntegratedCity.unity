@@ -20157,6 +20157,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CityConstruction
   cards:
+  - {fileID: 11400000, guid: 0ce3e8aa48894534ba0c69332959d8e6, type: 2}
+  - {fileID: 11400000, guid: df0222295077e97409403707232ae46a, type: 2}
+  - {fileID: 11400000, guid: fd550e57c48b5754eb4de91f6c1063e3, type: 2}
   - {fileID: 11400000, guid: aa12a41ab49296b47bae6d365399a469, type: 2}
   - {fileID: 11400000, guid: 06cecf233500b954483e79719091b37b, type: 2}
   - {fileID: 11400000, guid: 43748aaeab4938f48b78a7859ce1bd13, type: 2}

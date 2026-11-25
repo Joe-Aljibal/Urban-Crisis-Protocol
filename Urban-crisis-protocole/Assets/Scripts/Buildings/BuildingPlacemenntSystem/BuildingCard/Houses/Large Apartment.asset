@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Large Apartment
   m_EditorClassIdentifier: Assembly-CSharp::BuildingCard
   prefabCurrentCaseSelection: {fileID: 1388853355061863620, guid: 6a30757780c59d34a8155680e6e36787, type: 3}
-  completPrefab: {fileID: 0}
-  meshPrefab: {fileID: 0}
+  completPrefab: {fileID: 7239524929014894338, guid: ed756c0c050049889c6184539e948906, type: 3}
+  meshPrefab: {fileID: 151141773454873014, guid: a63b6763e365d244389bb8c0f90d7c04, type: 3}
   placementRule: {fileID: 11400000, guid: 5a1c44e0cf1dc9f418d373e7335c7513, type: 2}
-  width: 2
-  height: 0
+  width: 16
+  height: 16

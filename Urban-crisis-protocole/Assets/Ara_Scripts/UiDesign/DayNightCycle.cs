@@ -76,19 +76,25 @@ public class DayNightCycle : MonoBehaviour
 
     private void Update()
     {
+        // Space speeds the entire simulation while held; a paused game stays paused.
+        SetFastForward(Keyboard.current != null && Keyboard.current.spaceKey.isPressed);
         float hoursPerSecond = HoursPerDay / fullDayDuration;
         currentHour = Mathf.Repeat(
             currentHour + hoursPerSecond * Time.deltaTime,
             HoursPerDay
         );
 
-        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            AdvanceTime();
-            return;
-        }
-
         UpdateLighting();
+    }
+
+    public void SetFastForward(bool held)
+    {
+        if (Time.timeScale > 0f) Time.timeScale = held ? 2f : 1f;
+    }
+
+    private void OnDestroy()
+    {
+        if (Time.timeScale > 0f) Time.timeScale = 1f;
     }
 
     public void AdvanceTime()
