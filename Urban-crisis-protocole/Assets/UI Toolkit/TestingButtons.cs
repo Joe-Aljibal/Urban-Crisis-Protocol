@@ -242,7 +242,7 @@ public class TestingButtons : MonoBehaviour
         Label waterText = root.Q<Label>("WaterValue");
         Label foodText = root.Q<Label>("FoodValue");
 
-        moneyText.text = "$" + playerInfo.getMoney.ToString();
+        moneyText.text = "$" + playerInfo.FormattedMoney;
         populationText.text = playerInfo.getPopulation.ToString();
         electricityText.text = playerInfo.getElectricity.ToString();
         waterText.text = playerInfo.getWater.ToString();

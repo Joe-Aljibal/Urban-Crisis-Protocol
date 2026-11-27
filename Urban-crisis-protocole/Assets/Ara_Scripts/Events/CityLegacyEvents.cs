@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Connects the original raid and bomb prefabs to the new world's structures.
+// Connects raids and the bomb to the actual buildings anywhere on the map.
 public class CityLegacyEvents : MonoBehaviour
 {
     [SerializeField] private Bandit banditPrefab;
@@ -10,11 +9,10 @@ public class CityLegacyEvents : MonoBehaviour
     private BanditRaidEvent raid;
     private BombSpawner bomb;
     private Transform eventRoot;
-    private Vector3 location;
-    private CityStructure raidTarget;
-    private BanditRaidEvent.MoneyBuilding townTarget;
-    private Transform constructionDoor;
-    private Transform constructionInside;
+    private Transform targetRoot;
+    private Transform raidEntrance;
+    private Transform bombDropPoint;
+    private readonly List<Transform> activeTargets = new List<Transform>();
     public static CityLegacyEvents Instance { get; private set; }
     public bool IsReady => raid != null && bomb != null;
     public bool RaidRunning => raid != null && raid.IsRunning;
@@ -22,34 +20,24 @@ public class CityLegacyEvents : MonoBehaviour
 
     private void Awake() => Instance = this;
 
-    private IEnumerator Start()
+    private void Start()
     {
-        // Allow the neighborhood builder to finish creating its target buildings.
-        yield return null;
-        CityStructure target = CityStructure.All.Find(building => building != null && building.District == "Commercial");
-        if (target == null || banditPrefab == null || bombPrefab == null) yield break;
-        raidTarget = target;
-        location = target.transform.position;
-        location.y = 0f;
-        eventRoot = new GameObject("Original city events").transform;
-        Transform entrance = Point("Raid entrance", location + new Vector3(-25f, 0, 6f));
-        Transform door = Point("Building entrance", location + new Vector3(0, 0, 4f));
-        Transform inside = Point("Building interior", location);
+        if (banditPrefab == null || bombPrefab == null) return;
+        eventRoot = new GameObject("City events").transform;
+        targetRoot = Point("Raid targets", Vector3.zero);
+        raidEntrance = Point("Raid entrance", Vector3.zero);
         raid = eventRoot.gameObject.AddComponent<BanditRaidEvent>();
-        townTarget = new BanditRaidEvent.MoneyBuilding { building = target.transform, approachPoints = new[] { door }, insidePoint = inside };
-        constructionDoor = Point("Construction entrance", location);
-        constructionInside = Point("Construction target", location);
-        raid.Configure(banditPrefab, entrance, new[] { townTarget });
+        raid.Configure(banditPrefab, raidEntrance, new BanditRaidEvent.MoneyBuilding[0]);
         bomb = eventRoot.gameObject.AddComponent<BombSpawner>();
-        Transform bombDropPoint = Point("Bomb drop point", location + Vector3.up * 180f);
+        bombDropPoint = Point("Bomb drop point", Vector3.up * 180f);
         bombDropPoint.rotation = Quaternion.Euler(180f, 0f, 0f);
         bomb.Configure(bombPrefab, bombDropPoint);
     }
 
-    private Transform Point(string name, Vector3 position)
+    private Transform Point(string name, Vector3 position, Transform parent = null)
     {
         Transform point = new GameObject(name).transform;
-        point.SetParent(eventRoot, false);
+        point.SetParent(parent != null ? parent : eventRoot, false);
         point.position = position;
         return point;
     }
@@ -57,25 +45,38 @@ public class CityLegacyEvents : MonoBehaviour
     public void StartRaid()
     {
         if (raid == null || raid.IsRunning) return;
-        List<BanditRaidEvent.MoneyBuilding> targets = new List<BanditRaidEvent.MoneyBuilding>();
-        if (raidTarget != null && !raidTarget.IsDestroyed) targets.Add(townTarget);
-        CityStructure construction = CityStructure.All.Find(building => building != null && !building.IsDestroyed && building.District == "Construction");
-        if (construction != null)
+        var buildings = CityStructure.All.FindAll(building => building != null && !building.IsDestroyed);
+        // Randomise before assigning the finite number of bandits so every building can be targeted.
+        for (int i = buildings.Count - 1; i > 0; i--)
         {
-            Vector3 position = construction.transform.position;
-            position.y = 0f;
-            constructionInside.position = position;
-            constructionDoor.position = position + Vector3.forward * 4f;
-            targets.Add(new BanditRaidEvent.MoneyBuilding { building = construction.transform, approachPoints = new[] { constructionDoor }, insidePoint = constructionInside });
+            int j = Random.Range(0, i + 1);
+            CityStructure item = buildings[i]; buildings[i] = buildings[j]; buildings[j] = item;
         }
-        if (targets.Count == 0) return;
+        if (buildings.Count == 0) return;
+        foreach (Transform point in targetRoot) Destroy(point.gameObject);
+        activeTargets.Clear();
+        var targets = new List<BanditRaidEvent.MoneyBuilding>();
+        foreach (CityStructure building in buildings)
+        {
+            Vector3 position = building.transform.position;
+            Transform inside = Point("Building target", position, targetRoot);
+            Transform door = Point("Building entrance", position + Vector3.forward * 4f, targetRoot);
+            Transform spawn = Point("Bandit approach", position + new Vector3(-25f, 0f, 6f), targetRoot);
+            targets.Add(new BanditRaidEvent.MoneyBuilding { building = building.transform, approachPoints = new[] { door }, insidePoint = inside, spawnPoint = spawn });
+            if (targets.Count <= raid.BanditCount) activeTargets.Add(building.transform);
+        }
         raid.SetTargets(targets.ToArray());
         raid.StartRaid();
     }
+
     public void LaunchBomb()
     {
-        if (bomb == null || raidTarget == null || raidTarget.IsDestroyed) return;
+        if (bomb == null) return;
+        CityStructure target = CityStructure.RandomIntact();
+        if (target == null) return;
         if (raid != null && raid.IsRunning) raid.StopRaid();
+        Vector3 location = target.transform.position;
+        bombDropPoint.position = location + Vector3.up * 180f;
         FindAnyObjectByType<TownCameraController>()?.FocusOnGround(location);
         bomb.TrySpawn();
     }
@@ -90,12 +91,16 @@ public class CityLegacyEvents : MonoBehaviour
 
     public bool TryGetDanger(Vector3 point, out Vector3 center)
     {
-        center = location;
+        center = Vector3.zero;
         if (!RaidRunning) return false;
-        if ((point - location).sqrMagnitude < 144f) return true;
-        if (constructionInside == null) return false;
-        center = constructionInside.position;
-        return (point - center).sqrMagnitude < 144f;
+        foreach (Transform target in activeTargets)
+        {
+            if (target == null) continue;
+            Vector3 delta = point - target.position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude < 144f) { center = target.position; return true; }
+        }
+        return false;
     }
 
     private void OnDestroy()

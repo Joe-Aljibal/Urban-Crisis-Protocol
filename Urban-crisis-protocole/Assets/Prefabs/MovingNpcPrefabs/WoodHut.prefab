@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b48dcd1e93d70a74eb0c670741d000b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HutStation
-  woodHutStationSO: {fileID: 0}
+  woodHutStationSO: {fileID: 11400000, guid: 8f207e0b3141e3a46b9f024a4dc8b733, type: 2}
 --- !u!114 &637413902746333084
 MonoBehaviour:
   m_ObjectHideFlags: 0

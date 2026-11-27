@@ -89,6 +89,7 @@ public class GeneralScriptUI : MonoBehaviour
 
     void UpdateStatsUI()
     {
+        if (root == null) return;
         PlayerInfo playerInfo = PlayerInfo.Instance;
         Label moneyText = root.Q<Label>("MoneyValue");
         Label populationText = root.Q<Label>("PopulationValue");
@@ -97,12 +98,12 @@ public class GeneralScriptUI : MonoBehaviour
         Label researchText = root.Q<Label>("ResearchPointsValue");
         Label researchText2 = root.Q<Label>("ResearchPoints");
 
-        moneyText.text = $"${playerInfo.GetMoney}";
-        populationText.text = $"<color=white>{playerInfo.GetWorkingPopulation}</color> / {playerInfo.GetPopulation}";
-        electricityText.text = $"<color=white>{playerInfo.GetElectricityUsed}</color> / {playerInfo.GetElectricity}";
-        waterText.text = $"<color=white>{playerInfo.GetWaterUsed}</color> / {playerInfo.GetWater}";
-        researchText.text = $"{playerInfo.GetResearchPoints()}";
-        researchText2.text = $"🧪 {playerInfo.GetResearchPoints()}";
+        if (moneyText != null) moneyText.text = $"${playerInfo.FormattedMoney}";
+        if (populationText != null) populationText.text = $"<color=white>{playerInfo.GetWorkingPopulation}</color> / {playerInfo.GetPopulation}";
+        if (electricityText != null) electricityText.text = $"<color=white>{playerInfo.GetElectricityUsed}</color> / {playerInfo.GetElectricity}";
+        if (waterText != null) waterText.text = $"<color=white>{playerInfo.GetWaterUsed}</color> / {playerInfo.GetWater}";
+        if (researchText != null) researchText.text = $"{playerInfo.GetResearchPoints()}";
+        if (researchText2 != null) researchText2.text = $"🧪 {playerInfo.GetResearchPoints()}";
     }
 
     void Update()

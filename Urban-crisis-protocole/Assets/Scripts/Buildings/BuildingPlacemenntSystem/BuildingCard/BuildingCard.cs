@@ -18,9 +18,9 @@ public class BuildingCard : ScriptableObject
         int h = Mathf.Max(1, rotated ? width : height);
         return placementRule.CanPlaceBuilding(position, occupied, w, h, grid);
     }
-    public Vector3 GetPlacementPosition(Vector3 position, bool rotated)
+    public Vector3 GetPlacementPosition(Vector3 position, bool rotated, Grid grid = null)
     {
-        return placementRule.ChangeFuturPosition(position, Mathf.Max(1, rotated ? height : width), Mathf.Max(1, rotated ? width : height));
+        return placementRule.ChangeFuturPosition(position, Mathf.Max(1, rotated ? height : width), Mathf.Max(1, rotated ? width : height), grid != null ? grid.cellSize.x : 0.5f);
     }
 
 }

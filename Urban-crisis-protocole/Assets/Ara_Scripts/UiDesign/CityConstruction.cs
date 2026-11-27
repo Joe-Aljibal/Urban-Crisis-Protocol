@@ -7,7 +7,6 @@ public class CityConstruction : MonoBehaviour
     [SerializeField] private BuildingCard[] cards;
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
-    private const float BuildAreaSize = 180f;
     private BuildingManager manager;
     private GameObject constructionRoot;
     public Vector3 BuildAreaPosition => constructionRoot != null ? constructionRoot.transform.position : new Vector3(-120f, 0f, -55f);
@@ -26,27 +25,18 @@ public class CityConstruction : MonoBehaviour
     public void SelectCard(BuildingCard card)
     {
         if (manager == null || card == null) return;
-        FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
         manager.ChangeCurrentBuildingCard(card);
     }
 
     private void Start()
     {
         instance = this;
-        constructionRoot = new GameObject("Construction area");
-        constructionRoot.transform.position = new Vector3(-120f, 0.15f, -55f);
-        GameObject buildArea = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        buildArea.name = "Build area";
-        buildArea.transform.SetParent(constructionRoot.transform, false);
-        buildArea.transform.localPosition = new Vector3(0, -0.12f, 0);
-        buildArea.transform.localScale = new Vector3(BuildAreaSize, 0.04f, BuildAreaSize);
-        Destroy(buildArea.GetComponent<Collider>());
-        buildArea.GetComponent<Renderer>().material.color = new Color(0.42f, 0.5f, 0.38f);
+        constructionRoot = new GameObject("Construction grid");
         Grid grid = constructionRoot.AddComponent<Grid>();
         grid.cellSize = new Vector3(0.5f, 0.5f, 0.5f);
         grid.cellSwizzle = GridLayout.CellSwizzle.XZY;
-        BoxCollider ground = constructionRoot.AddComponent<BoxCollider>();
-        ground.size = new Vector3(BuildAreaSize, 0.1f, BuildAreaSize);
+        var surface = constructionRoot.AddComponent<CityBuildSurface>();
+        if (!surface.Initialize()) Debug.LogError("No buildable map surface found.");
         preview = new GameObject("Construction grid preview");
         manager = constructionRoot.AddComponent<BuildingManager>();
         manager.Configure(constructionRoot, preview, validMaterial, invalidMaterial);
@@ -78,7 +68,6 @@ public class CityConstruction : MonoBehaviour
             BuildingCard card = cards[selectedIndex];
             if (card == null || card.completPrefab == null || card.completPrefab.GetComponent<IBuilding>()?.GetBuildingSO() == null) continue;
             manager.ChangeCurrentBuildingCard(card);
-            FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
             break;
         }
     }
@@ -103,7 +92,6 @@ public class CityConstruction : MonoBehaviour
             string label = card.name == "GazStation" ? "Business" : card.name;
             if (GUILayout.Button(label, button, GUILayout.Height(28)))
             {
-                FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
                 manager.ChangeCurrentBuildingCard(card);
             }
         }

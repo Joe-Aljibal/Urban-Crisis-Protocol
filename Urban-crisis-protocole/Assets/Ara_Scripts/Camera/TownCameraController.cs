@@ -256,7 +256,18 @@ public class TownCameraController : MonoBehaviour
 
     private void ClampPanOffset()
     {
-        panOffset.x = Mathf.Clamp(panOffset.x, -panLimit, panLimit);
-        panOffset.z = Mathf.Clamp(panOffset.z, -panLimit, panLimit);
+        var surface = FindAnyObjectByType<CityBuildSurface>();
+        if (surface != null)
+        {
+            Bounds bounds = surface.Bounds;
+            Vector3 town = GetCurrentTown().position;
+            panOffset.x = Mathf.Clamp(panOffset.x, bounds.min.x - town.x, bounds.max.x - town.x);
+            panOffset.z = Mathf.Clamp(panOffset.z, bounds.min.z - town.z, bounds.max.z - town.z);
+        }
+        else
+        {
+            panOffset.x = Mathf.Clamp(panOffset.x, -panLimit, panLimit);
+            panOffset.z = Mathf.Clamp(panOffset.z, -panLimit, panLimit);
+        }
     }
 }

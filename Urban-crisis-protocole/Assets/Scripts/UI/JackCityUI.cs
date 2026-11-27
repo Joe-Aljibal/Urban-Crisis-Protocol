@@ -107,7 +107,7 @@ public class JackCityUI : MonoBehaviour
             placementStatus.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
             placeButton.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
         }
-        Set("MoneyValue", "$" + Mathf.FloorToInt(p.GetMoney).ToString("N0"));
+        Set("MoneyValue", "$" + p.FormattedMoney);
         Set("PopulationValue", p.GetAvailablePopulation + " / " + p.GetPopulation);
         Set("ElectricityValue", p.GetElectricityUsed + " / " + p.GetElectricity);
         Set("WaterValue", p.GetWaterUsed + " / " + p.GetWater);
@@ -188,8 +188,7 @@ public class JackCityUI : MonoBehaviour
     private static void StartDisaster(CityDisasterEvent.Disaster type)
     {
         var disaster = CityDisasterEvent.Instance;
-        var target = CityStructure.All.Find(building => building != null && !building.IsDestroyed);
-        if (disaster != null && target != null && disaster.TryStart(type, target.transform.position)) disaster.Focus();
+        if (disaster != null && disaster.TryStartAtRandomBuilding(type)) disaster.Focus();
     }
 
     private void ShowSection(int value)
@@ -220,12 +219,13 @@ public class JackCityUI : MonoBehaviour
         if (so is HousesSO) return 0;
         if (so is BusinessesSO) return 1;
         if (so is ElectricitySO) return 2;
-        if (so is WaterSO) return 3;
+        if (so is WaterSO || so is HutStationsSO) return 3;
         if (so is MilitaryBaseSO) return 4;
         return 5;
     }
     private static bool IsUnlocked(IBuildingSO so)
     {
+        if (so is HutStationsSO) return true;
         var p = PlayerInfo.Instance;
         List<BuildingTypes> list = Category(so) switch { 0 => p.housesUnlocked, 1 => p.businessesUnlocked, 2 => p.electricityUnlocked, 3 => p.waterUnlocked, 4 => p.militaryUnlocked, _ => null };
         return list == null || list.Contains(so.GetBuildingType());

@@ -27,7 +27,6 @@ public class CityDisasterEvent : MonoBehaviour
     private Vector3 location;
     private Vector3 direction;
     private GameObject effect;
-    private GameObject constructionEffect;
     private bool mitigated;
     public bool CanRespond => (phase == Phase.Warning || phase == Phase.Active) && !mitigated;
     public float ExposureMultiplier => mitigated ? 0.25f : 1f;
@@ -65,6 +64,7 @@ public class CityDisasterEvent : MonoBehaviour
                 Vector3 previousLocation = location;
                 location = Vector3.MoveTowards(location, tornadoEnd, 8f * deltaTime);
                 DestroyResourcesAlongPath(previousLocation, location);
+                DamageAlongPath(previousLocation, location);
                 if (effect != null)
                 {
                     effect.transform.position = location;
@@ -75,8 +75,7 @@ public class CityDisasterEvent : MonoBehaviour
                 }
                 if (Vector3.Distance(location, tornadoEnd) <= 0.1f) timer = 0f;
             }
-            if (disaster == Disaster.Tornado) DamageNearby(deltaTime);
-            else
+            if (disaster != Disaster.Tornado)
             {
                 damageTimer += deltaTime;
                 if (damageTimer >= 1f)
@@ -94,15 +93,16 @@ public class CityDisasterEvent : MonoBehaviour
 
     private void BeginWarning()
     {
-        List<CityStructure> availableBuildings = CityStructure.All.FindAll(building => building != null && !building.IsDestroyed);
-        if (availableBuildings.Count == 0)
-        {
-            timer = cooldown;
-            return;
-        }
-        CityStructure building = availableBuildings[Random.Range(0, availableBuildings.Count)];
+        CityStructure building = CityStructure.RandomIntact();
         if (building == null) { timer = cooldown; return; }
         TryStart((Disaster)Random.Range(0, 3), building.transform.position);
+    }
+
+    public bool TryStartAtRandomBuilding(Disaster type)
+    {
+        CityStructure target = CityStructure.RandomIntact();
+        if (target == null) { Status = "No buildings available for a disaster."; return false; }
+        return TryStart(type, target.transform.position);
     }
 
     public bool TryStart(Disaster type, Vector3 center)
@@ -142,18 +142,19 @@ public class CityDisasterEvent : MonoBehaviour
             Status = "Thunderstorm: three lightning strikes. Seek shelter!";
             StartCoroutine(LightningStrikes());
         }
-        if (disaster == Disaster.Tornado && tornadoPrefab != null)
+        if (disaster == Disaster.Tornado)
         {
-            // Same straight crossing, rotation and growth as the original event.
-            GameObject town = GameObject.Find("Human Town Center");
-            CityConstruction construction = FindAnyObjectByType<CityConstruction>();
-            Vector3 townCenter = town != null ? town.transform.position : location;
-            townCenter.y = 0f;
-            tornadoStart = townCenter + Vector3.forward * 18f;
-            tornadoEnd = construction != null ? construction.BuildAreaPosition + Vector3.back * 10f : townCenter + Vector3.back * 65f;
-            tornadoEnd.y = 0f;
+            // Cross the selected incident location wherever it is on the map.
+            tornadoStart = location - direction * 25f;
+            tornadoEnd = location + direction * 65f;
             location = tornadoStart;
-            effect = Instantiate(tornadoPrefab, location, Quaternion.identity);
+            if (tornadoPrefab != null) effect = Instantiate(tornadoPrefab, location, Quaternion.identity);
+            else
+            {
+                effect = new GameObject("Tornado effect");
+                effect.transform.position = location;
+                effect.AddComponent<CityDisasterVisual>().Configure(disaster, dangerRadius);
+            }
             tornadoScale = effect.transform.localScale;
         }
         else
@@ -161,16 +162,7 @@ public class CityDisasterEvent : MonoBehaviour
             effect = new GameObject(disaster + " effect");
             effect.transform.position = location;
             effect.AddComponent<CityDisasterVisual>().Configure(disaster, dangerRadius);
-            if (disaster == Disaster.Earthquake)
-            {
-                CityConstruction construction = FindAnyObjectByType<CityConstruction>();
-                if (construction != null)
-                {
-                    constructionEffect = new GameObject("Construction earthquake");
-                    constructionEffect.transform.position = construction.BuildAreaPosition;
-                    constructionEffect.AddComponent<CityDisasterVisual>().Configure(disaster, dangerRadius);
-                }
-            }
+
         }
     }
 
@@ -183,16 +175,6 @@ public class CityDisasterEvent : MonoBehaviour
             Vector3 offset = building.transform.position - location;
             offset.y = 0f;
             bool inArea = offset.sqrMagnitude <= dangerRadius * dangerRadius;
-            if (!inArea && disaster == Disaster.Earthquake)
-            {
-                CityConstruction construction = FindAnyObjectByType<CityConstruction>();
-                if (construction != null)
-                {
-                    Vector3 constructionOffset = building.transform.position - construction.BuildAreaPosition;
-                    constructionOffset.y = 0f;
-                    inArea = constructionOffset.sqrMagnitude <= dangerRadius * dangerRadius;
-                }
-            }
             if (!inArea) continue;
             if (disaster == Disaster.Tornado)
             {
@@ -201,6 +183,23 @@ public class CityDisasterEvent : MonoBehaviour
             }
             else
                 building.Damage((disaster == Disaster.Earthquake ? 8f : 2f) * elapsed * ExposureMultiplier);
+            if (!damaged.Contains(building)) damaged.Add(building);
+        }
+    }
+
+    private void DamageAlongPath(Vector3 start, Vector3 end)
+    {
+        Vector3 segment = end - start;
+        segment.y = 0f;
+        float lengthSquared = segment.sqrMagnitude;
+        foreach (CityStructure building in CityStructure.All)
+        {
+            if (building == null || building.IsDestroyed) continue;
+            Vector3 offset = building.transform.position - start;
+            offset.y = 0f;
+            float t = lengthSquared > 0f ? Mathf.Clamp01(Vector3.Dot(offset, segment) / lengthSquared) : 0f;
+            if ((offset - segment * t).sqrMagnitude > 25f) continue;
+            building.DestroyObject();
             if (!damaged.Contains(building)) damaged.Add(building);
         }
     }
@@ -221,11 +220,9 @@ public class CityDisasterEvent : MonoBehaviour
         {
             if (phase != Phase.Active || disaster != Disaster.Thunderstorm) yield break;
             LightningStrikeCount++;
-            List<CityStructure> candidates = CityStructure.All.FindAll(building => building != null && !building.IsDestroyed && (i == 1 ? building.District == "Construction" : building.District != "Construction"));
-            if (candidates.Count == 0) candidates = CityStructure.All.FindAll(building => building != null && !building.IsDestroyed);
-            if (candidates.Count > 0)
+            CityStructure target = CityStructure.RandomIntact();
+            if (target != null)
             {
-                CityStructure target = candidates[Random.Range(0, candidates.Count)];
                 ShowLightning(target.transform.position);
                 target.DestroyObject();
                 if (!damaged.Contains(target)) damaged.Add(target);
@@ -266,7 +263,6 @@ public class CityDisasterEvent : MonoBehaviour
     private void FinishDisaster()
     {
         if (effect != null) Destroy(effect);
-        if (constructionEffect != null) Destroy(constructionEffect);
         if (damaged.Count == 0)
         {
             phase = Phase.Waiting;
@@ -316,6 +312,5 @@ public class CityDisasterEvent : MonoBehaviour
     {
         if (Instance == this) Instance = null;
         if (effect != null) Destroy(effect);
-        if (constructionEffect != null) Destroy(constructionEffect);
     }
 }

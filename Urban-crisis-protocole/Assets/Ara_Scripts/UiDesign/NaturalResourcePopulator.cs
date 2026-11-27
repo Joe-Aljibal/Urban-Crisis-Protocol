@@ -19,6 +19,7 @@ public class NaturalResourcePopulator : MonoBehaviour
     private const float ResourceMaximumHeight = 1.3f;
     private const int MaximumPositionAttempts = 100;
 
+    [SerializeField, Range(0.1f, 1f)] private float resourceVisualScale = 0.5f;
     [SerializeField] private GameObject treeTemplate;
     [SerializeField] private GameObject bushTemplate;
     [SerializeField] private GameObject rockTemplate;
@@ -55,6 +56,7 @@ public class NaturalResourcePopulator : MonoBehaviour
     };
     [SerializeField] private int seed = 2026;
 
+    private readonly Dictionary<GameObject, Vector3> templateScales = new Dictionary<GameObject, Vector3>();
     private System.Random random;
     private readonly List<Vector2> usedPositions = new List<Vector2>();
     private int resourceNumber;
@@ -62,6 +64,8 @@ public class NaturalResourcePopulator : MonoBehaviour
 
     private void OnEnable()
     {
+        foreach (GameObject template in new[] { treeTemplate, bushTemplate, rockTemplate })
+            if (template != null && !templateScales.ContainsKey(template)) templateScales.Add(template, template.transform.localScale);
         GenerateNature();
     }
 
@@ -80,6 +84,7 @@ public class NaturalResourcePopulator : MonoBehaviour
                 type = ResourceType.Wood;
             else if (IsNumbered(name, "Rock_")) type = ResourceType.Stone;
             else continue;
+            item.localScale *= resourceVisualScale;
             MakeCollectible(item.gameObject, type);
         }
     }
@@ -280,7 +285,7 @@ public class NaturalResourcePopulator : MonoBehaviour
 
             float width = RandomBetween(ResourceMinimumWidth, ResourceMaximumWidth);
             float height = RandomBetween(ResourceMinimumHeight, ResourceMaximumHeight);
-            Vector3 templateScale = template.transform.localScale;
+            Vector3 templateScale = templateScales[template] * resourceVisualScale;
 
             resource.transform.localScale = new Vector3(
                 templateScale.x * width,

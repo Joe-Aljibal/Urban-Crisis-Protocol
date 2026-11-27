@@ -15,10 +15,11 @@ public class DebugHutStationPlacement : MonoBehaviour
 
     void Start()
     {
-        currentHutData = hutDatas[0];
+        if (hutDatas != null && hutDatas.Length > 0) currentHutData = hutDatas[0];
     }
     void Update()
     {
+        if (Keyboard.current == null || hutDatas == null || hutDatas.Length == 0) return;
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             int index = System.Array.IndexOf(hutDatas, currentHutData);
@@ -41,14 +42,7 @@ public class DebugHutStationPlacement : MonoBehaviour
         {
             DeleteWorker(new Vector3(0, 1, 0), 1);
         }
-        if (Keyboard.current.tabKey.isPressed)
-        {
-            Time.timeScale = 100.0f;
-        }
-        else
-        {
-            Time.timeScale = 1.0f;
-        }
+
     }
     private void AddHut(Vector3 position, HutData hutData)
     {

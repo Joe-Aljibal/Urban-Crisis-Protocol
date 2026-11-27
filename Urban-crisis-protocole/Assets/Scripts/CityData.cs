@@ -81,10 +81,17 @@ public partial class CityData
 
     public void AddMoney(float money)
     {
-        this.money += money;
+        this.money = (float)Math.Round((double)this.money + money, 2, MidpointRounding.AwayFromZero);
         addStat?.Invoke("MoneyValue", $"{money}");
     }
+    public bool TrySpend(float amount)
+    {
+        if (float.IsNaN(amount) || float.IsInfinity(amount) || amount < 0 || money < amount) return false;
+        AddMoney(-amount);
+        return true;
+    }
     public float GetMoney => money;
+    public string FormattedMoney => money.ToString("N2");
 
     public void AddWood(int wood) { addResource(ResourceType.Wood, wood); }
     public int GetWood => resources[ResourceType.Wood];

@@ -32,5 +32,7 @@ public enum BuildingTypes
     WaterSilo,
     WaterReservoir,
     WaterTreatmentPlant,
-    Tent
+    Tent,
+    WoodHut,
+    StoneHut
 }

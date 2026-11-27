@@ -60,7 +60,6 @@ public partial class CityData
         {
             if (!Available(b)) continue;
             if (b is Electricity e && !powerOutage) electricityTotal += e.Output;
-            if (b is House h) population += h.GetPopulation();
         }
         int power = electricityTotal;
         // Water infrastructure gets power first so houses can receive water.
@@ -75,7 +74,7 @@ public partial class CityData
         foreach (var b in buildings)
         {
             if (b is Water || b is Electricity) continue;
-            int demand = b is House h ? h.PowerDemand : b is Business business ? business.PowerDemand : b is GambleBuilding g ? g.PowerDemand : b is MilitaryBase m ? m.PowerDemand : 0;
+            int demand = b is House h ? h.PowerDemand : b is Business business ? business.PowerDemand : b is GambleBuilding g ? g.PowerDemand : b is MilitaryBase m ? m.PowerDemand : b is HutStation hut ? hut.PowerDemand : 0;
             powers[b] = Available(b) && !powerOutage ? Allocate(ref power, demand) : 0;
         }
         electricityUsed = electricityTotal - power;
@@ -87,7 +86,7 @@ public partial class CityData
                 bool available = Available(b) && !powerOutage;
                 int supplied = available ? Allocate(ref water, h.WaterDemand) : 0;
                 h.ApplySupply(powers[b], supplied, Available(b), available);
-                if (h.IsActive()) workers += h.GetPopulation();
+                if (h.IsActive()) { population += h.GetPopulation(); workers += h.GetPopulation(); }
             }
         waterUsed = waterTotal - water;
         foreach (var b in buildings)
@@ -107,6 +106,11 @@ public partial class CityData
             {
                 int assigned = available && powers[b] >= military.PowerDemand ? Allocate(ref workers, military.WorkerDemand) : 0;
                 military.ApplySupply(powers[b], assigned, available); workingPopulation += assigned;
+            }
+            else if (b is HutStation hut)
+            {
+                int assigned = available && powers[b] >= hut.PowerDemand ? Allocate(ref workers, hut.WorkerDemand) : 0;
+                hut.ApplySupply(powers[b], assigned, available); workingPopulation += assigned;
             }
             else if (b is Electricity e) e.ApplySupply(available);
         }

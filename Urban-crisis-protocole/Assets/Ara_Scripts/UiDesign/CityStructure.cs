@@ -1,10 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// A lightweight damage model for structures in the prototype neighborhood.
+// Shared damage model for structures anywhere on the map.
 public class CityStructure : MonoBehaviour, IDestructible
 {
     public static readonly List<CityStructure> All = new List<CityStructure>();
+
+    public static CityStructure RandomIntact()
+    {
+        CityStructure selected = null;
+        int count = 0;
+        foreach (CityStructure building in All)
+        {
+            if (building == null || building.IsDestroyed) continue;
+            if (Random.Range(0, ++count) == 0) selected = building;
+        }
+        return selected;
+    }
 
     [SerializeField] private float maximumHealth = 100f;
     [SerializeField] private float health;

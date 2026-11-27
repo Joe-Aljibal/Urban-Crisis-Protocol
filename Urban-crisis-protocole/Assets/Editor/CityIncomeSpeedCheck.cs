@@ -39,7 +39,8 @@ public static class CityIncomeSpeedCheck
                 {
                     var card = AssetDatabase.LoadAssetAtPath<BuildingCard>(basePath + paths[i]);
                     Check(card != null, "Missing card " + paths[i]);
-                    Check(manager.TryPlace(card, new Vector3(-150 + i * 12, .16f, -65), Quaternion.identity), "Cannot place " + paths[i] + ": " + manager.Status);
+                    manager.ChangeCurrentBuildingCard(card);
+                    Check(manager.PlaceSelectedInBuildArea(), "Cannot place " + paths[i] + ": " + manager.Status);
                 }
                 step = 1; since = EditorApplication.timeSinceStartup; return;
             }
