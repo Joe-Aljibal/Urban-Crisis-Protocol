@@ -114,7 +114,7 @@ public class ResourceUIManager : MonoBehaviour
         DrawResourceBox("PIERRE", playerInfo.getStone.ToString(), new Color(0.65f, 0.75f, 0.85f), heading, label);
         DrawResourceBox("CHARBON", playerInfo.getCoal.ToString(), new Color(0.62f, 0.62f, 0.68f), heading, label);
         GUILayout.EndHorizontal();
-        GUILayout.Label("ARGENT : " + playerInfo.getMoney.ToString("N0") + " $", heading);
+        GUILayout.Label("ARGENT : " + Mathf.FloorToInt(playerInfo.getMoney).ToString("N0") + " $", heading);
         if (GUILayout.Button(showDetails ? "Masquer les details" : "Voir les details", button, GUILayout.Height(38)))
             showDetails = !showDetails;
     }

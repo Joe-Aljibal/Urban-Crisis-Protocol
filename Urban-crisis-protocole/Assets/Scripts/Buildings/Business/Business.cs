@@ -20,7 +20,13 @@ public class Business : MonoBehaviour, IBuilding, ISellable, IBuildingUiData
     public int PowerDemand => businessSO.GetElectricityNeeded();
     public int WorkerDemand => businessSO.GetWorkersNeeded();
     public void ApplySupply(int p, int workers, bool available) { power = p; workersReceived = workers; active = available && HasEnoughElectricity() && HasEnoughWorkers(); }
-    void Update() { if (!active) { cooldown = 0; return; } cooldown += Time.deltaTime; if (cooldown >= 1f) { city.AddMoney(businessSO.GetProfit()); cooldown -= 1f; } }
+    void Update()
+    {
+        if (!active) { cooldown = 0; return; }
+        cooldown += Time.deltaTime;
+        int seconds = Mathf.FloorToInt(cooldown);
+        if (seconds > 0) { city.AddMoney(businessSO.GetProfit() * seconds); cooldown -= seconds; }
+    }
     public int GetProfit() => businessSO.GetProfit();
     public int GetWorkerPopulation() => workersReceived;
     public int GetPopulation() => WorkerDemand;

@@ -16,7 +16,14 @@ public class GambleBuilding : MonoBehaviour, IBuilding, ISellable, IBuildingUiDa
     public void Deactivate(int electricityLost, int workersLost) => city.SetBuildingAvailable(this, false);
     public void ReceiveElectricity(int value) => city.RecalculateBuildings();
     public void ReceiveWorkers(int value) => city.RecalculateBuildings();
-    int power; public int workersReceived; bool active;
+    int power; public int workersReceived; bool active; float cooldown;
+    void Update()
+    {
+        if (!active) { cooldown = 0; return; }
+        cooldown += Time.deltaTime;
+        int seconds = Mathf.FloorToInt(cooldown);
+        if (seconds > 0) { city.AddMoney(gambleBuildingSO.profit * seconds); cooldown -= seconds; }
+    }
     public int PowerDemand => gambleBuildingSO.electricityNeeded;
     public int WorkerDemand => gambleBuildingSO.workersNeeded;
     public void ApplySupply(int p, int workers, bool available) { power = p; workersReceived = workers; active = available && HasEnoughElectricity() && HasEnoughWorkers(); }

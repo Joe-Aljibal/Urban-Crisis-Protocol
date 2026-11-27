@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Light))]
 public class DayNightCycle : MonoBehaviour
@@ -29,6 +31,11 @@ public class DayNightCycle : MonoBehaviour
     private float currentHour;
     private bool? nightLightsEnabled;
     private bool powerAvailable = true;
+    private bool speedToggled;
+    private readonly HashSet<int> spaceKeysHeld = new();
+    public bool SpeedToggled => speedToggled;
+    public bool SpaceHeld { get; private set; }
+    public void ToggleSpeed() => speedToggled = !speedToggled;
 
     public void SetCityPower(bool available)
     {
@@ -74,10 +81,32 @@ public class DayNightCycle : MonoBehaviour
         UpdateLighting();
     }
 
+    private void OnEnable() => InputSystem.onEvent += OnInputEvent;
+    private void OnDisable()
+    {
+        InputSystem.onEvent -= OnInputEvent;
+        spaceKeysHeld.Clear();
+    }
+    private void OnApplicationFocus(bool focused)
+    {
+        if (!focused) spaceKeysHeld.Clear();
+    }
+    private void OnInputEvent(InputEventPtr input, InputDevice device)
+    {
+        if (!(device is Keyboard keyboard) || (!input.IsA<StateEvent>() && !input.IsA<DeltaStateEvent>())) return;
+        if (!keyboard.spaceKey.ReadValueFromEvent(input, out float pressed)) return;
+        if (pressed > 0.5f) spaceKeysHeld.Add(device.deviceId);
+        else spaceKeysHeld.Remove(device.deviceId);
+    }
+
     private void Update()
     {
         // Space speeds the entire simulation while held; a paused game stays paused.
-        SetFastForward(Keyboard.current != null && Keyboard.current.spaceKey.isPressed);
+        bool spaceHeld = spaceKeysHeld.Count > 0;
+        foreach (InputDevice device in InputSystem.devices)
+            if (device is Keyboard keyboard && keyboard.spaceKey.isPressed) { spaceHeld = true; break; }
+        SpaceHeld = spaceHeld;
+        SetFastForward(speedToggled || spaceHeld);
         float hoursPerSecond = HoursPerDay / fullDayDuration;
         currentHour = Mathf.Repeat(
             currentHour + hoursPerSecond * Time.deltaTime,
