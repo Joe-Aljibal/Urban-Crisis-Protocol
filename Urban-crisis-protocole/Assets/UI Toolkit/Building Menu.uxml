@@ -43,6 +43,7 @@
                 <ui:Label text="RP" class="bar-label"/>
                 <ui:Label name="ResearchPointsValue" text="x" class="bar-value val-orange"/>
             </ui:VisualElement>
+            <ui:Button name="SpeedButton" text="1x" tooltip="Hold Space or click to speed up the simulation" class="bar-tile speed-button"/>
         </ui:VisualElement>
         <ui:VisualElement name="SelectorsContainer" class="selectors-container">
             <ui:Button text="🏡" name="HousesSelector" class="bar-tile selector-btn"/>
@@ -69,7 +70,7 @@
                 </ui:VisualElement>
                 <ui:VisualElement class="popup-tile">
                     <ui:Label text="💧" class="popup-icon"/>
-                    <ui:Label text="Uses" class="popup-label"/>
+                    <ui:Label text="Power supplied" class="popup-label"/>
                     <ui:Label name="RessourceNeeded2Text" text="50" class="popup-value val-blue"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="popup-tile">
@@ -84,6 +85,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:Label name="BuildingStatus" text="" class="building-status"/>
         <ui:VisualElement class="popup-footer">
             <ui:Button text="Vendre 💰" name="SellButton" class="sell-button"/>
         </ui:VisualElement>
