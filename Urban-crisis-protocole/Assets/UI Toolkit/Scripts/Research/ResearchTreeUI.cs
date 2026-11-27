@@ -11,6 +11,7 @@ public class ResearchTreeUI : MonoBehaviour
     PlayerInfo playerInfo = PlayerInfo.Instance;
     VisualElement root;
     bool isResearchOpen = false;
+    public event Action ResearchChanged;
 
     private void Awake()
     {
@@ -65,6 +66,7 @@ public class ResearchTreeUI : MonoBehaviour
             StartCoroutine(CreateBorder(button));
 
             list.Add(type);
+            ResearchChanged?.Invoke();
 
             if (nextButtons != null)
             {
@@ -104,7 +106,7 @@ public class ResearchTreeUI : MonoBehaviour
             btn.style.borderTopColor = Color.green;
             btn.SetEnabled(true);
 
-            foreach (var b in nextButtons)
+            if (nextButtons != null) foreach (var b in nextButtons)
             {
                 root.Q<Button>(b).SetEnabled(true);
             }

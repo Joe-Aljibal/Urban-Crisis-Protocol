@@ -81,7 +81,7 @@ public class TownCameraController : MonoBehaviour
 
     private void HandleRotation()
     {
-        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
+        if (IntegratedGameControls.IsPointerOverCasino || ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
             return;
 
         Mouse mouse = Mouse.current;
@@ -161,7 +161,7 @@ public class TownCameraController : MonoBehaviour
 
     private void HandleZoom()
     {
-        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
+        if (IntegratedGameControls.IsPointerOverCasino || ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel)
             return;
 
         Mouse mouse = Mouse.current;

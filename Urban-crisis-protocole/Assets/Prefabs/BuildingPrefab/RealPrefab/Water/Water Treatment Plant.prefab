@@ -10,7 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 303876515777126307, guid: 058704d896f2a6642b93ff09a1a52766, type: 3}
       propertyPath: m_Name
-      value: Water Treatment Plant Variant
+      value: Water Treatment Plant
+      objectReference: {fileID: 0}
+    - target: {fileID: 1115844565258650905, guid: 058704d896f2a6642b93ff09a1a52766, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1115844565258650905, guid: 058704d896f2a6642b93ff09a1a52766, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1115844565258650905, guid: 058704d896f2a6642b93ff09a1a52766, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1115844565258650905, guid: 058704d896f2a6642b93ff09a1a52766, type: 3}
       propertyPath: m_LocalPosition.x

@@ -12,7 +12,7 @@ public class CollectResourceOnClick : MonoBehaviour
 
     private void CollectResourceClick()
     {
-        if (ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel || CityConstruction.IsPointerOverPanel)
+        if (IntegratedGameControls.IsPointerOverCasino || ResourceUIManager.IsPointerOverDashboard || CityFireEvent.IsPointerOverPanel || CityConstruction.IsPointerOverPanel)
             return;
 
         if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame)
@@ -32,10 +32,7 @@ public class CollectResourceOnClick : MonoBehaviour
 
             if (town == TownType.Human)
             {
-                playerInfo.collectResource(
-                    resource.ResourceType,
-                    ResourceAmountPerClick
-                );
+                playerInfo.rewardExtraction(ResourceAmountPerClick);
             }
 
             TownResourceStatistics.AddResource(

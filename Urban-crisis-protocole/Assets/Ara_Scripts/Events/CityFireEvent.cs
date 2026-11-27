@@ -9,13 +9,14 @@ public class CityFireEvent : MonoBehaviour
     private bool panelOpen;
     public static bool IsMenuOpen => Instance != null && Instance.panelOpen;
     private static Rect PanelRect => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 8f, Screen.height - 120f), Mathf.Min(440f, Screen.width - 40f), Mathf.Max(110f, Mathf.Min(450f, Screen.height - ResourceUIManager.PanelBottom - 28f)));
-    private static Rect TabRect => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 56f, Screen.height - 48f), 205f, 40f);
+    public static Rect TabRect => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 56f, Screen.height - 48f), 205f, 40f);
+    public static float DashboardBottom => IsMenuOpen ? PanelRect.yMax : TabRect.yMax;
     public static void ClosePanel() { if (Instance != null) Instance.panelOpen = false; }
     public static bool IsPointerOverPanel
     {
         get
         {
-            if (Instance == null || CityConstruction.IsMenuOpen || Mouse.current == null) return false;
+            if (Instance == null || CityConstruction.IsMenuOpen || Mouse.current == null || (!Instance.panelOpen && FindAnyObjectByType<JackCityUI>() != null)) return false;
             Vector2 mouse = Mouse.current.position.ReadValue();
             return (Instance.panelOpen ? PanelRect : TabRect)
                 .Contains(new Vector2(mouse.x, Screen.height - mouse.y));
@@ -278,7 +279,7 @@ public class CityFireEvent : MonoBehaviour
         return stage == Stage.Active && (position - location).sqrMagnitude < dangerRadius * dangerRadius;
     }
 
-    private void TogglePanel()
+    public void TogglePanel()
     {
         panelOpen = !panelOpen;
         if (panelOpen && CityConstruction.IsMenuOpen)
@@ -290,7 +291,7 @@ public class CityFireEvent : MonoBehaviour
         if (CityConstruction.IsMenuOpen) return;
         if (!panelOpen)
         {
-            if (GUI.Button(TabRect, "Events (F)")) TogglePanel();
+            if (FindAnyObjectByType<JackCityUI>() == null && GUI.Button(TabRect, "Events (F)")) TogglePanel();
             return;
         }
         GUISkin previousSkin = GUI.skin;

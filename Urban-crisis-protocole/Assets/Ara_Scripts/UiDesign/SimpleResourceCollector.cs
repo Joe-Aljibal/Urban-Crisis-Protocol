@@ -182,11 +182,6 @@ public class SimpleResourceCollector : MonoBehaviour
 
         TownResourceStatistics.AddResource(town, carriedResourceType, resourceAmount);
 
-        if (town == TownType.Human)
-        {
-            PlayerInfo.Instance.addResource(carriedResourceType, resourceAmount);
-        }
-
         DeliveredResources += resourceAmount;
         isReturningHome = false;
         searchTimer = DelayAfterDelivery;

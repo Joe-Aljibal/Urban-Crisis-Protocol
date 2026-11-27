@@ -51,6 +51,9 @@
             <ui:Button text="💧" name="WaterSelector" class="bar-tile selector-btn"/>
             <ui:Button text="🪖" name="MilitarySelector" class="bar-tile selector-btn"/>
             <ui:Button text="🔬" name="ResearchSelector" class="bar-tile selector-btn"/>
+            <ui:Button name="CasinoButton" tooltip="Casino" class="bar-tile selector-btn" style="background-image: url(&quot;project://database/Assets/Resources/ToolbarIcons/Casino.png?fileID=2800000&amp;guid=e33ec1f2f4124204fb225b7a34b4ae06&amp;type=3#Casino&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+            <ui:Button name="EventsButton" tooltip="Events" class="bar-tile selector-btn" style="background-image: url(&quot;project://database/Assets/Resources/ToolbarIcons/Events.png?fileID=2800000&amp;guid=55d968f5588960a4d8f3c63e35e40c4c&amp;type=3#Events&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+            <ui:Button name="AtomicBombButton" tooltip="Atomic bomb" class="bar-tile selector-btn" style="background-image: url(&quot;project://database/Assets/Resources/ToolbarIcons/AtomicBomb.png?fileID=2800000&amp;guid=41ee1623150f63542ade5d09d8f97914&amp;type=3#AtomicBomb&quot;); -unity-background-scale-mode: scale-to-fit;"/>
         </ui:VisualElement>
         <ui:VisualElement name="BarSpacer" picking-mode="Ignore" class="bar-spacer"/>
         <ui:Button text="👩🏿‍🔬" name="ResearchTreeButton" class="bar-tile selector-btn"/>

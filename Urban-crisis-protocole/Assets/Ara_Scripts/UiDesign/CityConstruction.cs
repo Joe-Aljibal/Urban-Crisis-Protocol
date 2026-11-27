@@ -7,6 +7,7 @@ public class CityConstruction : MonoBehaviour
     [SerializeField] private BuildingCard[] cards;
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
+    private const float BuildAreaSize = 180f;
     private BuildingManager manager;
     private GameObject constructionRoot;
     public Vector3 BuildAreaPosition => constructionRoot != null ? constructionRoot.transform.position : new Vector3(-120f, 0f, -55f);
@@ -14,11 +15,20 @@ public class CityConstruction : MonoBehaviour
     private static CityConstruction instance;
     private bool menuOpen;
     private int selectedIndex;
+    private Vector2 cardScroll;
     private static Rect Panel => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 8f, Screen.height - 120f), Mathf.Min(320f, Screen.width - 40f), Mathf.Max(110f, Mathf.Min(200f, Screen.height - ResourceUIManager.PanelBottom - 28f)));
     public static bool IsMenuOpen => instance != null && instance.menuOpen;
     private static Rect Tab => new Rect(20f, Mathf.Min(ResourceUIManager.PanelBottom + 8f, Screen.height - 95f), 205f, 40f);
     public static bool IsPointerOverPanel => instance != null && !CityFireEvent.IsMenuOpen && Mouse.current != null &&
         (instance.menuOpen ? Panel : Tab).Contains(new Vector2(Mouse.current.position.ReadValue().x, Screen.height - Mouse.current.position.ReadValue().y));
+
+    public BuildingCard[] Cards => cards;
+    public void SelectCard(BuildingCard card)
+    {
+        if (manager == null || card == null) return;
+        FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
+        manager.ChangeCurrentBuildingCard(card);
+    }
 
     private void Start()
     {
@@ -29,14 +39,14 @@ public class CityConstruction : MonoBehaviour
         buildArea.name = "Build area";
         buildArea.transform.SetParent(constructionRoot.transform, false);
         buildArea.transform.localPosition = new Vector3(0, -0.12f, 0);
-        buildArea.transform.localScale = new Vector3(30f, 0.04f, 30f);
+        buildArea.transform.localScale = new Vector3(BuildAreaSize, 0.04f, BuildAreaSize);
         Destroy(buildArea.GetComponent<Collider>());
         buildArea.GetComponent<Renderer>().material.color = new Color(0.42f, 0.5f, 0.38f);
         Grid grid = constructionRoot.AddComponent<Grid>();
         grid.cellSize = new Vector3(0.5f, 0.5f, 0.5f);
         grid.cellSwizzle = GridLayout.CellSwizzle.XZY;
         BoxCollider ground = constructionRoot.AddComponent<BoxCollider>();
-        ground.size = new Vector3(30f, 0.1f, 30f);
+        ground.size = new Vector3(BuildAreaSize, 0.1f, BuildAreaSize);
         preview = new GameObject("Construction grid preview");
         manager = constructionRoot.AddComponent<BuildingManager>();
         manager.Configure(constructionRoot, preview, validMaterial, invalidMaterial);
@@ -62,14 +72,20 @@ public class CityConstruction : MonoBehaviour
     public void SelectNextBuilding()
     {
         if (manager == null || cards == null || cards.Length == 0) return;
-        selectedIndex = (selectedIndex + 1) % cards.Length;
-        if (cards[selectedIndex] != null) manager.ChangeCurrentBuildingCard(cards[selectedIndex]);
-        FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
+        for (int i = 0; i < cards.Length; i++)
+        {
+            selectedIndex = (selectedIndex + 1) % cards.Length;
+            BuildingCard card = cards[selectedIndex];
+            if (card == null || card.completPrefab == null || card.completPrefab.GetComponent<IBuilding>()?.GetBuildingSO() == null) continue;
+            manager.ChangeCurrentBuildingCard(card);
+            FindAnyObjectByType<TownCameraController>()?.FocusOnGround(constructionRoot.transform.position);
+            break;
+        }
     }
 
     private void OnGUI()
     {
-        if (manager == null || CityFireEvent.IsMenuOpen) return;
+        if (manager == null || CityFireEvent.IsMenuOpen || FindAnyObjectByType<JackCityUI>() != null) return;
         if (!menuOpen)
         {
             if (GUI.Button(Tab, "Construction (E)")) ToggleMenu();
@@ -80,9 +96,10 @@ public class CityConstruction : MonoBehaviour
         GUILayout.BeginArea(Panel, GUI.skin.box);
         GUILayout.Label("CONSTRUCTION (E: close, Q: select, R: rotate)", title);
         GUILayout.Label(manager.Status);
+        cardScroll = GUILayout.BeginScrollView(cardScroll, GUILayout.Height(100));
         foreach (BuildingCard card in cards)
         {
-            if (card == null) continue;
+            if (card == null || card.completPrefab == null || card.completPrefab.GetComponent<IBuilding>()?.GetBuildingSO() == null) continue;
             string label = card.name == "GazStation" ? "Business" : card.name;
             if (GUILayout.Button(label, button, GUILayout.Height(28)))
             {
@@ -90,6 +107,7 @@ public class CityConstruction : MonoBehaviour
                 manager.ChangeCurrentBuildingCard(card);
             }
         }
+        GUILayout.EndScrollView();
         if (manager.HasSelection && GUILayout.Button("Place building", button, GUILayout.Height(34)))
             manager.PlaceSelectedInBuildArea();
 

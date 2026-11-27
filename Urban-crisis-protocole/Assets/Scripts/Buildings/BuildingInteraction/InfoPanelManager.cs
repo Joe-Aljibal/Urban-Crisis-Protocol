@@ -1,29 +1,31 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InfoPanelManager : MonoBehaviour
 {
     // text prefabs 
     [SerializeField] private TMP_Text textPrefab;
+
+    [SerializeField] private Button[] interactionButtonPrefabs;
+    Dictionary<UiInteractionType, Button> interactionList = new Dictionary<UiInteractionType, Button>();
+
     [SerializeField] private GameObject context;
     
 
-    // i divide the info in a text (text that give context || actuel value)
-    // this dictionnare gives me the first part of the info depending on the datatype which we can get when we receive a UidataModele
-
-    // a UidataModele is juste oen way to represnte one info(text) but it has to value (1) a datatype that represente what the info is about 
-    // (2) the actual value (ex: the price , the name , number of workers etc.. )
-    Dictionary<UiDataType, string> texts = new Dictionary<UiDataType, string>();
+    
     void Awake()
     {
+        if (interactionButtonPrefabs != null && interactionButtonPrefabs.Length > 0)
+            interactionList[UiInteractionType.SELL] = interactionButtonPrefabs[0];
 
-        texts[UiDataType.NAME] = "";
-        texts[UiDataType.PRICE] = "Current price : ";
     }
-
+    // a UidataModele is juste oen way to represnte one info(text) but it has to value (1) a datatype that represente what the info is about 
+    // (2) the actual value (ex: the price , the name , number of workers etc.. )
   
     void Update()
     {}
@@ -31,16 +33,28 @@ public class InfoPanelManager : MonoBehaviour
     // find a way to handle the fact that while buildings are making progresse i need to refresh
 
     // hint do it in playerinteraction with the current selectedbuilding
-    public void ReformatePanel(IBuildingUiData selectedBuilding)
+    public void ReformatePanel(IBuildingUiData selectedBuilding, GameObject buildingSelected)
     {
-
         foreach (Transform child in context.transform.GetComponentInChildren<Transform>())  Destroy(child.gameObject);
 
-        List<UiDataModel> list = selectedBuilding.GetUiDataList();
-        foreach (UiDataModel uiText in list)
+        // create text 
+
+        List<UiDataText> listText = selectedBuilding.GetUiTextList();
+        foreach (UiDataText uiText in listText)
         {
-            AddText(texts[uiText.GetUiDataType] + uiText.GetValue);
+            AddText(uiText.GetValue);
         }
+
+        // create interaction button
+
+        List<UiDataInteraction> listInteraction = selectedBuilding.GetUiInteractionList();
+
+        foreach (UiDataInteraction interactionData in listInteraction)
+        {
+            CreateInteractionButton(interactionData, buildingSelected);
+        }
+
+
     }
 
     void AddText(string text)
@@ -49,5 +63,15 @@ public class InfoPanelManager : MonoBehaviour
         newText.text = text;
     }
 
+    void CreateInteractionButton(UiDataInteraction interactionData, GameObject buildingSelected)
+    {
+        
+       if (!interactionList.TryGetValue(interactionData.GetUiInteractionType, out Button prefab) || prefab == null) return;
+       Button btn = Instantiate(prefab, context.transform);
+       btn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+               interactionData.GetUiInteraction.Interact(buildingSelected);
+            });
+    }
     
 }

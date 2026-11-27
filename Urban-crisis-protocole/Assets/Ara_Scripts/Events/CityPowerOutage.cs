@@ -31,6 +31,7 @@ public class CityPowerOutage : MonoBehaviour
     {
             if (IsActive) return;
             IsActive = true;
+            foreach (CityData city in Cities.cities.Values) city.SetPowerOutage(true);
             timer = outageDuration;
             Status = "Blackout: neighborhood streetlights have lost power.";
             if (dayNightCycle != null) flicker = StartCoroutine(FlickerLights());
@@ -52,13 +53,13 @@ public class CityPowerOutage : MonoBehaviour
         flicker = null;
     }
 
-    public void IncludeBuilding(GameObject building)
+    public void IncludeBuilding(GameObject building, bool? restoreEnabled = null)
     {
         if (!IsActive || building == null) return;
         foreach (MonoBehaviour component in building.GetComponents<MonoBehaviour>())
         {
             if (!(component is IBuilding) || interruptedBuildings.ContainsKey(component)) continue;
-            interruptedBuildings.Add(component, component.enabled);
+            interruptedBuildings.Add(component, restoreEnabled ?? component.enabled);
             component.enabled = false;
         }
     }
@@ -79,6 +80,7 @@ public class CityPowerOutage : MonoBehaviour
             flicker = null;
         }
         IsActive = false;
+        foreach (CityData city in Cities.cities.Values) city.SetPowerOutage(false);
         timer = cooldown;
         Status = "Power restored. Streetlights turn on at night.";
         foreach (var entry in interruptedBuildings)

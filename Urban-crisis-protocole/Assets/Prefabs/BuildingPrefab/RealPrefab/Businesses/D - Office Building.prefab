@@ -14,7 +14,19 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 59f9708cebe386b489496d704a0a511e, type: 2}
     - target: {fileID: 2844369255351296574, guid: 68a431b1b93812b4f8fc207a8a48ff03, type: 3}
       propertyPath: m_Name
-      value: Office Building
+      value: D - Office Building
+      objectReference: {fileID: 0}
+    - target: {fileID: 3184865619337148548, guid: 68a431b1b93812b4f8fc207a8a48ff03, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3184865619337148548, guid: 68a431b1b93812b4f8fc207a8a48ff03, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3184865619337148548, guid: 68a431b1b93812b4f8fc207a8a48ff03, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3184865619337148548, guid: 68a431b1b93812b4f8fc207a8a48ff03, type: 3}
       propertyPath: m_LocalPosition.x

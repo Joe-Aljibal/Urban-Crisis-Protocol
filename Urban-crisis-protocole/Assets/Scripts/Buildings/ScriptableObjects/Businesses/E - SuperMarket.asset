@@ -24,4 +24,4 @@ MonoBehaviour:
   workersNeeded: 200
   price: 15000
   profit: 1200
-  card: {fileID: 0}
+  card: {fileID: 11400000, guid: 0ce3e8aa48894534ba0c69332959d8e6, type: 2}

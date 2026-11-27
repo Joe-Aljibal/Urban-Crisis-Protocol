@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class HutStation : MonoBehaviour, IBuilding
 {
-    private readonly HutStationsSO woodHutStationSO;
+    [SerializeField] private HutStationsSO woodHutStationSO;
 
-    PlayerInfo playerInfo = PlayerInfo.Instance;
+    CityData playerInfo = Cities.cities["PLAYER"];
 
     bool isActive = true;
 
@@ -63,4 +63,6 @@ public class HutStation : MonoBehaviour, IBuilding
   {
     throw new System.NotImplementedException();
   }
+    public void SetCityData(CityData data) => playerInfo = data ?? Cities.cities["PLAYER"];
+
 }
