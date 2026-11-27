@@ -71,6 +71,10 @@ public class JackCityUI : MonoBehaviour
         }
         root.Q<Button>("ResearchTreeButton").clicked += () => research.ToggleResearchPage();
         root.Q<Button>("SellButton").clicked += SellSelected;
+        var speedButton = root.Q<Button>("SpeedButton");
+        if (speedButton != null) speedButton.clicked += () => FindAnyObjectByType<DayNightCycle>()?.ToggleSpeed();
+        var population = root.Q<Label>("PopulationValue");
+        if (population != null) population.tooltip = "Available residents / total residents";
         SetupAction("CasinoButton", "ToolbarIcons/Casino", "Casino", () => ShowActionSection(6));
         SetupAction("EventsButton", "ToolbarIcons/Events", "Events", () => ShowActionSection(7));
         SetupAction("AtomicBombButton", "ToolbarIcons/AtomicBomb", "Atomic bomb", () => ShowActionSection(8));
@@ -103,12 +107,16 @@ public class JackCityUI : MonoBehaviour
             placementStatus.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
             placeButton.style.display = manager.HasSelection ? DisplayStyle.Flex : DisplayStyle.None;
         }
-        Set("MoneyValue", "$" + p.GetMoney.ToString("F0"));
-        Set("PopulationValue", p.GetWorkingPopulation + " / " + p.GetPopulation);
+        Set("MoneyValue", "$" + p.FormattedMoney);
+        Set("PopulationValue", p.GetAvailablePopulation + " / " + p.GetPopulation);
         Set("ElectricityValue", p.GetElectricityUsed + " / " + p.GetElectricity);
         Set("WaterValue", p.GetWaterUsed + " / " + p.GetWater);
         Set("ResearchPointsValue", p.GetResearchPoints().ToString("F0"));
         Set("ResearchPoints", p.GetResearchPoints().ToString("F0"));
+        var speedButton = root.Q<Button>("SpeedButton");
+        if (speedButton != null) speedButton.text = Time.timeScale == 0f ? "Pause" : (Time.timeScale > 1f ? "2x" : "1x");
+        if (selected != null && selectedObject != null) UpdateSelectedBuilding();
+        else if (selected != null) { selected = null; root.Q("BuildingPopUp").style.display = DisplayStyle.None; }
         if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame || Camera.main == null) return;
         var pos = Mouse.current.position.ReadValue();
         if (pos.y < 160 || (selectedObject != null && pos.x > Screen.width - 300 && pos.y > Screen.height - 420)) return;
@@ -180,8 +188,7 @@ public class JackCityUI : MonoBehaviour
     private static void StartDisaster(CityDisasterEvent.Disaster type)
     {
         var disaster = CityDisasterEvent.Instance;
-        var target = CityStructure.All.Find(building => building != null && !building.IsDestroyed);
-        if (disaster != null && target != null && disaster.TryStart(type, target.transform.position)) disaster.Focus();
+        if (disaster != null && disaster.TryStartAtRandomBuilding(type)) disaster.Focus();
     }
 
     private void ShowSection(int value)
@@ -212,12 +219,13 @@ public class JackCityUI : MonoBehaviour
         if (so is HousesSO) return 0;
         if (so is BusinessesSO) return 1;
         if (so is ElectricitySO) return 2;
-        if (so is WaterSO) return 3;
+        if (so is WaterSO || so is HutStationsSO) return 3;
         if (so is MilitaryBaseSO) return 4;
         return 5;
     }
     private static bool IsUnlocked(IBuildingSO so)
     {
+        if (so is HutStationsSO) return true;
         var p = PlayerInfo.Instance;
         List<BuildingTypes> list = Category(so) switch { 0 => p.housesUnlocked, 1 => p.businessesUnlocked, 2 => p.electricityUnlocked, 3 => p.waterUnlocked, 4 => p.militaryUnlocked, _ => null };
         return list == null || list.Contains(so.GetBuildingType());
@@ -251,6 +259,31 @@ public class JackCityUI : MonoBehaviour
         Set("ProductionText", selected.GetRessource());
         Set("LevelText", "1");
         root.Q<Button>("SellButton").SetEnabled(selected is ISellable);
+        UpdateSelectedBuilding();
+    }
+
+    private void UpdateSelectedBuilding()
+    {
+        if (selected == null || selectedObject == null) return;
+        string status;
+        if (selected.IsActive())
+        {
+            int income = selected is Business b ? b.GetProfit() : selected is GambleBuilding g ? g.GetProfit() : 0;
+            status = income > 0 ? "Operating: +$" + income + " / game second" : "Operating";
+        }
+        else
+        {
+            var missing = new List<string>();
+            if (selected.GetElectricityNeeded() > 0) missing.Add(selected.GetElectricityNeeded() + " electricity");
+            if (selected.GetWorkersNeeded() > 0) missing.Add(selected.GetWorkersNeeded() + " workers");
+            if (selected is House house && house.GetWaterNeeded() > 0) missing.Add(house.GetWaterNeeded() + " water");
+            status = missing.Count > 0 ? "Needs: " + string.Join(", ", missing) : "Inactive (damaged or power outage)";
+        }
+        Set("BuildingStatus", status);
+        int supplied = selected.GetElectricityReceived();
+        Set("RessourceNeeded2Text", supplied + " / " + (supplied + selected.GetElectricityNeeded()));
+        if (selected is Business business) Set("ProductionText", selected.IsActive() ? "+$" + business.GetProfit() + "/s" : "$0/s");
+        else if (selected is GambleBuilding gamble) Set("ProductionText", selected.IsActive() ? "+$" + gamble.GetProfit() + "/s" : "$0/s");
     }
     private void SellSelected()
     {

@@ -12,37 +12,19 @@ public class HutStationsSO : ScriptableObject, IBuildingSO
     public int resourceAmount = 1;
     public int price = 25;
 
+    [SerializeField] private BuildingCard card;
     public Sprite GetIcon() => null;
-    public BuildingCard GetCard() => null;
+    public BuildingCard GetCard() => card;
     public bool CanPlace() => price <= PlayerInfo.Instance.GetMoney;
-
-    public string GetBuildingName()
+    public string GetBuildingName() => name;
+    public List<Dictionary<string, string>> GetStats() => new List<Dictionary<string, string>>
     {
-        throw new System.NotImplementedException();
-    }
-
-    public List GetStats()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    List<Dictionary<string, string>> IBuildingSO.GetStats()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public string GetDescription()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public BuildingTypes GetBuildingType()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public int GetResearchPrice()
-    {
-        throw new System.NotImplementedException();
-    }
+        new Dictionary<string, string> { { "label", "Price" }, { "icon", "$" }, { "value", price.ToString() } },
+        new Dictionary<string, string> { { "label", "Resource" }, { "icon", "" }, { "value", resource } },
+        new Dictionary<string, string> { { "label", "Workers" }, { "icon", "" }, { "value", population.ToString() } },
+        new Dictionary<string, string> { { "label", "Power" }, { "icon", "" }, { "value", electricityNeeded.ToString() } }
+    };
+    public string GetDescription() => "Collects nearby " + resource + " while supplied.";
+    public BuildingTypes GetBuildingType() => resource != null && resource.Equals("stone", System.StringComparison.OrdinalIgnoreCase) ? BuildingTypes.StoneHut : BuildingTypes.WoodHut;
+    public int GetResearchPrice() => 0;
 }

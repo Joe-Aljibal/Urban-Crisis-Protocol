@@ -9,6 +9,7 @@ public class BanditRaidEvent : MonoBehaviour
         public Transform building;
         public Transform[] approachPoints;
         public Transform insidePoint;
+        public Transform spawnPoint;
     }
 
     [SerializeField]
@@ -41,6 +42,7 @@ public class BanditRaidEvent : MonoBehaviour
     private string message = "Prêt pour le raid.";
     [SerializeField] private bool showStandalonePanel = true;
     public bool IsRunning => raidRunning;
+    public int BanditCount => Mathf.Max(0, banditCount);
     public string Status => message;
 
     public void Configure(Bandit prefab, Transform entrance, MoneyBuilding[] targets)
@@ -96,14 +98,15 @@ public class BanditRaidEvent : MonoBehaviour
             // Répartit les bandits entre les bâtiments configurés.
             MoneyBuilding target = moneyBuildings[i % moneyBuildings.Length];
 
+            Vector3 entrance = target.spawnPoint != null ? target.spawnPoint.position : spawnPoint.position;
             Bandit bandit = Instantiate(
                 banditPrefab,
-                spawnPoint.position,
+                entrance,
                 Quaternion.identity,
                 transform
             );
 
-            bandit.BeginRaid(this, target, spawnPoint.position);
+            bandit.BeginRaid(this, target, entrance);
 
             yield return new WaitForSeconds(spawnInterval);
         }
@@ -111,6 +114,9 @@ public class BanditRaidEvent : MonoBehaviour
 
     public float StealMoney(MoneyBuilding target)
     {
+        if (target == null || target.building == null) return 0f;
+        CityStructure structure = target.building.GetComponent<CityStructure>();
+        if (structure != null && structure.IsDestroyed) return 0f;
         float availableMoney = Mathf.Max(0, PlayerInfo.Instance.GetMoney);
         float stolenMoney = Mathf.Min(moneyPerBandit, availableMoney);
 

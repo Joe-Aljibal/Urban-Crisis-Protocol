@@ -13,7 +13,7 @@ public class HudController : MonoBehaviour
 
     void Update()
     {
-        moneyCount.text = Mathf.FloorToInt(playerInfo.getMoney) + " $";
+        moneyCount.text = playerInfo.FormattedMoney + " $";
 
         // Habitants disponibles / habitants total (les autres travaillent)
         residentCount.text = playerInfo.getAvailablePopulation + " / " + playerInfo.getPopulation;

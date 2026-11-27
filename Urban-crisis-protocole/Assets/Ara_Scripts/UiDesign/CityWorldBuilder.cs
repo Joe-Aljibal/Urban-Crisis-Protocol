@@ -4,6 +4,7 @@ using UnityEngine;
 // Builds a compact prototype from Unity primitives around an existing town center.
 public class CityWorldBuilder : MonoBehaviour
 {
+    [SerializeField] private bool enablePrototypeNeighborhood = false;
     [SerializeField] private Transform townCenter;
     [SerializeField] private DayNightCycle dayNightCycle;
     [SerializeField, Range(0, 12)] private int pedestrianCount = 6;
@@ -13,7 +14,7 @@ public class CityWorldBuilder : MonoBehaviour
 
     private void Start()
     {
-        if (townCenter == null) return;
+        if (!enablePrototypeNeighborhood || townCenter == null) return;
         cityRoot = new GameObject("Prototype neighborhood").transform;
         Vector3 center = townCenter.position;
         center.y = 0f;

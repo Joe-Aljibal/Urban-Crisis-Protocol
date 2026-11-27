@@ -44,7 +44,6 @@ public class CityFireEvent : MonoBehaviour
     private bool hasSpread;
     private Vector3 location;
     private GameObject fireVisual;
-    private GameObject otherFireVisual;
     private GameObject damageVisual;
     private TownCameraController townCamera;
     private CityPowerOutage powerOutage;
@@ -70,7 +69,7 @@ public class CityFireEvent : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) TogglePanel();
-        if (stage == Stage.Active && affectedBuilding != null)
+        if (stage == Stage.Active)
             UpdateBuildingDamage();
         timer -= Time.deltaTime;
         if (timer > 0f || stage == Stage.Recovery)
@@ -142,7 +141,7 @@ public class CityFireEvent : MonoBehaviour
 
     private void StartFire()
     {
-        if (affectedBuilding == null && (target == null || !target.IsActiveResource))
+        if ((affectedBuilding == null || affectedBuilding.IsDestroyed) && (target == null || !target.IsActiveResource))
         {
             ResetEvent("The fire risk passed.");
             return;
@@ -171,16 +170,7 @@ public class CityFireEvent : MonoBehaviour
         shape.angle = 12f;
         shape.radius = 1.5f;
         particles.Play();
-        if (affectedBuilding != null)
-        {
-            bool constructionFire = affectedBuilding.District == "Construction";
-            CityStructure other = CityStructure.All.Find(building => building != null && !building.IsDestroyed && building != affectedBuilding && (building.District == "Construction") != constructionFire);
-            if (other != null)
-            {
-                damagedBuildings.Add(other);
-                otherFireVisual = Instantiate(fireVisual, other.transform.position, fireVisual.transform.rotation);
-            }
-        }
+
     }
 
     private void UpdateBuildingDamage()
@@ -190,7 +180,7 @@ public class CityFireEvent : MonoBehaviour
             hasSpread = true;
             foreach (CityStructure building in CityStructure.All)
             {
-                if (building != null && building != affectedBuilding &&
+                if (building != null && !building.IsDestroyed && !damagedBuildings.Contains(building) &&
                     (building.transform.position - location).sqrMagnitude <= spreadRadius * spreadRadius)
                     damagedBuildings.Add(building);
             }
@@ -208,24 +198,8 @@ public class CityFireEvent : MonoBehaviour
     private void FinishFire(bool contained)
     {
         if (fireVisual != null) Destroy(fireVisual);
-        if (otherFireVisual != null) Destroy(otherFireVisual);
-        if (affectedBuilding != null)
-        {
-            if (damagedBuildings.Exists(building => building != null && building.IsDamaged))
-            {
-                stage = Stage.Recovery;
-                message = "Fire contained. The building needs repairs.";
-            }
-            else ResetEvent("Fire prevented. The area is safe.");
-            return;
-        }
-        if (contained)
-        {
-            ResetEvent("Fire contained. The area is safe.");
-            return;
-        }
-
-        if (target != null && target.IsActiveResource)
+        bool damagedAny = damagedBuildings.Exists(building => building != null && building.IsDamaged);
+        if (!contained && target != null && target.IsActiveResource)
         {
             target.Disable();
             damageVisual = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -234,10 +208,14 @@ public class CityFireEvent : MonoBehaviour
             damageVisual.transform.localScale = new Vector3(0.7f, 0.5f, 0.7f);
             Destroy(damageVisual.GetComponent<Collider>());
             damageVisual.GetComponent<Renderer>().material.color = new Color(0.18f, 0.12f, 0.1f);
-            stage = Stage.Recovery;
-            message = "Fire burned a resource. Repair the area to restore it.";
+            damagedAny = true;
         }
-        else ResetEvent("The fire ended; the affected resource was already gone.");
+        if (damagedAny)
+        {
+            stage = Stage.Recovery;
+            message = "Fire contained. The affected area needs repairs.";
+        }
+        else ResetEvent("Fire contained. The area is safe.");
     }
 
     private void ResetEvent(string result)
@@ -382,13 +360,13 @@ public class CityFireEvent : MonoBehaviour
                 if (GUILayout.Button("Nuclear event")) legacy.LaunchBomb();
             }
 
-            CityStructure eventTarget = CityStructure.All.Find(building => building != null && !building.IsDestroyed);
+            CityStructure eventTarget = CityStructure.RandomIntact();
             if (naturalDisaster != null && !naturalDisaster.HasIncident && eventTarget != null)
             {
                 foreach (CityDisasterEvent.Disaster type in System.Enum.GetValues(typeof(CityDisasterEvent.Disaster)))
                 {
                     string label = type.ToString();
-                    if (GUILayout.Button(label) && naturalDisaster.TryStart(type, eventTarget.transform.position))
+                    if (GUILayout.Button(label) && naturalDisaster.TryStartAtRandomBuilding(type))
                         naturalDisaster.Focus();
                 }
             }
@@ -413,7 +391,6 @@ public class CityFireEvent : MonoBehaviour
         if (Instance == this) Instance = null;
         if (largeSkin != null) Destroy(largeSkin);
         if (fireVisual != null) Destroy(fireVisual);
-        if (otherFireVisual != null) Destroy(otherFireVisual);
         if (damageVisual != null) Destroy(damageVisual);
     }
 }

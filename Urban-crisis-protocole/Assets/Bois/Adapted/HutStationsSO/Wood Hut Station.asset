@@ -18,3 +18,4 @@ MonoBehaviour:
   population: 0
   resourceAmount: 1
   price: 25
+  card: {fileID: 11400000, guid: a2854067eb0dcd540b77c866cf4635e3, type: 2}

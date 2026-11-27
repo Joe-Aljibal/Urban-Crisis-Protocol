@@ -111,3 +111,6 @@ Assets/LLMUnity/Runtime/LlamaLib/runtimes/
 Urban-crisis-protocole/Assets/StreamingAssets/LlamaLib-*/
 Urban-crisis-protocole/Assets/StreamingAssets/LlamaLib-*.meta
 *.gguf
+
+# Local Git worktree used for integration testing
+/.integration-worktree/

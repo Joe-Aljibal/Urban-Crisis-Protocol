@@ -29,6 +29,26 @@ public static class CityEconomyCheck
         return component;
     }
     static void Check(bool value, string message) { if (!value) throw new Exception(message); }
+    static void CheckProductionRequirements()
+    {
+        var owner = new CityData();
+        var config = ScriptableObject.CreateInstance<HutStationsSO>();
+        config.electricityNeeded = 10; config.population = 2;
+        var producer = Add<HutStation>("Producer requirements", config, "woodHutStationSO");
+        producer.SetCityData(owner); owner.RegisterBuilding(producer);
+        Check(!producer.IsActive(), "Production must wait for power and workers.");
+        var powerData = ScriptableObject.CreateInstance<ElectricitySO>(); Set(powerData, "electricityOutput", 10);
+        var plant = Add<Electricity>("Producer power", powerData, "electricitySO");
+        plant.SetCityData(owner); owner.RegisterBuilding(plant);
+        Check(!producer.IsActive(), "Power alone must not replace required workers.");
+        var housingData = ScriptableObject.CreateInstance<HousesSO>(); Set(housingData, "population", 5);
+        var housing = Add<House>("Producer housing", housingData, "houseSO");
+        housing.SetCityData(owner); owner.RegisterBuilding(housing);
+        Check(producer.IsActive() && owner.GetWorkingPopulation == 2, "Power and workers must activate production.");
+        owner.SetPowerOutage(true); Check(!producer.IsActive(), "An outage must stop production.");
+        owner.SetPowerOutage(false); Check(producer.IsActive(), "Restoring power must resume supplied production.");
+        owner.SetBuildingAvailable(housing, false); Check(!producer.IsActive(), "Losing workers must stop production.");
+    }
     static void Update()
     {
         if (!SessionState.GetBool(Running, false) || !EditorApplication.isPlaying) return;
@@ -78,6 +98,7 @@ public static class CityEconomyCheck
                 city.AddMoney(100); city.housesUnlocked.Add(BuildingTypes.MediumHouse);
                 Cities.ResetForNewGame();
                 Check(city.GetMoney == 2000 && city.GetResearchPoints() == 20 && city.GetWood == 0 && city.GetPopulation == 0 && !city.housesUnlocked.Contains(BuildingTypes.MediumHouse) && TownResourceStatistics.GetStone(TownType.AI) == 0, "New game must reset both cities in place.");
+                CheckProductionRequirements();
                 SessionState.SetBool(Running, false); Debug.Log("CITY_ECONOMY_CHECK_PASSED"); EditorApplication.Exit(0);
             }
         }

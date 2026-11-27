@@ -8,10 +8,12 @@ public class BuildingPlacementRules : ScriptableObject
     public Vector3[] CanPlaceBuilding(Vector3 futurPosition, List<Vector3> filledSlot, int width, int height, Grid grid)
     {
 
-        float cellSize = 0.5f;
+        float cellSize = grid != null ? grid.cellSize.x : 0.5f;
 
         const float eps = 0.001f;
-        Bounds groundBounds = grid != null ? GetGroundBounds(grid) : new Bounds(Vector3.zero, Vector3.one * 100000f);
+        Bounds groundBounds = grid == null ? new Bounds(Vector3.zero, Vector3.one * 100000f) : grid.GetComponent<CityBuildSurface>() != null ? grid.GetComponent<CityBuildSurface>().Bounds : GetGroundBounds(grid);
+        var occupiedKeys = new HashSet<Vector2Int>();
+        foreach (var p in filledSlot) occupiedKeys.Add(new Vector2Int(Mathf.RoundToInt(p.x * 100), Mathf.RoundToInt(p.z * 100)));
 
         List<Vector3> occupiedCells = new();
 
@@ -34,7 +36,7 @@ public class BuildingPlacementRules : ScriptableObject
                     pos.z < groundBounds.min.z - eps || pos.z > groundBounds.max.z + eps)
                     return null;
 
-                if (FindPositionInList(pos, filledSlot))
+                if (occupiedKeys.Contains(new Vector2Int(Mathf.RoundToInt(pos.x * 100), Mathf.RoundToInt(pos.z * 100))))
                 {
                     return null;
                 }
@@ -46,9 +48,8 @@ public class BuildingPlacementRules : ScriptableObject
         return occupiedCells.ToArray();
     }
 
-    public Vector3 ChangeFuturPosition(Vector3 futurPosition, int width, int height)
+    public Vector3 ChangeFuturPosition(Vector3 futurPosition, int width, int height, float cellSize = 0.5f)
     {
-        float cellSize = 0.5f;
         return futurPosition +
            new Vector3(
                (width - 1) * cellSize / 2f,
@@ -65,7 +66,7 @@ public class BuildingPlacementRules : ScriptableObject
 
     public bool FindPositionInList(Vector3 position, List<Vector3> filledSlot)
     {
-        return filledSlot.Contains(position);
+        return filledSlot.Exists(p => Mathf.Abs(p.x - position.x) < 0.01f && Mathf.Abs(p.z - position.z) < 0.01f);
     }
     public virtual Vector3[] CanPlaceBuilding(Vector3 position, List<Vector3> occupied)
         => CanPlaceBuilding(position, occupied, 1, 1, null);

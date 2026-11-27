@@ -40,10 +40,11 @@ public class MilitaryBase : MonoBehaviour, IBuilding, ISellable
     {
         if (!isActive) return;
         cooldown += Time.deltaTime;
-        if (cooldown >= 1)
+        int seconds = Mathf.FloorToInt(cooldown);
+        if (seconds > 0)
         {
-            playerInfo.addMoney(-militaryBaseSO.upkeep);
-            cooldown -= 1; // garde le reste pour ne pas perdre de temps entre deux paiements
+            playerInfo.addMoney(-militaryBaseSO.upkeep * seconds);
+            cooldown -= seconds;
         }
     }
 
